@@ -1,0 +1,12 @@
+{
+  "summary": "The client discussed sprint data availability on the disk, noting only one sprint exists and requesting to read sp-001, but the SPRINT_PLANNING_ARCHITECT encountered an HTTP POST error due to an invalid 'read' action.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "summary": "The client requested Sarah to initiate sprint 2.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Start sprint 2",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah"
+  ]
+}

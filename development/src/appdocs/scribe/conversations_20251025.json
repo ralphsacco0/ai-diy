@@ -1,0 +1,36 @@
+[
+  {
+    "timestamp": "2025-10-25T08:46:54.601705",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test some code if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help get your project started today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_cefab3dc"
+  }
+]

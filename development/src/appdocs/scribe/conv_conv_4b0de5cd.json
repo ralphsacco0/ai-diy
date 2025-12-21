@@ -1,0 +1,16 @@
+{
+  "summary": "In the meeting, the client asked Sarah if she knew a magic word, which was not addressed by the Developer, QA, or Architect. The PM, responding as Sarah, revealed the magic word to be 'Yuki' and asked for more context about the inquiry.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer",
+    "QA",
+    "Architect",
+    "PM",
+    "Sarah"
+  ]
+}

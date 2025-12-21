@@ -1,0 +1,32 @@
+{
+  "summary": "Client requested Jordan to run a test. QA executed the test and confirmed the output matches the expected result; PM, Architect, and Developer did not comment.",
+  "decisions": [
+    {
+      "title": "QA test passed",
+      "details": "QA confirmed the test output 'testing 123' matches the expected result.",
+      "refs": []
+    }
+  ],
+  "sign_offs": [
+    {
+      "who": "QA",
+      "what": "Approved test result: output matches expected 'testing 123'",
+      "timestamp": "2025-10-20 12:00:00"
+    }
+  ],
+  "actions": [
+    {
+      "owner": "Jordan",
+      "task": "Run the requested test and confirm results to the client",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "PM, Architect, and Developer did not address the testing request",
+      "mitigation": "Follow up with PM, Architect, and Developer to obtain their review/comments and assign any follow-up work if issues are found"
+    }
+  ],
+  "participants": null
+}

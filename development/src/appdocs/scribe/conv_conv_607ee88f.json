@@ -1,0 +1,24 @@
+{
+  "summary": "The meeting was adjourned with confirmation that the backlog needs refinement before committing to development, and participants agreed to reconvene for sprint planning or approvals once ready.",
+  "decisions": [
+    {
+      "title": "Backlog requires refinement before development commitment",
+      "details": "Confirmed during the discussion",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Refine backlog and notify when ready to reconvene for sprint planning or approvals",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "Mike"
+  ]
+}

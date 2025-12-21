@@ -1,0 +1,15 @@
+{
+  "summary": "The team members greeted each other and expressed their readiness to assist with the project kickoff, including offers for project management, development, testing, and architecture support.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "PM",
+    "QA",
+    "ARCHITECT"
+  ]
+}

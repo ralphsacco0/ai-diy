@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting started with a general greeting, but no substantive discussion or decisions were made.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM",
+    "ARCHITECT",
+    "QA",
+    "DEVELOPER"
+  ]
+}

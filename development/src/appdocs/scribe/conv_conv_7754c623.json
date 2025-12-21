@@ -1,0 +1,26 @@
+{
+  "summary": "Client requested Sarah set up a vision meeting. The PM asked for a project name; architect, developer, and QA gave no comments (not addressed).",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Set up a vision meeting",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Add vision meeting and project-naming task to backlog"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "No project name defined may delay alignment and planning",
+      "mitigation": "Include project-naming as an agenda item for the vision meeting or have the PM assign and confirm a project name before the next milestone"
+    }
+  ],
+  "participants": null
+}

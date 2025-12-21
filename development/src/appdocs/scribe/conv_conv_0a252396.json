@@ -1,0 +1,15 @@
+{
+  "summary": "The client asked Sarah how to start and end meetings, with no comments from Architect, Developer, or QA. The PM provided clear instructions on initiating meetings by specifying the type and ending them with specific commands, including confirmation and wrap-up processes.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "DEVELOPER",
+    "QA",
+    "PM"
+  ]
+}

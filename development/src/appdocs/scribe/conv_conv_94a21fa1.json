@@ -1,0 +1,15 @@
+{
+  "summary": "Client requested that Sarah start a requirements meeting. The PM (Sarah) asked for the project name; architect, developer, and QA provided no comments (not_addressed).",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Start the requirements meeting and propose a project name",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": null
+}

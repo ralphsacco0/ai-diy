@@ -1,0 +1,21 @@
+{
+  "summary": "The client asked Sarah about the app's Agile workflow and the meetings involved. Sarah explained the iterative process starting with a Vision Meeting, followed by Requirements/Backlog Meetings, Sprint Planning, Sprint Reviews, and Retrospectives, and invited the client to start a meeting.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Initiate the project by starting a specific meeting, such as 'start vision meeting'",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah (PM)",
+    "Developer",
+    "Architect",
+    "QA"
+  ]
+}

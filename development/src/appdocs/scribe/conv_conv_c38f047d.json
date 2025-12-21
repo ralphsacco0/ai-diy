@@ -1,0 +1,40 @@
+{
+  "summary": "The team addressed the issue with deleting Sprint 3 via API, which failed due to unsupported functionality, and decided to reset all stories to the backlog for a clean start with a new Sprint 1 (SP-001). Mike proposed prioritizing user stories like login flow (US-010) or employee management (US-015, US-001) and requested client input to select 2-5 stories for a quick testable build.",
+  "decisions": [
+    {
+      "title": "Proceed with new Sprint 1 (SP-001)",
+      "details": "Treat the situation as a clean slate after resetting stories to the backlog; old sprint records can remain harmlessly or be manually wiped if admin access is available.",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide thoughts on priorities for Sprint 1, such as login flow (US-010) or employee management (US-015, US-001)",
+      "due": ""
+    },
+    {
+      "owner": "Mike",
+      "task": "Analyze the backlog and propose a group of 2-5 user stories based on client priorities for a testable build in ~20 minutes",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "",
+      "title": "Reset all stories back to the Backlog, removing sprint assignments"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Old sprint records may persist in the system if not manually deleted",
+      "mitigation": "Records are harmless and can be ignored, or manually wiped using admin access if available"
+    }
+  ],
+  "participants": [
+    "client",
+    "Mike"
+  ]
+}

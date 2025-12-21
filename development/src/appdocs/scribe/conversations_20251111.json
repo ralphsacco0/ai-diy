@@ -1,0 +1,138 @@
+[
+  {
+    "timestamp": "2025-11-11T10:17:05.671585",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "PM",
+      "DEVELOPER",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! What's on the agenda today?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help get your project started today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! What's up?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, ready for any testing needs."
+      }
+    ],
+    "summary": null,
+    "id": "conv_25b3899b"
+  },
+  {
+    "timestamp": "2025-11-11T11:05:08.450685",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start a sprint execution meeting"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting start command)"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_dda26f8e"
+  },
+  {
+    "timestamp": "2025-11-11T16:56:02.372538",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start a sprint execution meeting"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "It looks like you're ready to dive into sprint work. Sprint execution happens through our automated inner loops after planning\u2014what's the project name so we can start Sprint Planning?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_e4b50df5"
+  },
+  {
+    "timestamp": "2025-11-11T17:46:41.502986",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test whenever you are."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can I help get this project started or clarify the vision today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_a2d8eb91"
+  }
+]

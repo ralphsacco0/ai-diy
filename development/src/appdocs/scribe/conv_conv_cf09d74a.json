@@ -1,0 +1,27 @@
+{
+  "summary": "The client initiated setting a sprint meeting, which was acknowledged by the Architect (Mike) who will prepare for design discussions, while the PM inquired about naming the project. Developer and QA had no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Mike",
+      "task": "Prepare to discuss any design implications for the sprint",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Sprint meeting scheduled"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer",
+    "QA",
+    "Mike",
+    "PM"
+  ]
+}

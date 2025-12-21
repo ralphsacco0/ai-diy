@@ -1,0 +1,15 @@
+{
+  "summary": "The team began a vision meeting for a new project after the client corrected a spelling error. Sarah acknowledged the correction and asked for a project name to proceed.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer",
+    "Architect",
+    "Sarah (PM)",
+    "QA"
+  ]
+}

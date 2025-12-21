@@ -1,0 +1,12 @@
+{
+  "summary": "The meeting was concluded by the client with no additional comments or triggers from SPRINT_EXECUTION_PM.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_EXECUTION_PM"
+  ]
+}

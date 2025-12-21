@@ -1,0 +1,15 @@
+{
+  "summary": "The star backlog meeting featured no comments from QA, Developer, and Architect due to various reasons, while the Client initiated the meeting. PM Sarah asked for suggestions on naming the project.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "QA",
+    "Developer",
+    "Architect",
+    "Sarah"
+  ]
+}

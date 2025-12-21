@@ -1,0 +1,15 @@
+{
+  "summary": "The spring execution meeting was initiated by the client, with QA, PM, ARCHITECT, and DEVELOPER providing no comments due to lack of triggers or the meeting start command.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "PM",
+    "ARCHITECT",
+    "DEVELOPER"
+  ]
+}

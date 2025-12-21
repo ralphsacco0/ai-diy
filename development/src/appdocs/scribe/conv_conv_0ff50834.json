@@ -1,0 +1,21 @@
+{
+  "summary": "The client requested deletion of a draft vision for BrightHR Lite--DELME2, and PM Sarah confirmed and successfully deleted it, with no comments from other team members.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [
+    {
+      "type": "remove",
+      "id": "BrightHR-Lite-DELME2-Vision-Draft_20251021_152745",
+      "title": "Vision 'BrightHR Lite--DELME2 Vision (Draft)' deleted successfully"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER",
+    "Sarah"
+  ]
+}

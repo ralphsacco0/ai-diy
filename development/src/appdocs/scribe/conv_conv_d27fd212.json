@@ -1,0 +1,18 @@
+{
+  "summary": "The client requested to re-run Sprint SP-001. Mike clarified the sprint's contents, including user stories US-001, US-010, and US-015, and asked for confirmation to proceed with re-execution as-is or with any adjustments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Confirm re-execution of Sprint SP-001 as-is or specify adjustments",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "Mike"
+  ]
+}

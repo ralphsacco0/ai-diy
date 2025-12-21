@@ -1,0 +1,26 @@
+{
+  "summary": "Client Sarah initiated a requirements meeting. The PM asked for a project name but architect, developer, and QA did not respond, so the project name remains undecided.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Propose project name options and circulate to stakeholders for confirmation",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Create backlog item to define and confirm project name"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "No project name defined may delay requirement gathering and cause miscommunication",
+      "mitigation": "PM to propose names, set a deadline, and solicit confirmations from Sarah and technical stakeholders (architect, developer, QA)"
+    }
+  ],
+  "participants": null
+}

@@ -1,0 +1,70 @@
+[
+  {
+    "timestamp": "2025-11-17T09:57:23.455023",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help kick off your project today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hello! How can I help with the architecture today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any changes."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! What's the dev task today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_9e05f636"
+  },
+  {
+    "timestamp": "2025-11-17T12:20:26.870912",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start execution meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team, ready to dive into execution details from a dev perspective. What's the agenda?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_b5663e6e"
+  }
+]

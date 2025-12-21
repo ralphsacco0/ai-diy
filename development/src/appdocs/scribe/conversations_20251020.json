@@ -1,0 +1,1221 @@
+[
+  {
+    "timestamp": "2025-10-20T06:40:05.494903",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Hi team \u2014 Sarah here. What would you like to work on today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team \u2014 Mike here. Any architecture concerns or blockers we should surface for today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: Hi team \u2014 Alex here. How can I help with implementation or code today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: Hi team \u2014 Jordan (QA) here. Ping me when something is ready for testing and I\u2019ll run the checks."
+      }
+    ],
+    "summary": null,
+    "id": "conv_4c74614b"
+  },
+  {
+    "timestamp": "2025-10-20T06:45:07.938777",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Hi team \u2014 Sarah here. What would you like to work on today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Hi team \u2014 Mike here. Any architecture concerns or blockers we should surface for today's work?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: Hi team \u2014 Alex here. How can I help with implementation or code today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: Hi team \u2014 Jordan (QA) here. Ping me when something is ready for testing and I\u2019ll run the checks."
+      }
+    ],
+    "summary": null,
+    "id": "conv_3dd7a159"
+  },
+  {
+    "timestamp": "2025-10-20T06:57:30.380927",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah, Project Manager here. What would you like to work on today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team \u2014 quick check: any blockers on sprint tasks or architecture items I should review? I can join a quick sync if needed."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team \u2014 Alex here. Anything I can help with or any blockers to resolve?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team \u2014 Jordan here. If anything is ready for testing, ping me with \"Ready for testing!\" and the expected output."
+      }
+    ],
+    "summary": null,
+    "id": "conv_555b9f68"
+  },
+  {
+    "timestamp": "2025-10-20T11:03:59.220695",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team \u2014 Mike here. Ready to review architecture, answer design questions, or unblock technical decisions."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team \u2014 Alex here. How can I help?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah here. What should we focus on today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team \u2014 Jordan (QA). If something\u2019s Ready for testing, please post \"Ready for testing!\" with the expected output and I\u2019ll run the tests."
+      }
+    ],
+    "summary": null,
+    "id": "conv_c3aeb276"
+  },
+  {
+    "timestamp": "2025-10-20T11:04:46.444479",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team \u2014 Jordan (QA). If something\u2019s Ready for testing, post \"Ready for testing!\" with the expected output and I\u2019ll run the tests."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah here. What should we focus on today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Hi team \u2014 Mike here. Ready to review architecture, answer design questions, or unblock technical decisions."
+      }
+    ],
+    "summary": null,
+    "id": "conv_f1f510b2"
+  },
+  {
+    "timestamp": "2025-10-20T11:07:46.430140",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Hi team \u2014 Mike here. Ready to review architecture, answer design questions, or unblock technical decisions."
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: Hi team \u2014 Jordan (QA). If something\u2019s Ready for testing, post \"Ready for testing!\" with the expected output and I\u2019ll run the tests."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: Hi team \u2014 Alex here. I can help with implementation, code reviews, or removing technical blockers; what do you need?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah here. What should we focus on today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_1ff1249d"
+  },
+  {
+    "timestamp": "2025-10-20T11:37:16.466867",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "PM",
+      "QA",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team \u2014 Mike here. I'm available for architecture or design questions and to help with technical decisions."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah, your Project Manager. What would you like to work on today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team \u2014 Jordan (QA). I'm available to run tests; ping me when something is \"Ready for testing!\""
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team \u2014 Alex here. How can I help?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_55cc0ced"
+  },
+  {
+    "timestamp": "2025-10-20T11:38:05.355761",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "PM",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "alex can you please change helloworld to say hey good buddy"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "\u2705 Change request req_1760974676055 executed successfully - helloworld.py updated"
+      }
+    ],
+    "summary": null,
+    "id": "conv_8f5c1443"
+  },
+  {
+    "timestamp": "2025-10-20T11:38:40.294122",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "jordan please test"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "\u2705 Test passed! Output matches expected: 'hey good buddy'"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_456f47af"
+  },
+  {
+    "timestamp": "2025-10-20T11:39:35.909237",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah please set a vision meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_938ea5ca"
+  },
+  {
+    "timestamp": "2025-10-20T12:29:22.905228",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team \u2014 Mike (Architect) here. Available to review designs, discuss trade-offs, or answer architecture questions."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team \u2014 Jordan (QA) here. Let me know if anything is Ready for testing!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team \u2014 Alex here. What do you need help with on the code or implementation?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah, your PM. How can I help today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_ba3910c9"
+  },
+  {
+    "timestamp": "2025-10-20T12:30:19.740195",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "PM",
+      "QA",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "alex please change helloworld to say testing 123"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "\u2705 Change request req_1760977803402 executed successfully - helloworld.py updated"
+      }
+    ],
+    "summary": null,
+    "id": "conv_b17b6a4b"
+  },
+  {
+    "timestamp": "2025-10-20T12:30:35.139720",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "jordan please test"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "\u2705 Test passed! Output matches expected: 'testing 123'"
+      }
+    ],
+    "summary": null,
+    "id": "conv_e9cc680c"
+  },
+  {
+    "timestamp": "2025-10-20T12:31:38.595213",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah please set a vision meeting"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_993a509e"
+  },
+  {
+    "timestamp": "2025-10-20T12:38:18.326018",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah please start a vision meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_465485ca"
+  },
+  {
+    "timestamp": "2025-10-20T12:44:09.871507",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah here, the Project Manager. How can I help today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team \u2014 Mike (Architect) here. Any architecture questions, design decisions, or blockers I should help with?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team \u2014 Alex here. I'm available for implementation work; what should I pick up first?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team \u2014 Jordan (QA). If you have changes ready, post \"Ready for testing!\" with the expected output and I\u2019ll run the tests."
+      }
+    ],
+    "summary": null,
+    "id": "conv_2aa29c39"
+  },
+  {
+    "timestamp": "2025-10-20T12:44:55.776641",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "everyone ready to get some work done today"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Ready \u2014 what should we focus on today? If you'd like to run a meeting, tell me which type (vision, requirements, planning, review, retrospective)."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Ready \u2014 I\u2019m available to unblock any architecture questions or design decisions. What should we tackle first?"
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: Ready \u2014 I\u2019m on standby. When changes are ready, post \"Ready for testing!\" with the expected output (e.g., Expected output: '...') and I\u2019ll run the tests."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "I'm ready \u2014 available to take implementation work; what should I pick up first?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_38f06308"
+  },
+  {
+    "timestamp": "2025-10-20T12:45:44.957554",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "Sarah start a vision meeting"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_053cf62c"
+  },
+  {
+    "timestamp": "2025-10-20T13:06:36.859894",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team \u2014 Mike (Architect) here. Let me know if you need help with architecture, design decisions, or non-functional requirements."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team \u2014 Jordan (QA) here. Anything ready for testing?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team \u2014 Alex here. Any updates or blockers you want me to take on?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah here, Project Manager. What should we focus on today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_e6b05bfd"
+  },
+  {
+    "timestamp": "2025-10-20T13:07:28.214722",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "alex please update helloworld to say hi dude"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "\u2705 Change request req_1760980033978 executed successfully - helloworld.py updated"
+      }
+    ],
+    "summary": null,
+    "id": "conv_0e590d9b"
+  },
+  {
+    "timestamp": "2025-10-20T13:07:49.772314",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "jordan please test"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "\u2705 Test passed! Output matches expected: 'hi dude'"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_62631a35"
+  },
+  {
+    "timestamp": "2025-10-20T13:08:14.463321",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah please set a vision meeting"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_b6e3d653"
+  },
+  {
+    "timestamp": "2025-10-20T13:10:16.930011",
+    "participants": [
+      "client",
+      "PM",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Hi team \u2014 Sarah here, Project Manager. Any updates or blockers to raise?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: Hi team \u2014 Alex here. Any updates or blockers you want me to take on?"
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: Hi team \u2014 Jordan (QA) here. Anything ready for testing?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Hi team \u2014 Mike (Architect) here. Ping me for architecture, design decisions, or non-functional requirements."
+      }
+    ],
+    "summary": null,
+    "id": "conv_c0a7632a"
+  },
+  {
+    "timestamp": "2025-10-20T13:11:01.457119",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah please start a requirements meeting"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_b38f94fc"
+  },
+  {
+    "timestamp": "2025-10-20T13:18:47.346971",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "PM",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team \u2014 Mike (Architect). I'm available for any architecture or design questions."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team \u2014 Jordan (QA) here. Ready to run tests whenever changes are handed off; please send \"Ready for testing!\" with the Expected output string."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah here. What would you like to work on today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team \u2014 Alex here. What would you like me to pick up or review?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_243ed6e5"
+  },
+  {
+    "timestamp": "2025-10-20T13:23:02.185790",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "DEVELOPER",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team \u2014 Jordan (QA). If something's ready for testing, send \"Ready for testing!\" with the expected output and I'll run the tests."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah (Project Manager) here. What would you like to work on today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team \u2014 Alex here. I\u2019m available for development work today; what should I pick up?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team \u2014 Mike here. Anything on the architecture or design backlog you want me to take a look at?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_ebd7cc25"
+  },
+  {
+    "timestamp": "2025-10-20T13:23:33.960939",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "everyone ready to work"
+      },
+      {
+        "persona": "PM",
+        "message": "All set \u2014 I'm ready. What should we focus on today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Ready \u2014 I can review architecture/design backlog or items needing sign-off. What should I pick up?"
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: Ready \u2014 if something\u2019s ready for testing, send \"Ready for testing!\" with the expected output and I\u2019ll run the tests."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "I'm ready. I can start on development tasks now \u2014 what should I pick up?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_5230ed25"
+  },
+  {
+    "timestamp": "2025-10-20T13:24:07.366870",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "PM",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "Sarah please set a vision meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_5847d2c4"
+  },
+  {
+    "timestamp": "2025-10-20T13:30:15.819359",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah start vision meeting"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_c95830e7"
+  },
+  {
+    "timestamp": "2025-10-20T13:31:25.280796",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah start a vision meeting"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_a8ee2f86"
+  },
+  {
+    "timestamp": "2025-10-20T13:58:16.789801",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team \u2014 Mike (Architect) here. If anyone needs input on architecture, design decisions, or trade-offs, I\u2019m available."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team \u2014 Alex here. How can I help today?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team \u2014 Sarah, the Project Manager. What would you like to discuss or work on today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team \u2014 Jordan here. If anything needs testing, post \"Ready for testing!\" or mention me and I\u2019ll run the tests."
+      }
+    ],
+    "summary": null,
+    "id": "conv_372483ce"
+  },
+  {
+    "timestamp": "2025-10-20T13:58:59.803645",
+    "participants": [
+      "client",
+      "PM",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "alex change helloworld to say doing ok"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "\u2705 Change request req_1760983125530 executed successfully - helloworld.py updated"
+      }
+    ],
+    "summary": null,
+    "id": "conv_eb5b60ba"
+  },
+  {
+    "timestamp": "2025-10-20T13:59:18.331714",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "PM",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "jordan please test"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "\u2705 Test passed! Output matches expected: 'doing ok'"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_fd440f56"
+  },
+  {
+    "timestamp": "2025-10-20T13:59:38.743242",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah please set a vision meeting"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_f6e208f9"
+  },
+  {
+    "timestamp": "2025-10-20T14:01:14.891792",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "PM",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "Sarah please start a vision meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_79839bd0"
+  },
+  {
+    "timestamp": "2025-10-20T14:04:05.960605",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah please start a requirements meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_79128d3f"
+  }
+]

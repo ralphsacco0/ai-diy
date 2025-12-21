@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update My Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        neutral: '#6B7280'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white font-sans">
+    <div class="container mx-auto p-6 max-w-md">
+        <h1 class="text-2xl font-bold text-neutral mb-6">Update My Profile</h1>
+        <form class="space-y-4">
+            <div>
+                <label for="email" class="block text-sm font-medium text-neutral">Email</label>
+                <input type="email" id="email" value="john@example.com" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+            </div>
+            <div>
+                <label for="phone" class="block text-sm font-medium text-neutral">Phone Number</label>
+                <input type="tel" id="phone" value="+1 234 567 8900" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+            </div>
+            <div>
+                <label for="address" class="block text-sm font-medium text-neutral">Address</label>
+                <textarea id="address" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">123 Main St, City, State 12345</textarea>
+            </div>
+            <div class="flex space-x-3">
+                <button type="submit" class="flex-1 px-4 py-2 bg-primary text-white rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50">Save Changes</button>
+                <button type="button" class="px-4 py-2 border border-gray-300 text-neutral rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/50">Cancel</button>
+            </div>
+            <p id="success" class="text-green-600 text-sm hidden">Changes saved! HR has been notified.</p>
+            <p id="error" class="text-red-600 text-sm hidden">Please check your inputs.</p>
+        </form>
+    </div>
+</body>
+</html>

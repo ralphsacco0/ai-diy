@@ -1,0 +1,18 @@
+{
+  "summary": "The client asked how to start a meeting in the AI-DIY system, and PM Sarah explained the process using specific 'magic words' to activate workflows, outlined the project sequence from Vision to Sprint Review, and invited the client to begin a Vision Meeting by sharing their project idea.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Share project or app idea and start a Vision Meeting using the specified magic words",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "Sarah"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "summary": "The client requested Sarah to start a 'version meeting,' but received no comments from Architect, QA, and Developer; the PM (Sarah) responded seeking clarification, suggesting it might refer to a 'vision meeting' or sprint review and offering to coordinate.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah (PM)",
+      "task": "Clarify the type of meeting intended by the client and coordinate accordingly",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Misunderstanding of meeting type leading to miscommunication",
+      "mitigation": "Seek immediate clarification from the client on the intended meeting"
+    }
+  ],
+  "participants": [
+    "Client",
+    "Sarah (PM)",
+    "Architect",
+    "QA",
+    "Developer"
+  ]
+}

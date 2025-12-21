@@ -1,0 +1,11 @@
+{
+  "sprint_id": "SP-001",
+  "created_at": "2025-11-13T23:14:10.641707",
+  "status": "planned",
+  "stories": [
+    "US-009",
+    "NFR-004"
+  ],
+  "estimated_minutes": 20,
+  "rationale": "Sprint 1 focuses on foundational authentication to secure the application from the outset, aligning with Vision constraints for GDPR compliance and lightweight local setup. US-009 delivers working login/logout functionality with email/password auth via Supabase, including role-based sessions (HR/Employee) and a testable UI form. NFR-004 builds directly on this by implementing role-based access control through middleware, permission checks on routes, audit logging for unauthorized attempts, and enforcement of least-privilege principles. This duo ensures secure, differentiated access (e.g., employees can't view HR dashboards), high testability (unit tests for auth flows, integration tests for guards), and sets up dependencies for future stories like US-001 (Employee Directory). Total scope targets ~20 minutes execution, prioritizing foundation before features for logical progression."
+}

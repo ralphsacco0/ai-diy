@@ -1,0 +1,21 @@
+{
+  "summary": "The sprint planning meeting for BrightHR Lite Vision was initiated by the client, Architect Mike, and PM Sarah, with Mike proposing to select stories that generate working code and analyze the backlog to propose a sprint scope.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Mike",
+      "task": "Analyze the backlog and propose a sprint scope by selecting stories that will generate working code",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "QA",
+    "Mike",
+    "Sarah"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "summary": "Client requested Jordan to run tests. QA confirmed the test passed and output matches expected 'hi world'; other roles had no comments.",
+  "decisions": [],
+  "sign_offs": [
+    {
+      "who": "QA",
+      "what": "Test passed; output matches expected 'hi world'",
+      "timestamp": "2025-10-12 00:00:00"
+    }
+  ],
+  "actions": [
+    {
+      "owner": "jordan",
+      "task": "Execute the requested test and confirm results",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "PM, Architect, and Developer did not address the request (marked not_addressed), risking delayed clarifications or follow-up actions",
+      "mitigation": "Follow up with PM, Architect, and Developer to confirm no blockers and request explicit acknowledgement; escalate if no response within SLAs"
+    }
+  ],
+  "participants": null
+}

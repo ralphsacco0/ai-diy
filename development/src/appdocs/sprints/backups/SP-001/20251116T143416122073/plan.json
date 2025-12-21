@@ -1,0 +1,11 @@
+{
+  "sprint_id": "SP-001",
+  "created_at": "2025-11-16T14:34:16.117485",
+  "status": "planned",
+  "stories": [
+    "NFR-001",
+    "US-009"
+  ],
+  "estimated_minutes": 20,
+  "rationale": "Starts with the mandatory Tech Stack NFR to create a runnable local Mac setup (React + Node/Express + SQLite), ensuring portability and no cloud deps. Then implements authentication as the security gatekeeper\u2014users can log in/out, roles are enforced, and it's testable end-to-end (e.g., via localhost login flows). This generates working, secure code as the project's base layer, aligning with vision constraints (local Mac, GDPR basics). Total scope is tight to hit ~20 mins, building toward employee directory/leave features next."
+}

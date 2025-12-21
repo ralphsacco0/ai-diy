@@ -1,0 +1,1022 @@
+[
+  {
+    "timestamp": "2025-12-11T00:09:42.793840",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start sprint 7 now please"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Understood\u2014Sprint 7 is now starting. Team, please proceed with implementing the planned stories from the backlog. Let me know if any adjustments to scope are needed."
+      }
+    ],
+    "summary": null,
+    "id": "conv_50e7960f"
+  },
+  {
+    "timestamp": "2025-12-11T13:57:49.963677",
+    "participants": [
+      "client",
+      "PM",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "who can tell me about this app"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Hi! I'm Sarah, the Project Manager. This is Agile in a Box, a chat-based app from ai-diy (developed by Ralph Sacco) where our AI team\u2014me, Mike (Architect), Jordan (Tester), and Alex (Developer)\u2014collaborates with you on projects using agile sprints and structured meetings. What specifically would you like to know?"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "I'm Mike, the Architect. This is the BrightHR Lite Vision app\u2014a streamlined HR dashboard prototype built with Flask for the backend, serving a React frontend, focusing on employee management, vision tracking, and basic auth features. Let me know if you want details on the design patterns or tech stack."
+      }
+    ],
+    "summary": null,
+    "id": "conv_2c0019c3"
+  },
+  {
+    "timestamp": "2025-12-11T14:07:46.107439",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: Hi team! Good to see you back."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, all set for any testing needs."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Hi team! Mike here, ready for the next build."
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Hi again! What can the team assist with today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_4e17b965"
+  },
+  {
+    "timestamp": "2025-12-11T14:08:16.989231",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "who can explain how this app works"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Hi! As the Project Manager, I can explain: Agile in a Box is a collaborative chat app from ai-diy (by Ralph Sacco) that lets you work with our AI team\u2014me (Sarah, PM), Mike (Architect), Jordan (Tester), and Alex (Developer)\u2014to build projects via agile sprints. We use structured meetings (like Vision or Planning) to gather requirements, plan, build, test, and review, all in this single conversation. What aspect would you like more details on?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: As the Architect, I'll explain the high-level workings of the BrightHR Lite Vision app. It's a full-stack prototype with a Flask-based Python backend handling API routes for auth, employee data, and vision tracking, connected to a SQLite database for persistence. The React frontend consumes these APIs via Axios for dynamic UI updates on dashboards like employee lists and performance metrics, all secured with JWT tokens for session management. If you need deeper dives into components or flow diagrams, let me know!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_1aa8aba7"
+  },
+  {
+    "timestamp": "2025-12-11T14:08:51.271331",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "who can explain how ai-diy works"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Hi! As the Project Manager, I can give you an overview: ai-diy is the innovative platform and company (founded by Ralph Sacco) behind Agile in a Box, our chat-based app that powers collaborative AI-driven project development. It enables teams like ours\u2014me (PM), Mike (Architect), Jordan (Tester), and Alex (Developer)\u2014to work with you in real-time through agile methodologies, structured meetings, and automated sprints to turn ideas into working prototypes efficiently. If you'd like details on specific features, integrations, or how to get started, just let me know!"
+      }
+    ],
+    "summary": null,
+    "id": "conv_0e73e281"
+  },
+  {
+    "timestamp": "2025-12-11T14:09:44.891897",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "how do we progress though the app from idea to code"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Hi! As the Project Manager, I'll walk you through the progression in Agile in a Box: We start with a Vision Meeting to capture your idea and name the project, then move to Requirements/Backlog to define features and priorities, followed by Sprint Planning to scope the first deliverable. From there, the team (Mike for architecture, Alex for coding, Jordan for testing) handles the inner loops in sprints\u2014building, testing, and iterating\u2014until we hit Sprint Review for your feedback and sign-off, looping as needed to turn ideas into working code. Ready to start with a specific project idea?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: As the Developer, I handle the coding phase once requirements are clear from planning meetings\u2014implementing features in sprints using tools like the http_post for changes, then handing off to Jordan for testing. We iterate until the code is production-ready."
+      }
+    ],
+    "summary": null,
+    "id": "conv_6dd9f693"
+  },
+  {
+    "timestamp": "2025-12-11T14:10:14.263611",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "how should answer questions about ai-diy"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Sarah: As the Project Manager, when answering questions about ai-diy, keep it factual and concise: Highlight that it's the platform/company by Ralph Sacco powering Agile in a Box, enabling AI team collaboration for agile project delivery via chat-based meetings and sprints. Refer users to specifics like structured modes (Vision, Planning, etc.) or integrations, and offer to start a meeting if they want to dive in."
+      }
+    ],
+    "summary": null,
+    "id": "conv_3f4e64a1"
+  },
+  {
+    "timestamp": "2025-12-11T14:11:30.824011",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "ok sarah how do we get from idea to code"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Great question\u2014addressing you directly! In Agile in a Box, we progress from idea to code like this: Start with a Vision Meeting to define the project name and high-level goals (just say \"start vision meeting\" and share your idea), then Requirements Meeting to build the backlog of features, Sprint Planning to prioritize the first sprint's scope, where Mike architects, Alex codes, Jordan tests, and we review iteratively until you sign off on working deliverables. Ready to kick off with your idea?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_8714932b"
+  },
+  {
+    "timestamp": "2025-12-11T14:12:16.577311",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "outstanding sarah how do we start and end meetings"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Sarah: Excellent\u2014directly to me! To start a meeting, just say something like \"start vision meeting\" or \"sprint planning,\" and if it's the first one, I'll ask for the project name before announcing exactly like \"\ud83c\udfaf Starting Vision Meeting: [Project Name]\" to kick it off with the team. Meetings end naturally after key discussions, decisions, or sign-offs (which the Scribe records automatically), or you can say \"end meeting\" to wrap up and transition."
+      }
+    ],
+    "summary": null,
+    "id": "conv_9b48d158"
+  },
+  {
+    "timestamp": "2025-12-11T14:20:13.506821",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "PM",
+      "ARCHITECT",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Alex here, ready to dive into some development if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we help today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Mike here, geared up for any architectural discussions."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, ready for testing when you are."
+      }
+    ],
+    "summary": null,
+    "id": "conv_a380854c"
+  },
+  {
+    "timestamp": "2025-12-11T14:20:38.676423",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "who should talk about how ai-diy works"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: As the Project Manager, I handle overviews of ai-diy and the Agile in a Box app\u2014it's the platform by Ralph Sacco that enables our AI team to collaborate with you through structured agile meetings and sprints to build projects. If you'd like a full explanation, just ask!"
+      }
+    ],
+    "summary": null,
+    "id": "conv_76371356"
+  },
+  {
+    "timestamp": "2025-12-11T14:21:15.413871",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "PM",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "great sarah how do we get from idea to code"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "As the Project Manager, we get from idea to code in Agile in a Box by starting with a Vision Meeting (say \"start vision meeting\" and share your idea for project naming and goals), then Requirements to outline features, Sprint Planning to scope the first build, where the team iterates through architecture, coding, and testing in sprints until Sprint Review for your approval on working prototypes. Let's begin with your idea whenever you're ready!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_c7338a67"
+  },
+  {
+    "timestamp": "2025-12-11T14:21:34.646025",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "thanks sarah how do we start and end the meetings"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "As the Project Manager, to start a meeting, simply say something like \"start vision meeting\" or \"sprint planning\"\u2014I'll ask for the project name if it's the first one, then announce \"\ud83c\udfaf Starting [Meeting Type]: [Project Name]\" to engage the team. Meetings wrap up naturally after decisions and sign-offs (recorded by the Scribe), or you can say \"end meeting\" to transition smoothly."
+      }
+    ],
+    "summary": null,
+    "id": "conv_d12c6c23"
+  },
+  {
+    "timestamp": "2025-12-11T14:51:01.744464",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "PM",
+      "ARCHITECT",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! Ready to dive into some code?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can I help get the project started today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hello! Ready to dive into some architecture if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Good to see you."
+      }
+    ],
+    "summary": null,
+    "id": "conv_0afc869e"
+  },
+  {
+    "timestamp": "2025-12-11T14:51:19.512282",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "Who can tell me about ai-diy"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "I'm the developer on the team, so I can share that ai-diy is our open-source project for building and experimenting with AI agents in a DIY setup, focusing on modular code execution and tools like the helloworld sandbox."
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_ee6bfd29"
+  },
+  {
+    "timestamp": "2025-12-11T14:56:30.607029",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "PM",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "who can tell me about ai-diy"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "As the Project Manager, I can tell you that ai-diy is the company behind this Agile in a Box app, created by Ralph Sacco\u2014it's designed to make AI-driven development accessible through structured team collaboration in sprints. If you have specific questions about how it works for projects, I'm here to guide you!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_523622b4"
+  },
+  {
+    "timestamp": "2025-12-11T14:56:46.618582",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "what do you need to do to get from an idea to code"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "To get from an idea to code in our ai-diy setup, we start with clarifying the requirements and sketching a high-level design, then break it into modular components for implementation\u2014using tools like the helloworld sandbox for quick prototyping. Once coded, we run tests via the backend to validate, iterating as needed for clean, executable results."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "To get from an idea to code in our Agile in a Box system, we start with a Vision meeting to clarify your goals and stakeholders, then build a Backlog of user stories and requirements. From there, we plan a sprint to break it into actionable slices, execute with the team (Architect, Developer, QA), and review the working code\u2014let me know if you'd like to kick off a Vision meeting for your idea!"
+      }
+    ],
+    "summary": null,
+    "id": "conv_08d9daa8"
+  },
+  {
+    "timestamp": "2025-12-11T14:57:14.469072",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "in ai-diy how do you get from an idea to code"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "In ai-diy, we translate ideas to code by first defining clear specs and pseudocode in the backlog, then implementing in modular Python scripts or sandboxes like helloworld.py for rapid iteration. We use the backend API for automated execution and testing to ensure the code runs cleanly before integrating."
+      },
+      {
+        "persona": "PM",
+        "message": "To get from an idea to code in ai-diy's Agile in a Box, we follow a structured agile flow: start with a Vision meeting to define your goals and create a Backlog of user stories, then plan and execute a sprint where the team (Architect, Developer, QA) builds and tests the code iteratively. If you're ready, say \"Start a Vision meeting for [your project name]\" to begin!"
+      }
+    ],
+    "summary": null,
+    "id": "conv_80a5786f"
+  },
+  {
+    "timestamp": "2025-12-11T14:58:12.844873",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "PM",
+      "QA",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! What's on the agenda today?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can I help get your project started or moving forward today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team!"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Good to see everyone."
+      }
+    ],
+    "summary": null,
+    "id": "conv_428f513e"
+  },
+  {
+    "timestamp": "2025-12-11T14:58:28.869123",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "who can tell me about ai-diy"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "I'm happy to tell you about ai-diy! It's the company behind Agile in a Box, an AI-powered app developed by Ralph Sacco that lets you build software projects using a multi-agent team (like me, the Project Manager) in a structured agile workflow\u2014think vision setting, backlog management, sprints, and reviews all in one chat interface. What specific aspect would you like to know more about?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_e16f67ff"
+  },
+  {
+    "timestamp": "2025-12-11T14:58:45.089249",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "Sarah how do you get from idea to code"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "We get from idea to code through a structured agile process in Agile in a Box. First, we start with a Vision meeting to clarify your idea, goals, and users\u2014say \"Start a Vision meeting: [Project Name]\" to kick it off. From there, we build a backlog of user stories, plan sprints to deliver small, testable pieces of functionality (with Mike the Architect designing, Alex the Developer coding, and Jordan the QA testing), and review progress iteratively until it's live. What's your idea, and shall we begin?"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_cd9ab792"
+  },
+  {
+    "timestamp": "2025-12-11T14:59:04.319738",
+    "participants": [
+      "client",
+      "PM",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "how do i start and end meetings"
+      },
+      {
+        "persona": "PM",
+        "message": "To start a meeting, just say something like \"Start a Vision meeting: [Your Project Name]\" (or Backlog, Sprint Planning, Sprint Execution, or Sprint Review)\u2014the app will activate the right team members and set the context. To end any meeting, simply say \"end meeting,\" and we'll wrap up and return to free-form chat. Ready to try one?"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_efc2d384"
+  },
+  {
+    "timestamp": "2025-12-11T15:04:53.263631",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! What's up?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready for some testing if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help you get started on your project today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_07ed9939"
+  },
+  {
+    "timestamp": "2025-12-11T15:05:08.087898",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "who can tell me about ai-diy"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi! I'm Sarah, the Project Manager, and I know the most about ai-diy. It's the company behind this Agile in a Box app, developed by Ralph Sacco, which helps teams like ours collaborate with clients to build software projects using agile sprints in a structured chat environment. What specifically would you like to know?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_a0da2663"
+  },
+  {
+    "timestamp": "2025-12-11T15:05:32.052214",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "great sarah how do we get from and idea to code"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi! As the Project Manager, I'll walk you through our agile process in the ai-diy Agile in a Box app to turn your idea into working code. We start with a Vision meeting to clarify your goals, then build a Backlog of user stories, plan a sprint to scope a small deliverable, execute it (with Mike architecting, Alex coding, and Jordan testing), and end with a Review to demo and refine\u2014rinse and repeat for bigger projects. Want to kick off with a Vision meeting? Just say \"Start a Vision meeting\" or click the Vision button on the left!"
+      }
+    ],
+    "summary": null,
+    "id": "conv_765ba10c"
+  },
+  {
+    "timestamp": "2025-12-11T15:06:15.732056",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "DEVELOPER",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "so how do we start and end meetings"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "To start a meeting, just say something like \"Start a Vision meeting,\" \"Start a Backlog meeting,\" \"Start a Sprint Planning meeting,\" or similar\u2014the app will automatically activate the right team members and update the Meeting Status on the left side. To end any meeting at any time, simply say \"end meeting,\" which will wrap things up and return us to free-form chat."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_87da1bc4"
+  },
+  {
+    "timestamp": "2025-12-11T15:07:09.274341",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "Hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! Ready to dive into some dev work."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Good to see you."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we get started on your project today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready for any testing needs."
+      }
+    ],
+    "summary": null,
+    "id": "conv_3c0a5744"
+  },
+  {
+    "timestamp": "2025-12-11T15:07:24.698904",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "who can tell me about ai-diy"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi! I'm Sarah, the Project Manager, and I know the most about ai-diy. It's the company behind this Agile in a Box app, created by Ralph Sacco, designed to help teams build software projects efficiently using AI-driven agile processes in a single chat environment. What specifically would you like to know?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_d22db229"
+  },
+  {
+    "timestamp": "2025-12-11T15:07:44.526872",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "great sarah how do we get from an idea to code"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi! As your Project Manager, I'll guide us through the agile process in Agile in a Box to turn your idea into working code. We start with a Vision meeting to clarify your goals, then build a Backlog of user stories, plan a Sprint to select and scope a small piece, have the team (Mike, Alex, Jordan) execute it with code and tests, and finally review together\u2014want to kick off with a Vision meeting? Just say \"Start a Vision meeting\" or click the Vision button on the left."
+      }
+    ],
+    "summary": null,
+    "id": "conv_c6adc291"
+  },
+  {
+    "timestamp": "2025-12-11T15:08:07.469619",
+    "participants": [
+      "client",
+      "PM",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "i see so how do i start and end meetings exactly"
+      },
+      {
+        "persona": "PM",
+        "message": "To start a meeting, just say something like \"Start a Vision meeting\" or \"Start a Sprint Planning meeting\" in the chat, and the app will automatically activate the right team members and update the Meeting Status on the left side. To end it anytime, simply say \"end meeting\"\u2014that wraps things up and returns us to free-form chat. Ready to try one?"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_919dd3c3"
+  }
+]

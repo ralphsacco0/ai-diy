@@ -1,0 +1,19 @@
+{
+  "summary": "The sprint retrospective meeting was started by the client. The developer highlighted smooth implementation but noted integration issues with external APIs, while the PM asked about naming the project.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Integration snags with external APIs during sprint implementation",
+      "mitigation": "Not discussed in the meeting"
+    }
+  ],
+  "participants": [
+    "ARCHITECT",
+    "QA",
+    "DEVELOPER",
+    "PM"
+  ]
+}

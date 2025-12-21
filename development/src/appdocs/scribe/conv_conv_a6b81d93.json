@@ -1,0 +1,21 @@
+{
+  "summary": "The team reviewed the 'jordan test' with no comments from Developer, Architect, and PM. QA confirmed the test passed with the expected output.",
+  "decisions": [],
+  "sign_offs": [
+    {
+      "who": "QA",
+      "what": "Test passed with output matching expected: 'still going and going 123'",
+      "timestamp": "2023-10-05 09:09:49"
+    }
+  ],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "ARCHITECT",
+    "PM",
+    "QA"
+  ]
+}

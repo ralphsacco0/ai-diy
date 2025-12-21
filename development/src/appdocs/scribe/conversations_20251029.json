@@ -1,0 +1,70 @@
+[
+  {
+    "timestamp": "2025-10-29T08:16:28.768217",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Good to see you all."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any changes that come our way."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's on the agenda today?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we assist you today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_79c9c390"
+  },
+  {
+    "timestamp": "2025-10-29T08:17:00.943184",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah please set a vision meeting"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Sure, I'd be happy to start a Vision Meeting. What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_7fdeeafc"
+  }
+]

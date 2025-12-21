@@ -1,0 +1,104 @@
+[
+  {
+    "timestamp": "2025-12-12T01:07:37.444403",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start sprint execution"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Understood\u2014starting Sprint Execution meeting now. Mike, Alex, and Jordan will handle the breakdown, implementation, and testing of the planned stories; we'll keep this focused and check in at key milestones. Let us know if you'd like to adjust scope or end the meeting early by saying \"end meeting.\""
+      }
+    ],
+    "summary": null,
+    "id": "conv_ea1924f1"
+  },
+  {
+    "timestamp": "2025-12-12T01:07:51.700101",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "run sprint 1 now please"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Got it\u2014initiating execution of Sprint 1. Mike, Alex, and Jordan are now breaking down the stories, implementing, and testing; I'll keep an eye on progress and update you on milestones. Say \"end meeting\" if you want to pause or review early."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_07ca8522"
+  },
+  {
+    "timestamp": "2025-12-12T10:25:51.031798",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "PM",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start sprint execution"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Understood\u2014starting Sprint Execution meeting now. Mike, Alex, and Jordan will join to break down the work, implement, and test the selected stories from the backlog. Let us know when you're ready to proceed or if you'd like to adjust the scope!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Starting sprint execution. I'll begin implementing the planned tasks."
+      }
+    ],
+    "summary": null,
+    "id": "conv_ca4ddbfb"
+  }
+]

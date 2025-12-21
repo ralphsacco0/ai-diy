@@ -1,0 +1,33 @@
+{
+  "summary": "Client requested changing helloworld to say 'hi Jazz'. Developer executed change request req_1760154711527 and updated helloworld.py; other stakeholders had no comments.",
+  "decisions": [
+    {
+      "title": "Apply change request req_1760154711527",
+      "details": "Change helloworld.py to output 'hi Jazz' was approved and executed by the developer.",
+      "refs": []
+    }
+  ],
+  "sign_offs": [
+    {
+      "who": "DEVELOPER",
+      "what": "Executed change request req_1760154711527 updating helloworld.py to say 'hi Jazz'",
+      "timestamp": "2025-10-11 00:00:00"
+    }
+  ],
+  "actions": [
+    {
+      "owner": "DEVELOPER",
+      "task": "Update helloworld.py to change output to 'hi Jazz'",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "req_1760154711527",
+      "title": "helloworld.py updated to say 'hi Jazz'"
+    }
+  ],
+  "risks": [],
+  "participants": null
+}

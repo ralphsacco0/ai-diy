@@ -1,0 +1,15 @@
+{
+  "summary": "Client Sarah initiated a project vision meeting. The PM asked for a project name; Architect, Developer, and QA did not comment (marked not_addressed).",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Propose a project name to the team",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": null
+}

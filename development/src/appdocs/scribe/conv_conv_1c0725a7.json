@@ -1,0 +1,29 @@
+{
+  "summary": "The client notified Mike of a sprint reset due to technical issues and inquired about readiness. Mike acknowledged the reset, confirmed a clean slate, and requested sprint priorities to propose 2-5 user stories focused on MVP features like employee management or authentication.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide sprint priorities to enable proposal of 2-5 user stories",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "",
+      "title": "Treat previous sprint entries (US-001, US-010, US-015) as clean slate after reset, updating statuses as needed"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Technical issues causing sprint resets",
+      "mitigation": "Monitor and address technical hiccups promptly to avoid disruptions"
+    }
+  ],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

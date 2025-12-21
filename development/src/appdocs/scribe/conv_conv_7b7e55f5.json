@@ -1,0 +1,15 @@
+{
+  "summary": "Team introduction and role confirmation meeting where all team members introduced themselves and confirmed their readiness for project work.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER",
+    "PM"
+  ]
+}

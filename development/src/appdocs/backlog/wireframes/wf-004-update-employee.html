@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Employee Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        neutral: '#6B7280'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white font-sans">
+    <div class="container mx-auto p-6 max-w-md">
+        <h1 class="text-2xl font-bold text-neutral mb-6">Update Employee Profile</h1>
+        <form class="space-y-4">
+            <div>
+                <label for="name" class="block text-sm font-medium text-neutral">Full Name</label>
+                <input type="text" id="name" value="John Doe" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-neutral">Email</label>
+                <input type="email" id="email" value="john@example.com" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+            </div>
+            <div>
+                <label for="role" class="block text-sm font-medium text-neutral">Role</label>
+                <select id="role" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    <option value="hr">HR</option>
+                    <option value="employee">Employee</option>
+                </select>
+            </div>
+            <div>
+                <label for="start-date" class="block text-sm font-medium text-neutral">Start Date</label>
+                <input type="date" id="start-date" value="2023-01-15" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+            </div>
+            <div class="flex space-x-3">
+                <button type="submit" class="flex-1 px-4 py-2 bg-primary text-white rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50">Update Profile</button>
+                <button type="button" class="px-4 py-2 border border-gray-300 text-neutral rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/50">Cancel</button>
+            </div>
+            <p id="success" class="text-green-600 text-sm hidden">Profile updated successfully!</p>
+        </form>
+    </div>
+</body>
+</html>

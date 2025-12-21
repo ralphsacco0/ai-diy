@@ -1,0 +1,21 @@
+{
+  "summary": "The client requested assistance from Alex on an HR project. Alex, as the developer, agreed to help with development aspects like building features and suggested involving Sarah for planning, while asking for details on the core idea or first feature.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Provide details on the core idea or first feature for the HR project",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER (Alex)"
+  ]
+}

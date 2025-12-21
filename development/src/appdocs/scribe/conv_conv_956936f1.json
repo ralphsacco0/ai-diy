@@ -1,0 +1,18 @@
+{
+  "summary": "In the initial sprint planning exchange, Mike confirms the successful completion of US-017 with a solid local SQLite setup, expresses enthusiasm for building BrightHR Lite, and seeks client input on sprint priorities such as leave management or document uploads to propose user stories.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide goals and priorities for the sprint to enable proposal of user stories",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

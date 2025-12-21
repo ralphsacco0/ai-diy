@@ -1,0 +1,21 @@
+{
+  "summary": "Client requested Jordan to perform a test. QA confirmed the test passed with the expected output 'ai-diy is nifty', while other participants provided no comments.",
+  "decisions": [],
+  "sign_offs": [
+    {
+      "who": "QA",
+      "what": "Test passed with matching output",
+      "timestamp": "2025-10-05 09:09:49"
+    }
+  ],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM",
+    "DEVELOPER",
+    "ARCHITECT",
+    "QA"
+  ]
+}

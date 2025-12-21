@@ -1,0 +1,12 @@
+{
+  "summary": "The Sprint Execution meeting was concluded by the client, with the SPRINT_EXECUTION_PM noting the end of the meeting.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_EXECUTION_PM"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "summary": "The client requested the creation of a file, and the SPRINT_PLANNING_ARCHITECT successfully created Sprint plan 'SP-001'.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "SP-001",
+      "title": "Sprint plan created successfully"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

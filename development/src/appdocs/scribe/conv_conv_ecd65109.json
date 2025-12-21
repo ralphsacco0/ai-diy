@@ -1,0 +1,12 @@
+{
+  "summary": "Sarah executed a command to retrieve a sprint, and the system confirmed successful retrieval.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Sarah",
+    "SPRINT_EXECUTION_PM"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "summary": "Client requested Jordan to test something, with Architect, Developer, and PM not addressing it. QA confirmed the test passed with the expected output 'on a roll'.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "DEVELOPER",
+    "QA",
+    "PM"
+  ]
+}

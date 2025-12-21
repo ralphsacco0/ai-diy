@@ -1,0 +1,11 @@
+{
+  "sprint_id": "SP-001",
+  "created_at": "2025-11-14T08:26:31.662353",
+  "status": "planned",
+  "stories": [
+    "US-009",
+    "NFR-004"
+  ],
+  "estimated_minutes": 20,
+  "rationale": "Foundational authentication sprint: Implement US-009 for secure user login/logout with role-based sessions, followed by NFR-004 to enforce HR vs. Employee permissions. This creates a testable secure entry point, aligning with MVP security needs (GDPR compliance, hashed passwords). Dependencies: None. Value: Enables protected access for all future features like employee directory and leave management. Estimated at 20 minutes for Flask routes, Supabase integration, tests, and role middleware."
+}

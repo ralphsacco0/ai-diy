@@ -1,0 +1,23 @@
+{
+  "summary": "The client requested an update, and the Sprint Planning Architect confirmed the successful update of Sprint Plan SP-002 and Story US-010.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "SP-002",
+      "title": "Sprint plan updated successfully"
+    },
+    {
+      "type": "update",
+      "id": "US-010",
+      "title": "Story updated successfully"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "summary": "The client asked how to start and end meetings, and the PM explained the process using specific voice commands to initiate various meeting types and end them at any time.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "PM",
+    "DEVELOPER",
+    "ARCHITECT"
+  ]
+}

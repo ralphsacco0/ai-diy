@@ -1,0 +1,15 @@
+{
+  "summary": "The client asked if turn 1 of the conversation could be seen, with most team members responding with no comment due to no trigger, and the Architect explaining that their context starts from turn 9 for design continuity.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer",
+    "PM",
+    "QA",
+    "Architect (Mike)"
+  ]
+}

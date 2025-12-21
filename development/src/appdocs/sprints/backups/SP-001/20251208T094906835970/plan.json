@@ -1,0 +1,13 @@
+{
+  "sprint_id": "SP-001",
+  "created_at": "2025-12-08T09:49:06.832129",
+  "status": "planned",
+  "stories": [
+    "NFR-001",
+    "US-009",
+    "NFR-004",
+    "US-001"
+  ],
+  "estimated_minutes": 20,
+  "rationale": "This sprint establishes a foundational, secure employee directory access system, directly supporting the MVP's must-have employee management features. Stories fit thematically around 'Secure Access to Employee Data': NFR-001 sets up the Node.js/Express/SQLite environment with seeded test data (admin user and 5 employees), enabling a runnable app via npm start on localhost:3000. Technical dependencies flow logically: NFR-001 provides DB and server basics for US-009 (authentication endpoints like /login with bcrypt hashing and sessions), which in turn supports NFR-004 (role-based middleware for HR/Employee permissions and audits). Finally, US-001 builds on this by adding protected search queries (by name/email, with pagination) using the seeded data. Order ensures foundation-first progression (setup \u2192 auth \u2192 permissions \u2192 feature), preventing partial implementations and enabling end-to-end testing: After execution, users can log in (e.g., admin@test.com/Password123!), confirm role-limited views, and search employee profiles accurately. No technical conflicts (e.g., shared SQLite schema for users/employees; Express routes don't overlap). This delivers high value toward vision success criteria\u2014complete digital records with secure access, reducing admin errors\u2014while keeping the sprint testable as a unit (smoke tests via npm test pass, demonstrable login/search flow). Minor external deps (e.g., NFR-002 for advanced security) are non-blocking here, with seeding bridging data needs for US-001."
+}

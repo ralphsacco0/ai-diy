@@ -1,0 +1,12 @@
+{
+  "summary": "The Sprint Planning meeting was concluded by the client.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sprint Planning Architect"
+  ]
+}

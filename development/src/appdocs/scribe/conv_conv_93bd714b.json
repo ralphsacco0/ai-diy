@@ -1,0 +1,12 @@
+{
+  "summary": "The sprint planning meeting was ended upon the client's request, with confirmation from the sprint planning architect.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

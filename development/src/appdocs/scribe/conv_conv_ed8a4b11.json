@@ -1,0 +1,45 @@
+{
+  "summary": "After a system reset, Mike requested to re-run sprint SP-001. The Sprint Planning Architect confirmed the sprint's user stories (US-001, US-010, US-015), updated their status to 'In Sprint', saved the sprint plan, and asked for confirmation to begin execution.",
+  "decisions": [
+    {
+      "title": "Re-run Sprint SP-001",
+      "details": "Proceed with re-execution of sprint including US-001 (Employee Directory Search), US-010 (Mock Login Page), and US-015 (Add Employee Profile) after reset.",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Mike",
+      "task": "Confirm readiness to start execution on SP-001",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "US-001",
+      "title": "Marked as In Sprint for re-execution"
+    },
+    {
+      "type": "update",
+      "id": "US-010",
+      "title": "Marked as In Sprint for re-execution"
+    },
+    {
+      "type": "update",
+      "id": "US-015",
+      "title": "Marked as In Sprint for re-execution"
+    },
+    {
+      "type": "update",
+      "id": "SP-001",
+      "title": "Updated sprint plan post-reset"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "Mike",
+    "Sprint Planning Architect"
+  ]
+}

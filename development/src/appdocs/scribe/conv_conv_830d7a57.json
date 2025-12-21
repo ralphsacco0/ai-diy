@@ -1,0 +1,15 @@
+{
+  "summary": "The sprint review meeting was started by the client, with no comments from ARCHITECT, QA, and DEVELOPER. The PM asked about naming the project.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "QA",
+    "DEVELOPER",
+    "PM"
+  ]
+}

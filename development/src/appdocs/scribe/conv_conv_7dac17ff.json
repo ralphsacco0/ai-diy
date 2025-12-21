@@ -1,0 +1,27 @@
+{
+  "summary": "The client reported that a previous deletion of a vision draft failed and requested it again. PM Sarah apologized, double-checked, and successfully force-deleted the draft with ID BrightHR-Lite-DELME2-Vision-Draft_20251021_152745, confirming no visions remain saved.",
+  "decisions": [
+    {
+      "title": "Proceed with force-deletion of the vision draft",
+      "details": "Draft ID: BrightHR-Lite-DELME2-Vision-Draft_20251021_152745 was deleted successfully",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [
+    {
+      "type": "remove",
+      "id": "BrightHR-Lite-DELME2-Vision-Draft_20251021_152745",
+      "title": "Removed draft vision after failed initial deletion"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "client",
+    "Sarah (PM)",
+    "DEVELOPER",
+    "QA",
+    "ARCHITECT"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "summary": "The client expressed issues with prior sprint data and proposed wiping it out to start fresh with Sprint 1, inquiring if the SPRINT_PLANNING_ARCHITECT could delete current sprint plans. The SPRINT_PLANNING_ARCHITECT responded by confirming successful updates to stories US-001, US-010, and US-015.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Wipe out prior sprint data and start over with Sprint 1 if SPRINT_PLANNING_ARCHITECT cannot delete current plans",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "US-001",
+      "title": "Story updated successfully"
+    },
+    {
+      "type": "update",
+      "id": "US-010",
+      "title": "Story updated successfully"
+    },
+    {
+      "type": "update",
+      "id": "US-015",
+      "title": "Story updated successfully"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Problems with prior sprint data leading to inaccuracies",
+      "mitigation": "Wipe out prior data and restart with Sprint 1"
+    }
+  ],
+  "participants": [
+    "client",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

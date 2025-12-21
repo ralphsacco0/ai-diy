@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting was concluded by the client with no additional comments or contributions from the team members.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "DEVELOPER",
+    "QA",
+    "PM"
+  ]
+}

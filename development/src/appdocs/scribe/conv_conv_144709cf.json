@@ -1,0 +1,26 @@
+{
+  "summary": "Client requested Sarah start a version meeting. The PM asked for the project name; Architect, Developer, and QA did not provide comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Start a version meeting",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Decide project name"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "No project name defined may delay planning and coordination",
+      "mitigation": "Assign an owner (PM or client) to propose a project name and set a deadline for decision"
+    }
+  ],
+  "participants": null
+}

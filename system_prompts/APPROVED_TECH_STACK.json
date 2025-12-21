@@ -1,0 +1,262 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-11-21",
+  "description": "Approved tools, frameworks, and version constraints for sprint execution. Mike and Alex MUST use these versions to prevent compatibility issues.",
+  
+  "runtime_environments": {
+    "nodejs": {
+      "approved_versions": ["18.x", "20.x"],
+      "recommended": "20.x (LTS)",
+      "max_version": "22.x",
+      "warning_threshold": "23.x",
+      "rationale": "Node 23+ breaks native module compatibility. Use LTS for stability.",
+      "engines_field": {
+        "node": ">=18.0.0 <23.0.0"
+      }
+    },
+    "python": {
+      "approved_versions": ["3.9", "3.10", "3.11", "3.12"],
+      "recommended": "3.11",
+      "rationale": "Python 3.9+ required for modern type hints. 3.11 has best performance."
+    }
+  },
+  
+  "tech_stacks": {
+    "nodejs_express_sqlite": {
+      "description": "Node.js + Express + SQLite (most common stack)",
+      "runtime": "nodejs@20.x",
+      "package_json_template": {
+        "type": "module",
+        "engines": {
+          "node": ">=18.0.0 <23.0.0"
+        },
+        "dependencies": {
+          "express": "^4.18.2",
+          "better-sqlite3": "^11.0.0",
+          "bcrypt": "^5.1.1",
+          "express-session": "^1.18.0",
+          "dotenv": "^16.3.1"
+        },
+        "devDependencies": {
+          "nodemon": "^3.0.1"
+        },
+        "scripts": {
+          "start": "node src/server.js",
+          "dev": "nodemon src/server.js",
+          "test": "node --test",
+          "stop": "pkill -f 'node src/server.js'"
+        }
+      },
+      "critical_notes": [
+        "better-sqlite3 is a NATIVE MODULE - version must match Node.js",
+        "better-sqlite3@11.x supports Node 18-23",
+        "better-sqlite3@8.x only supports Node 16-22 (OUTDATED - DO NOT USE)",
+        "bcrypt is also native - use ^5.1.1 for Node 18-22"
+      ]
+    },
+    
+    "nodejs_express_postgresql": {
+      "description": "Node.js + Express + PostgreSQL",
+      "runtime": "nodejs@20.x",
+      "package_json_template": {
+        "type": "module",
+        "engines": {
+          "node": ">=18.0.0 <23.0.0"
+        },
+        "dependencies": {
+          "express": "^4.18.2",
+          "pg": "^8.11.3",
+          "bcrypt": "^5.1.1",
+          "express-session": "^1.18.0",
+          "connect-pg-simple": "^9.0.1",
+          "dotenv": "^16.3.1"
+        },
+        "devDependencies": {
+          "nodemon": "^3.0.1"
+        }
+      }
+    },
+    
+    "flask_sqlite": {
+      "description": "Python Flask + SQLite",
+      "runtime": "python@3.11",
+      "requirements_txt": [
+        "Flask==3.0.0",
+        "Flask-Session==0.5.0",
+        "Flask-Bcrypt==1.0.1",
+        "python-dotenv==1.0.0"
+      ],
+      "critical_notes": [
+        "Use Flask 3.0+ for modern Python support",
+        "Flask-Session for stateful session management",
+        "Flask-Bcrypt for password hashing"
+      ]
+    },
+    
+    "flask_postgresql": {
+      "description": "Python Flask + PostgreSQL",
+      "runtime": "python@3.11",
+      "requirements_txt": [
+        "Flask==3.0.0",
+        "Flask-SQLAlchemy==3.1.1",
+        "psycopg2-binary==2.9.9",
+        "Flask-Bcrypt==1.0.1",
+        "python-dotenv==1.0.0"
+      ]
+    }
+  },
+  
+  "native_modules": {
+    "better-sqlite3": {
+      "description": "SQLite3 bindings for Node.js (REQUIRES COMPILATION)",
+      "approved_version": "^11.0.0",
+      "node_compatibility": {
+        "11.x": ["18.x", "20.x", "22.x", "23.x"],
+        "9.x": ["18.x", "20.x", "22.x"],
+        "8.x": ["16.x", "18.x", "20.x", "22.x"]
+      },
+      "warning": "ALWAYS use 11.x for new projects. 8.x is 2+ years old.",
+      "fallback": "sql.js (pure JS, no compilation required)"
+    },
+    
+    "bcrypt": {
+      "description": "Password hashing (REQUIRES COMPILATION)",
+      "approved_version": "^5.1.1",
+      "node_compatibility": {
+        "5.1.x": ["16.x", "18.x", "20.x", "22.x"]
+      },
+      "fallback": "bcryptjs (pure JS, slower but no compilation)"
+    },
+    
+    "sqlite3": {
+      "description": "Older SQLite bindings (callback-based)",
+      "status": "DEPRECATED - Use better-sqlite3 instead",
+      "approved_version": "^5.1.7",
+      "rationale": "better-sqlite3 is faster and has synchronous API"
+    }
+  },
+  
+  "frontend_frameworks": {
+    "static_html": {
+      "description": "Vanilla HTML/CSS/JS (no build step)",
+      "approved": true,
+      "use_case": "Simple apps, prototypes, MVPs"
+    },
+    
+    "react": {
+      "description": "React with Vite (modern build tool)",
+      "approved_version": "^18.2.0",
+      "build_tool": "vite@^5.0.0",
+      "template": "npm create vite@latest my-app -- --template react"
+    },
+    
+    "vue": {
+      "description": "Vue 3 with Vite",
+      "approved_version": "^3.3.0",
+      "build_tool": "vite@^5.0.0",
+      "template": "npm create vite@latest my-app -- --template vue"
+    }
+  },
+  
+  "databases": {
+    "sqlite": {
+      "description": "File-based SQL database (perfect for prototypes)",
+      "node_driver": "better-sqlite3@^11.0.0",
+      "python_driver": "built-in (sqlite3)",
+      "use_case": "Single-user apps, prototypes, development",
+      "limitations": "Not suitable for high-concurrency production"
+    },
+    
+    "postgresql": {
+      "description": "Production-grade relational database",
+      "node_driver": "pg@^8.11.3",
+      "python_driver": "psycopg2-binary@2.9.9",
+      "use_case": "Production apps, multi-user systems",
+      "requires": "PostgreSQL server installed locally or cloud service"
+    }
+  },
+  
+  "validation_rules": {
+    "package_json_must_have": [
+      "engines field with Node version constraint",
+      "type: module (for ES6 imports)",
+      "start, test, and dev scripts"
+    ],
+    
+    "native_modules_rules": [
+      "ALWAYS use latest major version (check npmjs.com)",
+      "NEVER use versions older than 1 year",
+      "Add engines field to prevent wrong Node versions",
+      "Test with target Node version before deploying"
+    ],
+    
+    "version_selection_priority": [
+      "1. Check APPROVED_TECH_STACK.json for approved version",
+      "2. If not listed, use LATEST STABLE from npmjs.com",
+      "3. For native modules, verify Node compatibility on npm page",
+      "4. Add to package.json with caret (^) for patch updates"
+    ]
+  },
+  
+  "deprecated_avoid": {
+    "packages": [
+      {
+        "name": "sqlite3",
+        "reason": "Callback-based API. Use better-sqlite3 instead.",
+        "replacement": "better-sqlite3@^11.0.0"
+      },
+      {
+        "name": "body-parser",
+        "reason": "Now built into Express. Use express.json() instead.",
+        "replacement": "express.json() middleware"
+      },
+      {
+        "name": "bcryptjs",
+        "reason": "Pure JS is slower. Use native bcrypt if possible.",
+        "replacement": "bcrypt@^5.1.1 (but bcryptjs OK if compilation issues)"
+      }
+    ],
+    
+    "old_versions": [
+      {
+        "package": "better-sqlite3",
+        "avoid": "< 9.0.0",
+        "reason": "Does not support Node 23+. Use 11.x for best compatibility."
+      },
+      {
+        "package": "express",
+        "avoid": "< 4.18.0",
+        "reason": "Security vulnerabilities in older versions."
+      }
+    ]
+  },
+  
+  "testing_frameworks": {
+    "nodejs": {
+      "approved": "node:test (built-in, no dependencies)",
+      "command": "node --test",
+      "rationale": "No external dependencies, works with ES modules",
+      "alternative": "vitest (if need advanced features)"
+    },
+    
+    "python": {
+      "approved": "pytest",
+      "version": "^7.4.0",
+      "rationale": "Industry standard, great fixtures and plugins"
+    }
+  },
+  
+  "environment_setup": {
+    "macos": {
+      "node_installation": "nvm (Node Version Manager)",
+      "nvm_install": "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash",
+      "recommended_node": "nvm install 20 && nvm use 20",
+      "python_installation": "brew install python@3.11"
+    },
+    
+    "windows": {
+      "node_installation": "nvm-windows or official installer",
+      "python_installation": "Official Python installer from python.org"
+    }
+  }
+}

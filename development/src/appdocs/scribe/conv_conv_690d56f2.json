@@ -1,0 +1,18 @@
+{
+  "summary": "The client asked Jordan, the QA Tester, for help developing their application. Jordan clarified their testing role, declined direct development assistance, and recommended starting with a Vision Meeting with Sarah, followed by sprints involving Alex for implementation and Jordan for testing, while inquiring about the client's testing concerns.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Chat with Sarah to kick off a Vision Meeting for the app's goals",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "Jordan"
+  ]
+}

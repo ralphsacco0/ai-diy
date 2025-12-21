@@ -1,0 +1,20 @@
+{
+  "summary": "Client requested Sarah to start a requirements meeting; other team roles did not provide input or comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Start and facilitate the requirements meeting as requested by the client",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Lack of responses from key roles (Developer, Architect, QA, PM) may lead to incomplete requirements or missed dependencies.",
+      "mitigation": "Follow up with each non-responsive role to collect their input before or during the meeting; schedule additional focused sessions if necessary."
+    }
+  ],
+  "participants": null
+}

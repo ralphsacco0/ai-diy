@@ -1,0 +1,104 @@
+[
+  {
+    "timestamp": "2025-11-24T10:30:05.263817",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start sprint  review meeting"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_4f86d026"
+  },
+  {
+    "timestamp": "2025-11-24T15:56:55.711110",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "can you create all the wireframes they got deleted"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: I'll coordinate with the Architect to recreate the wireframes for BrightHR Lite Vision. Can you specify which ones were deleted or provide any details to ensure accuracy?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_45a904e5"
+  },
+  {
+    "timestamp": "2025-11-24T17:41:11.012531",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any changes."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's on the agenda today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! What can we tackle today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_8d91158d"
+  }
+]

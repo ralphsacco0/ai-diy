@@ -1,0 +1,14 @@
+{
+  "summary": "The team initiated the meeting with greetings, where the PM offered assistance to start or align the project, the Developer inquired about updates, and QA expressed enthusiasm for testing activities.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM",
+    "DEVELOPER",
+    "QA"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "summary": "The sprint planning meeting for BrightHR Lite2 was started by the Architect, who outlined the technical focus on design, architecture, and backlog alignment, excluding non-engineering participants. Initial questions were posed on sprint length, priorities, story selection, and architectural constraints.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Mike",
+    "Architect",
+    "Alex",
+    "Jordan"
+  ]
+}

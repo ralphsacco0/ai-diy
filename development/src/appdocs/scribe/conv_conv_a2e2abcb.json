@@ -1,0 +1,54 @@
+{
+  "summary": "The client discussed challenges testing SP-001 on their Mac and inquired about replicating it in SP-002; Mike analyzed the backlog, identified setup gaps, and proposed SP-002 with re-pulled core stories plus Mac-compatible setup for local testing.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Review and approve or adjust the proposed SP-002 stories",
+      "due": ""
+    },
+    {
+      "owner": "Mike",
+      "task": "Save the sprint, update statuses, and initiate execution upon approval",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "US-010",
+      "title": "Re-pull from Done for Mac testing in SP-002"
+    },
+    {
+      "type": "update",
+      "id": "US-015",
+      "title": "Re-pull from Done for Mac testing in SP-002"
+    },
+    {
+      "type": "update",
+      "id": "US-001",
+      "title": "Re-pull from Done for Mac testing in SP-002"
+    },
+    {
+      "type": "add",
+      "id": "US-016",
+      "title": "Include from Backlog in SP-002 for automated local setup"
+    },
+    {
+      "type": "add",
+      "id": "NFR-001",
+      "title": "Include from Backlog in SP-002 for no security barriers"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Persistent Mac testing issues like port conflicts or environment setup failures",
+      "mitigation": "Incorporate US-016 script with Mac-specific checks (arm64 compat, firewall notes) and NFR-001 for HTTP-only mode"
+    }
+  ],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

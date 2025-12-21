@@ -1,0 +1,20 @@
+{
+  "summary": "Alex, the ARCHITECT, apologized for speaking out of turn and committed to only speaking for themselves in the future. Other participants had no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Alex",
+      "task": "Ensure to only speak for self going forward.",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Alex",
+    "DEVELOPER",
+    "PM",
+    "QA"
+  ]
+}

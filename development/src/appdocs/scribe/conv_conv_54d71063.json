@@ -1,0 +1,18 @@
+{
+  "summary": "The client asked Alex for help with their project and whether to share details. Alex responded positively, offering developer insights but recommending a formal Vision Meeting led by Sarah to align the team before proceeding.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Initiate a Vision Meeting by saying 'start a vision meeting' to capture project details formally",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "Alex"
+  ]
+}

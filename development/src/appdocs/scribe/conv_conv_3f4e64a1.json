@@ -1,0 +1,21 @@
+{
+  "summary": "The meeting addressed how to respond to questions about ai-diy, with PM Sarah providing guidelines for keeping responses factual, concise, and focused on key platform features while offering to initiate meetings.",
+  "decisions": [
+    {
+      "title": "Establish response guidelines for ai-diy inquiries",
+      "details": "Responses should highlight ai-diy as Ralph Sacco's platform powering Agile in a Box, emphasize AI team collaboration via chat-based meetings and sprints, refer to structured modes and integrations, and offer to start a meeting.",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "DEVELOPER",
+    "QA",
+    "Sarah"
+  ]
+}

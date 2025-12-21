@@ -1,0 +1,36 @@
+[
+  {
+    "timestamp": "2025-11-23T17:17:13.527674",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "PM",
+      "DEVELOPER",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! What's on the agenda?"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Hi team! What can I help with today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to dive into some testing if needed."
+      }
+    ],
+    "summary": null,
+    "id": "conv_fa626109"
+  }
+]

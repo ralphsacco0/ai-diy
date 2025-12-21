@@ -1,0 +1,15 @@
+{
+  "summary": "The client issued a command to end the meeting, which was acknowledged by the team with no further comments or actions.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "ARCHITECT",
+    "Sarah"
+  ]
+}

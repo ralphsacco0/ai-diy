@@ -1,0 +1,15 @@
+{
+  "summary": "The client inquired about ai-diy, with QA, Architect, and Developer providing no comment, while Project Manager Sarah explained that ai-diy is the company behind the Agile in a Box app, developed by Ralph Sacco, to facilitate agile sprints and collaboration in software projects.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "QA",
+    "Architect",
+    "Developer",
+    "Sarah"
+  ]
+}

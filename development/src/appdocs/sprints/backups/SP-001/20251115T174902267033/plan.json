@@ -1,0 +1,11 @@
+{
+  "sprint_id": "SP-001",
+  "created_at": "2025-11-15T17:49:02.262041",
+  "status": "planned",
+  "stories": [
+    "NFR-001",
+    "US-009"
+  ],
+  "estimated_minutes": 20,
+  "rationale": "NFR-001 establishes the local Mac environment (Node.js/Express/React/SQLite with npm start/stop scripts), providing the foundation for all development. US-009 implements secure user authentication (login/logout with hashed passwords and basic role sessions), enabling protected access to future features like the employee directory. This minimal sprint ensures a testable, secure app skeleton aligned with Vision constraints (local-only, GDPR basics). Dependencies respected: Auth uses the setup's DB/session tools. Post-execution, we'll have a login-protected localhost app ready for expansion."
+}

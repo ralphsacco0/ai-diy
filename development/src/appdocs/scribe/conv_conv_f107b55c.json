@@ -1,0 +1,15 @@
+{
+  "summary": "The vision review meeting was initiated by the client, with no comments from DEVELOPER, QA, and ARCHITECT. PM Sarah opened the discussion by asking for suggestions on the project name.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "QA",
+    "ARCHITECT",
+    "Sarah"
+  ]
+}

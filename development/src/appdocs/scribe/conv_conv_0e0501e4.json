@@ -1,0 +1,15 @@
+{
+  "summary": "Introductory sync where the client greeted the team and each team member introduced themselves and their role, asking what to focus on next. No decisions, actions, or approvals were made during this exchange.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah (Project Manager)",
+    "Mike (Architect)",
+    "Alex (Developer)",
+    "Jordan (QA)"
+  ]
+}

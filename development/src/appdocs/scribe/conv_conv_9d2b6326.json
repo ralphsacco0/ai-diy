@@ -1,0 +1,18 @@
+{
+  "summary": "The sprint planning meeting for the BrightHR Lite project began with Mike explaining the project's focus on HR features for small businesses using a local Mac-friendly setup, and he requested the client's priorities to analyze the backlog and propose user stories.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide priorities for the sprint to enable backlog analysis and user story proposals",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

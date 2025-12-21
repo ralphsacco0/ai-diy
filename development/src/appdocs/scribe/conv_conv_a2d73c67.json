@@ -1,0 +1,15 @@
+{
+  "summary": "The team members exchanged greetings at the start of the meeting. Participants expressed readiness to begin discussions and inquire about the agenda.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "QA",
+    "DEVELOPER",
+    "PM"
+  ]
+}

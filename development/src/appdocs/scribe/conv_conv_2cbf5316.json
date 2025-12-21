@@ -1,0 +1,35 @@
+{
+  "summary": "Brief introductions were made: Sarah (PM), Mike (Architect), Alex (Developer), Jordan (QA) and the client greeted the team. Each team member offered to help with their area (PM to coordinate, Architect to review architecture questions/blockers, Developer to handle updates/blockers, QA to support testing).",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah (PM)",
+      "task": "Coordinate collection of project updates and blockers from the team",
+      "due": ""
+    },
+    {
+      "owner": "Mike (Architect)",
+      "task": "Review any architecture questions or blockers raised by the team",
+      "due": ""
+    },
+    {
+      "owner": "Alex (Developer)",
+      "task": "Provide updates and assist with resolving development blockers",
+      "due": ""
+    },
+    {
+      "owner": "Jordan (QA)",
+      "task": "Prepare to support testing and confirm testing needs",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "No specific updates or blockers were provided during the meeting, risking delayed identification of issues.",
+      "mitigation": "PM to solicit and consolidate updates from team and schedule a follow-up/standup to surface and address blockers promptly."
+    }
+  ],
+  "participants": null
+}

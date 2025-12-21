@@ -1,0 +1,30 @@
+{
+  "summary": "Team members introduced themselves and confirmed availability: Jordan (QA) is available for testing, Mike (Architect) for design/architecture questions, the PM will coordinate, and the Developer is available for implementation support.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Notify Jordan (QA) when a work item is marked Ready for testing",
+      "due": ""
+    },
+    {
+      "owner": "PM",
+      "task": "Coordinate team updates and schedule a meeting if required",
+      "due": ""
+    },
+    {
+      "owner": "Developer",
+      "task": "Raise architecture or design questions to Mike (Architect) as they arise",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Testing delays if QA is not notified when items become Ready for testing",
+      "mitigation": "PM or responsible developer must notify Jordan (QA) when items are marked Ready; include testing readiness in the handoff checklist."
+    }
+  ],
+  "participants": null
+}

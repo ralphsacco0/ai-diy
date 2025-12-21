@@ -1,0 +1,18 @@
+{
+  "summary": "The sprint planning architect recapped the current planning mode and proposed Sprint SP-002, including US-001 (Employee Directory Management) and US-002 (Employee Self-Service Profile Update), to build on the progress from SP-001 and achieve a testable MVP feature.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Mike",
+      "task": "Review and approve or suggest tweaks to the proposed Sprint SP-002",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Mike",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

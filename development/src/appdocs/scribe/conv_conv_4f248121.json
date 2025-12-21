@@ -1,0 +1,15 @@
+{
+  "summary": "The client opened the backlog meeting, with no comments from the Developer, QA, and Architect due to no triggers or meeting start. The PM, Sarah, asked what the project should be called.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "QA",
+    "ARCHITECT",
+    "Sarah"
+  ]
+}

@@ -1,0 +1,13 @@
+# TODO: replace @your-handle with the correct GitHub username(s)
+@your-handle
+
+# Critical application paths
+/development/src/services/ai_gateway.py @your-handle
+/development/src/api/chat.py @your-handle
+/development/src/streaming.py @your-handle
+
+# Configuration files
+/config/** @your-handle
+
+# GitHub workflows and templates
+/.github/** @your-handle

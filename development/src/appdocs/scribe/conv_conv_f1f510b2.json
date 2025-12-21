@@ -1,0 +1,34 @@
+{
+  "summary": "Quick standup-style check-in: introductions and roles were stated. QA requested a specific 'Ready for testing!' posting format; PM asked for priorities; Architect offered to review and unblock design/technical decisions.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Development Team",
+      "task": "When a feature is Ready for testing, post \"Ready for testing!\" with the expected output so QA (Jordan) can run tests",
+      "due": ""
+    },
+    {
+      "owner": "Product Manager (Sarah)",
+      "task": "Clarify and communicate what the team should focus on today",
+      "due": ""
+    },
+    {
+      "owner": "Architect (Mike)",
+      "task": "Be available to review architecture, answer design questions, and unblock technical decisions when the team raises them",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Testing delayed or ineffective because features are not posted with the expected output or the required \"Ready for testing!\" tag",
+      "mitigation": "Team must follow QA's instruction: include the exact phrase and the expected output when marking items Ready for testing"
+    },
+    {
+      "risk": "Team may lack daily focus/priorities leading to misaligned work",
+      "mitigation": "PM (Sarah) should set and communicate clear priorities for the day to the team"
+    }
+  ],
+  "participants": null
+}

@@ -1,0 +1,12 @@
+{
+  "summary": "The client asked Mike about any backlog items that could be worked on, but the PM responded with no comment due to the topic not being addressed.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM"
+  ]
+}

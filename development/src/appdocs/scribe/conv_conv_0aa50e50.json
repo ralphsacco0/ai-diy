@@ -1,0 +1,33 @@
+{
+  "summary": "The client clarified a request to re-run Sprint 2 (SP-002) scoped narrowly to just the login step (US-010 Mock Login Page), and the sprint planning architect analyzed the backlog, proposed a focused sprint plan including optional lightweight enablers, and sought approval to update the backlog.",
+  "decisions": [
+    {
+      "title": "Scope Sprint 2 to login only",
+      "details": "Re-run SP-002 focused exclusively on US-010, excluding other stories like US-001 and US-015, with optional inclusion of US-016 and NFR-001 for local setup.",
+      "refs": [
+        "US-010",
+        "SP-002"
+      ]
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "SPRINT_PLANNING_ARCHITECT",
+      "task": "Save updated SP-002 to backlog upon client approval",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "SP-002",
+      "title": "Re-run focused on US-010 Mock Login Page, with optional US-016 and NFR-001 enablers"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

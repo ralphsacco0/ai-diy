@@ -1,0 +1,50 @@
+{
+  "summary": "The client shared fragmented Flask app code involving Supabase and login routes, requesting cleanup without manual coding and allowing Supabase removal. Mike analyzed the issues, proposed a new user story US-017 for SQLite migration and app consolidation, and suggested sprint SP-003 for integration, seeking approval to proceed.",
+  "decisions": [
+    {
+      "title": "Propose new user story for app cleanup",
+      "details": "Create US-017 to remove Supabase, migrate to local SQLite, consolidate routes, and enable testable login-to-dashboard flow without cloud dependencies.",
+      "refs": []
+    },
+    {
+      "title": "Propose new sprint for integration",
+      "details": "Define SP-003 including US-017, US-010, and US-001 to achieve a runnable local app with end-to-end testing.",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Approve or tweak proposed US-017 and SP-003 for execution",
+      "due": ""
+    },
+    {
+      "owner": "Mike",
+      "task": "Execute sprint SP-003 upon approval, generating cleaned app.py with SQLite integration",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "US-017",
+      "title": "Local SQLite Migration & App Cleanup"
+    },
+    {
+      "type": "add",
+      "id": "SP-003",
+      "title": "SQLite Cleanup & Login Integration"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Fragmented code with duplicate app definitions and Supabase dependencies causing crashes and integration issues",
+      "mitigation": "Migrate to local SQLite via US-017, consolidate into single app.py, and test end-to-end flow"
+    }
+  ],
+  "participants": [
+    "client",
+    "Mike"
+  ]
+}

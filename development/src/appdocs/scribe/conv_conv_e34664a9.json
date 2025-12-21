@@ -1,0 +1,36 @@
+{
+  "summary": "Client requested Sarah start a version meeting. The PM asked for a project name; Architect, Developer, and QA did not provide comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "sarah",
+      "task": "Start the requested version meeting",
+      "due": ""
+    },
+    {
+      "owner": "PM",
+      "task": "Propose a name for the project",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Create meeting agenda for version meeting"
+    },
+    {
+      "type": "add",
+      "id": "",
+      "title": "Decide and record project name"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Key roles (Architect, Developer, QA) did not respond during meeting start.",
+      "mitigation": "Follow up with each stakeholder to obtain input, assign explicit owners for outstanding items, and set deadlines; escalate if no response."
+    }
+  ],
+  "participants": null
+}

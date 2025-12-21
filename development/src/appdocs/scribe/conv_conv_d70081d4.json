@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting started with a greeting from the client and an introduction from Project Manager Sarah, but no substantive discussion took place as other team members provided no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "Sarah",
+    "DEVELOPER",
+    "QA",
+    "ARCHITECT"
+  ]
+}

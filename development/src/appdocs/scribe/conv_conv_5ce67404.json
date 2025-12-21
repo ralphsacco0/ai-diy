@@ -1,0 +1,20 @@
+{
+  "summary": "A requirements meeting was started by client Sarah. The PM asked for a project name; other roles (Architect, Developer, QA) did not provide comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Confirm and finalize the project name with client Sarah and the team",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Project name remains undecided, causing ambiguity in requirements, documentation, and tracking",
+      "mitigation": "Assign an owner to confirm the name promptly; use a clear temporary identifier in backlog items until the name is finalized"
+    }
+  ],
+  "participants": null
+}

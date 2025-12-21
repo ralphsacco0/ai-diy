@@ -1,0 +1,24 @@
+{
+  "summary": "The team confirmed the completion of sprint items SP-001 and SP-002, clearing blockers for authentication, Supabase integration, and employee directory features. The Sprint Planning Architect proposed the next sprint SP-003 focused on Leave Management Core, including user stories US-003 and US-005, while seeking approval or alternatives from Mike.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Mike",
+      "task": "Review and approve or tweak the proposed Sprint SP-003 for Leave Management Core",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "SP-003",
+      "title": "Proposed Sprint: Leave Management Core with stories US-003 and US-005"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "Mike",
+    "Sprint Planning Architect"
+  ]
+}

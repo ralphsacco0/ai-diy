@@ -1,0 +1,15 @@
+{
+  "summary": "Sarah initiated a requirements meeting, with most participants providing no comments. The PM inquired about naming the project.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Sarah",
+    "QA",
+    "Developer",
+    "Architect",
+    "PM"
+  ]
+}

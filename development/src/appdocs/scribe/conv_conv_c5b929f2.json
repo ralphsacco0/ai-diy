@@ -1,0 +1,18 @@
+{
+  "summary": "The Sprint Review meeting for BrightHR Lite Sprint SP-001 commenced with greetings from the client and an introduction by Sarah, the PM, who outlined the completed foundational HR features including the Leave Calendar (US-006) and Onboarding Checklist (US-008), and invited testing and feedback.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Test the Leave Calendar (US-006) by logging in, navigating to the calendar, applying filters, and exporting ICS file, then provide feedback",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah"
+  ]
+}

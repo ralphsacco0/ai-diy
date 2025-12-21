@@ -1,0 +1,12 @@
+{
+  "summary": "The `helloworld.py` script was tested and passed, producing the expected output 'how are you today'.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Jordan",
+    "Mike"
+  ]
+}

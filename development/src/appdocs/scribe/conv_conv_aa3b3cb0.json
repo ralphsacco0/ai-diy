@@ -1,0 +1,15 @@
+{
+  "summary": "The review meeting was initiated by the client, with the developer Alex expressing readiness to start the code review and suggesting to discuss aspects to cover first, while the PM asked about naming the project.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "QA",
+    "Alex",
+    "Architect",
+    "PM"
+  ]
+}

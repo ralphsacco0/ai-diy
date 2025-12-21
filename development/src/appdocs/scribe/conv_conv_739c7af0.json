@@ -1,0 +1,21 @@
+{
+  "summary": "The client requested Sarah to start a requirements meeting, which the PM (Sarah) initiated by confirming the start and asking for the project name, while other participants did not comment.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Team",
+      "task": "Suggest a name for the project",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "DEVELOPER",
+    "QA",
+    "PM"
+  ]
+}

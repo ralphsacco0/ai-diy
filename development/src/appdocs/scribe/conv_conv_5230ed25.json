@@ -1,0 +1,30 @@
+{
+  "summary": "Team confirmed everyone is ready. PM will prioritize and assign work; Architect (Mike) can review architecture/design backlog or items needing sign-off; QA (Jordan) will run tests for items marked \"Ready for testing\" with expected output; Developer is ready to begin development when assigned.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Prioritize today's work and assign development and testing tasks to the team",
+      "due": ""
+    },
+    {
+      "owner": "Mike (Architect)",
+      "task": "Review architecture/design backlog and any items needing sign-off",
+      "due": ""
+    },
+    {
+      "owner": "Jordan (QA)",
+      "task": "Run tests for items marked \"Ready for testing\" using the provided expected output",
+      "due": ""
+    },
+    {
+      "owner": "Developer",
+      "task": "Begin development tasks once assignments are provided by PM",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": null
+}

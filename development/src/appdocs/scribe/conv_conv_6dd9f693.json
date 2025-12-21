@@ -1,0 +1,21 @@
+{
+  "summary": "The Project Manager Sarah outlined the Agile in a Box process for progressing from idea to code, including Vision Meeting, Requirements/Backlog, Sprint Planning, sprints, and Sprint Review. The Developer Alex described the coding and testing phases, and the team expressed readiness to begin with a specific project idea.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide a specific project idea to initiate the Vision Meeting",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah",
+    "Alex",
+    "Mike",
+    "Jordan"
+  ]
+}

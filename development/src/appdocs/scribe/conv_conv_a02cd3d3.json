@@ -1,0 +1,18 @@
+{
+  "summary": "The client asked for the user stories in the first sprint, and the PM listed US-006 and US-008. The PM suggested demoing US-006 by running a test command and sharing feedback.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Run `./test-generated-app.command` to test US-006 and share feedback",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_REVIEW_PM"
+  ]
+}

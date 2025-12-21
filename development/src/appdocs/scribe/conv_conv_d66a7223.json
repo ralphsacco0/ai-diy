@@ -1,0 +1,15 @@
+{
+  "summary": "The client asked Sarah about a number they wanted to remember, and the PM (Sarah) responded that it was 27 while offering further project-related assistance. Other team members provided no comments as the query was not addressed to them.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "PM",
+    "DEVELOPER",
+    "ARCHITECT"
+  ]
+}

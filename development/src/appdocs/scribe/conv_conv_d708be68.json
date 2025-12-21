@@ -1,0 +1,18 @@
+{
+  "summary": "Sarah provided brief instructions to the client on starting the BrightHR Lite app locally via terminal commands and browser access, then asked if they were ready to review the sprint stories.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Follow instructions to start the BrightHR Lite app locally by navigating to the directory, running the command, allowing firewall access, and opening the localhost URL",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Sarah",
+    "Client"
+  ]
+}

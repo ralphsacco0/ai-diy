@@ -1,0 +1,15 @@
+{
+  "summary": "The team members exchanged greetings and expressed their readiness for the meeting, with inquiries about the agenda and topics to discuss, but no substantive content was covered.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "ARCHITECT",
+    "PM"
+  ]
+}

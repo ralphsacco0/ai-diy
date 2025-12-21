@@ -1,0 +1,30 @@
+{
+  "summary": "The sprint planning architect proposed a narrowed re-execution of Sprint 2 (SP-002) focused solely on the mock login user story (US-010) for isolated testing, overriding broader previous scopes to ensure a quick, self-contained setup.",
+  "decisions": [
+    {
+      "title": "Pivot to lightweight re-run of SP-002",
+      "details": "Scope limited to US-010 only, bypassing US-016 and NFR-001 for focused testing of login redirect to dashboard.",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "SPRINT_PLANNING_ARCHITECT",
+      "task": "Save the proposed sprint and update US-010 status to 'In Sprint' with re-run notes, pending client confirmation.",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "US-010",
+      "title": "Status updated to 'In Sprint' with notes for re-run in SP-002"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

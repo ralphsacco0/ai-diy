@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting focused on clarifying the roles of different team members. The Architect provided a detailed description of their responsibilities.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM",
+    "DEVELOPER",
+    "QA",
+    "ARCHITECT"
+  ]
+}

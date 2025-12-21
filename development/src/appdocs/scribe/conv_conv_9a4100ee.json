@@ -1,0 +1,15 @@
+{
+  "summary": "The client requested to start a requirements meeting, with most participants not addressing it, and the PM asked for a project name suggestion.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "QA",
+    "DEVELOPER",
+    "PM"
+  ]
+}

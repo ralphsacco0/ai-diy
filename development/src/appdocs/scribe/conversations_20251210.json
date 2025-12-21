@@ -1,0 +1,104 @@
+[
+  {
+    "timestamp": "2025-12-10T00:22:50.878051",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start planning meeting"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: \ud83c\udfaf Sprint Planning Meeting started\n\nLet's select stories that will generate working code. I'll analyze the backlog and propose a sprint scope."
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: \ud83c\udfaf Starting Sprint Planning Meeting: BrightHR Lite Vision"
+      }
+    ],
+    "summary": null,
+    "id": "conv_5fb247e2"
+  },
+  {
+    "timestamp": "2025-12-10T00:23:03.410765",
+    "participants": [
+      "client",
+      "PM",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: \ud83d\udcdd Meeting ended: Sprint Planning"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_b45a3589"
+  },
+  {
+    "timestamp": "2025-12-10T01:01:02.934811",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "PM",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start backup meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting start command)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_6f6ab115"
+  }
+]

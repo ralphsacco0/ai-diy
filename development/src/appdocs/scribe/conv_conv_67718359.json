@@ -1,0 +1,15 @@
+{
+  "summary": "The client attempted to end a meeting, but PM Sarah responded that there is no active meeting and offered to start a new one if desired. Other team members provided no comments due to the meeting end command or lack of triggers.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer",
+    "QA",
+    "Architect",
+    "Sarah"
+  ]
+}

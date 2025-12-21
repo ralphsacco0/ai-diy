@@ -1,0 +1,21 @@
+{
+  "summary": "The client initiated a sprint execution meeting, but the PM responded by explaining that execution follows planning and requested the project name to start Sprint Planning. Other team members provided no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Provide the project name to initiate Sprint Planning",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "DEVELOPER",
+    "QA",
+    "PM"
+  ]
+}

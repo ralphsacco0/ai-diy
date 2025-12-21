@@ -1,0 +1,15 @@
+{
+  "summary": "The client inquired about who to contact for guidance on using the app, with QA, Developer, and Architect declining to comment, while Sarah the Project Manager offered to provide assistance and asked for specifics on the area of interest.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "QA",
+    "Developer",
+    "Architect",
+    "Sarah"
+  ]
+}

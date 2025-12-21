@@ -1,0 +1,12 @@
+{
+  "summary": "The client asked for the SPRINT_PLANNING_ARCHITECT's opinion on the sprint plan, and the architect responded by confirming the discovery of 1 sprint plan.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

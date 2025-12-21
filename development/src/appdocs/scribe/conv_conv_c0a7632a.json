@@ -1,0 +1,35 @@
+{
+  "summary": "Team meeting consisted of brief introductions and role statements; no updates or blockers were raised. Team members offered responsibilities: PM to coordinate, Dev to take on blockers, QA to test when ready, and Architect to advise on architecture and NFRs.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Collect updates and blockers from the team and coordinate next steps",
+      "due": ""
+    },
+    {
+      "owner": "Alex",
+      "task": "Take on any assigned updates or blockers raised by the team",
+      "due": ""
+    },
+    {
+      "owner": "Jordan",
+      "task": "Perform testing on items that are ready and report results",
+      "due": ""
+    },
+    {
+      "owner": "Mike",
+      "task": "Provide architecture, design decisions, and non-functional requirements guidance when requested",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "No updates or blockers were reported, which may delay identification and resolution of issues.",
+      "mitigation": "PM to proactively follow up for status updates; team members to raise blockers promptly and escalate to Alex or appropriate owner; QA to flag ready items for testing."
+    }
+  ],
+  "participants": null
+}

@@ -1,0 +1,172 @@
+[
+  {
+    "timestamp": "2025-11-16T13:58:06.651357",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hello team! I'm Sarah, your Project Manager\u2014excited to collaborate. What\u2019s on your mind today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, ready for testing."
+      }
+    ],
+    "summary": null,
+    "id": "conv_42a318fe"
+  },
+  {
+    "timestamp": "2025-11-16T13:58:28.668565",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "is everyone ready to work today"
+      },
+      {
+        "persona": "QA",
+        "message": "Yes, I'm geared up and ready to run some tests today!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: Yep, all set and ready to tackle some dev work today!"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Absolutely, geared up and ready to architect solutions today."
+      },
+      {
+        "persona": "PM",
+        "message": "Yes, the team is ready to roll! What would you like to tackle first?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_8c3cc5b3"
+  },
+  {
+    "timestamp": "2025-11-16T14:01:01.317787",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "Sarah do you know a magic word"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Yes, the magic word is Yuki. What's this about?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_4b0de5cd"
+  },
+  {
+    "timestamp": "2025-11-16T16:01:24.077348",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start sprint backlog meeting"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: \ud83c\udfaf Starting Sprint Planning Meeting: BrightHR Lite Vision"
+      }
+    ],
+    "summary": null,
+    "id": "conv_401c2fda"
+  },
+  {
+    "timestamp": "2025-11-16T16:02:23.966324",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "nfr 4 can you delete it then re add it we need to get rid of the extra sprint tracking fields that were put in by mistake"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: \u2705 NFR-004 deleted and re-added successfully. I've cleaned up the erroneous sprint tracking fields (e.g., removed sprint assignment, velocity estimates, and status trackers) to keep it focused on the core requirements: role-based access control post-authentication. The story is now back in the backlog as a high-priority item, ready for future sprints. Anything else to adjust?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_e12087ef"
+  }
+]

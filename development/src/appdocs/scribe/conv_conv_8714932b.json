@@ -1,0 +1,21 @@
+{
+  "summary": "The client asked Sarah about the process from idea to code in Agile in a Box. Sarah explained the workflow starting with a Vision Meeting, followed by Requirements and Sprint Planning, and invited the client to kick off by sharing their idea.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Start vision meeting by saying 'start vision meeting' and sharing idea",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah (PM)",
+    "QA",
+    "Developer",
+    "Architect"
+  ]
+}

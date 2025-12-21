@@ -1,0 +1,16 @@
+{
+  "summary": "The client inquired about how to start and end meetings, and Sarah provided detailed instructions on initiating meetings with specific phrases and concluding them naturally or explicitly.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "ARCHITECT",
+    "QA",
+    "PM",
+    "Sarah"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "backup_id": "20251116T143416122073",
+  "created_at": "2025-11-16T14:34:16.122615",
+  "sprint_id": "SP-001",
+  "project_name": "BrightHR_Lite_Vision",
+  "plan_status": "planned",
+  "stories": [
+    "NFR-001",
+    "US-009"
+  ],
+  "items": [
+    "plan",
+    "backlog_csv",
+    "wireframes",
+    "project"
+  ]
+}

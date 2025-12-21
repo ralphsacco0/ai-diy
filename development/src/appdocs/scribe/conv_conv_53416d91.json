@@ -1,0 +1,35 @@
+{
+  "summary": "Team introductions and availability: Jordan (QA) is available for testing, PM is available to coordinate, Developer is available for development/implementation questions, and Mike (Architect) is available for architecture and design guidance.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Coordinate upcoming work and notify QA (Jordan) when items are Ready for testing",
+      "due": ""
+    },
+    {
+      "owner": "Jordan (QA)",
+      "task": "Perform testing when notified that items are Ready for testing",
+      "due": ""
+    },
+    {
+      "owner": "Developer",
+      "task": "Handle development and implementation questions raised by the team",
+      "due": ""
+    },
+    {
+      "owner": "Mike (Architect)",
+      "task": "Provide architecture and design guidance as needed",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "No meeting scheduled and no timelines agreed, which may lead to miscoordination or delayed testing/implementation.",
+      "mitigation": "PM to schedule a coordination meeting, define priorities and timelines, and ensure QA is notified when items are Ready for testing."
+    }
+  ],
+  "participants": null
+}

@@ -1,0 +1,21 @@
+{
+  "summary": "The client requested that Sarah remember the number 27, which the PM noted down and asked for its project reference, while other participants provided no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Note down the number 27 and seek clarification on its reference to the project",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "ARCHITECT",
+    "QA",
+    "PM"
+  ]
+}

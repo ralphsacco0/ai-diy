@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Checklist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-white min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-semibold text-gray-900 mb-6">Onboarding Checklist for John Doe</h1>
+        
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+                <span>Progress</span>
+                <span>43% (3/7 tasks)</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-blue-600 h-2 rounded-full" style="width: 43%;"></div>
+            </div>
+        </div>
+        
+        <!-- Task List -->
+        <ul class="space-y-4">
+            <li class="border border-gray-300 rounded-md p-4 bg-white shadow-sm">
+                <div class="flex items-center">
+                    <input type="checkbox" id="task1" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" aria-label="Complete paperwork">
+                    <label for="task1" class="ml-3 text-sm font-medium text-gray-900 block">Complete paperwork</label>
+                </div>
+                <div class="mt-2 ml-7 text-xs text-gray-500">Completed on: 2023-10-01</div>
+            </li>
+            <li class="border border-gray-300 rounded-md p-4 bg-white shadow-sm">
+                <div class="flex items-center">
+                    <input type="checkbox" id="task2" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" aria-label="Attend orientation training">
+                    <label for="task2" class="ml-3 text-sm font-medium text-gray-900 block">Attend orientation training</label>
+                </div>
+                <textarea placeholder="Add notes..." class="mt-2 w-full border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500 text-sm p-2" rows="2" aria-label="Notes for task 2"></textarea>
+            </li>
+            <!-- Additional tasks would follow similar pattern -->
+            <li class="border border-gray-300 rounded-md p-4 bg-white shadow-sm">
+                <div class="flex items-center">
+                    <input type="checkbox" id="task3" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" aria-label="Set up email account">
+                    <label for="task3" class="ml-3 text-sm font-medium text-gray-900 block">Set up email account</label>
+                </div>
+            </li>
+        </ul>
+        
+        <!-- Action Button -->
+        <div class="mt-6">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Save Progress
+            </button>
+        </div>
+    </div>
+</body>
+</html>

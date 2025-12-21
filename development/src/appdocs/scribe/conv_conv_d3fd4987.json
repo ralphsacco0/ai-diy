@@ -1,0 +1,18 @@
+{
+  "summary": "During the sprint review, the client inquired about artifacts injected to Sarah besides history, and Sarah explained that she receives the project vision, current backlog, and latest sprint execution summary to facilitate accurate demos and backlog updates based on feedback. Sarah then prompted the client to demo US-006 (Leave Calendar) by running the test command and sharing thoughts.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Run the test command for US-006 (Leave Calendar) if not already done and provide thoughts after testing",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting was abruptly ended by the client, with no comments provided by QA, Developer, PM, or Architect due to various reasons such as no triggers or not being addressed.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "PM",
+    "ARCHITECT"
+  ]
+}

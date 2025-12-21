@@ -1,0 +1,31 @@
+{
+  "summary": "The client requested recreation of deleted wireframes for BrightHR Lite Vision. PM Sarah offered to coordinate with the Architect to recreate them and asked for specific details to ensure accuracy.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah (PM)",
+      "task": "Coordinate with the Architect to recreate the wireframes for BrightHR Lite Vision",
+      "due": ""
+    },
+    {
+      "owner": "Client",
+      "task": "Specify which wireframes were deleted or provide details for accuracy",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Inaccurate recreation of wireframes due to lack of details on deleted items",
+      "mitigation": "Obtain specific details from the client before proceeding"
+    }
+  ],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "ARCHITECT",
+    "PM Sarah"
+  ]
+}

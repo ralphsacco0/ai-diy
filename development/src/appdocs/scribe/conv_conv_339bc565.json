@@ -1,0 +1,12 @@
+{
+  "summary": "The sprint planning meeting for BrightHR Lite commenced with Mike, the Sprint Planning Architect, greeting the client and summarizing the completed work from previous sprints, including mock login (US-010), employee add/search (US-015 and US-001), and local SQLite consolidation (US-017). Mike inquired about the client's goals for the current sprint to propose relevant user stories.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

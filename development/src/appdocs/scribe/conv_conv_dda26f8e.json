@@ -1,0 +1,15 @@
+{
+  "summary": "The sprint execution meeting was initiated by the client, but no substantive discussions, comments, or actions took place from the participants.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "QA",
+    "ARCHITECT",
+    "PM"
+  ]
+}

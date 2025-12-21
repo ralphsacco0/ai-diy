@@ -1,0 +1,14 @@
+{
+  "summary": "The meeting focused on clarifying the roles of various team members, including the Architect, Product Manager, and Scrum Master.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Mike",
+    "ARCHITECT",
+    "DEVELOPER",
+    "QA"
+  ]
+}

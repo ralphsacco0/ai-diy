@@ -1,0 +1,15 @@
+{
+  "summary": "The backup meeting was initiated by the client, with no comments or contributions from QA, DEVELOPER, PM, or ARCHITECT due to lack of triggers or the meeting start command.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "PM",
+    "ARCHITECT"
+  ]
+}

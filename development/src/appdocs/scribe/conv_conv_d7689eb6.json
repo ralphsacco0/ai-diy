@@ -1,0 +1,21 @@
+{
+  "summary": "The client requested deletion of the item with ID BrightHR-Lite-Vision_20251102_085553. QA, Developer, PM, and Architect provided no comments, citing no trigger or not addressed.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [
+    {
+      "type": "remove",
+      "id": "BrightHR-Lite-Vision_20251102_085553",
+      "title": "Client requested deletion"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "PM",
+    "ARCHITECT"
+  ]
+}

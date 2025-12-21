@@ -1,0 +1,15 @@
+{
+  "summary": "The client initiated a backlog planning meeting. The PM inquired about naming the project, with no further discussion or responses from other participants.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "PM",
+    "DEVELOPER"
+  ]
+}

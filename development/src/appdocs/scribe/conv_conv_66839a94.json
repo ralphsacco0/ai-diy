@@ -1,0 +1,29 @@
+{
+  "summary": "Mike updated the client on the status of ongoing sprints SP-001 and SP-002, which are in progress for authentication and employee directory features, and proposed a new sprint focused on Leave Management Basics including user stories US-003 and US-005 to build testable end-to-end functionality.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide feedback on the proposed sprint, including goals or priorities",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "SP-003",
+      "title": "New sprint for Leave Management Basics with US-003 and US-005 (proposed)"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Dependency on completion of current sprints SP-001 and SP-002 for solid authentication",
+      "mitigation": "Monitor Progress dashboard and adjust sprint plan if needed"
+    }
+  ],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

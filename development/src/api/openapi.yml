@@ -1,0 +1,433 @@
+openapi: 3.0.0
+info:
+  title: AI-DIY Sprint Execution API
+  version: 1.0.0
+  description: APIs for automated sprint planning and execution
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+paths:
+  /api/sprints/save:
+    post:
+      summary: Save sprint plan
+      description: Save sprint plan created during Sprint Planning meeting
+      operationId: saveSprint
+      tags:
+        - sprints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveSprintRequest'
+      responses:
+        '200':
+          description: Sprint plan saved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveSprintResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/sprints/{sprint_id}/execute:
+    post:
+      summary: Execute sprint
+      description: Start automated sprint execution (triggers orchestrator)
+      operationId: executeSprint
+      tags:
+        - sprints
+      parameters:
+        - name: sprint_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Sprint identifier (e.g., SP-001)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecuteSprintRequest'
+      responses:
+        '200':
+          description: Sprint execution started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecuteSprintResponse'
+        '404':
+          description: Sprint plan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/sprints/{sprint_id}/stream:
+    get:
+      summary: Stream sprint progress
+      description: Server-Sent Events stream for real-time dashboard updates
+      operationId: streamSprintProgress
+      tags:
+        - sprints
+      parameters:
+        - name: sprint_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Sprint identifier (e.g., SP-001)
+      responses:
+        '200':
+          description: SSE stream of execution events
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-Sent Events stream
+        '404':
+          description: Sprint execution not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/sprints/{sprint_id}/status:
+    get:
+      summary: Get sprint status
+      description: Get current sprint execution status (non-streaming)
+      operationId: getSprintStatus
+      tags:
+        - sprints
+      parameters:
+        - name: sprint_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Sprint identifier (e.g., SP-001)
+      responses:
+        '200':
+          description: Sprint status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SprintStatusResponse'
+        '404':
+          description: Sprint not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/sprints:
+    get:
+      summary: List sprint plans
+      description: Retrieve all saved sprint plans
+      operationId: listSprints
+      tags:
+        - sprints
+      responses:
+        '200':
+          description: Sprint plans retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListSprintsResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    SprintPlan:
+      type: object
+      required:
+        - sprint_id
+        - stories
+        - estimated_minutes
+        - rationale
+        - project_name
+        - tech_stack
+      properties:
+        sprint_id:
+          type: string
+          example: "SP-001"
+          description: Unique sprint identifier
+        stories:
+          type: array
+          items:
+            type: string
+          example:
+            - "S-001"
+            - "S-002"
+            - "S-003"
+          description: List of Story IDs from Backlog.csv
+        estimated_minutes:
+          type: integer
+          example: 45
+          description: Total estimated time for sprint
+        rationale:
+          type: string
+          example: "Login flow is foundational. These 3 stories build the complete authentication system."
+          description: Architect's explanation for story selection
+        project_name:
+          type: string
+          example: "BrightHR"
+          description: Project name from vision document
+        tech_stack:
+          type: string
+          example: "Flask + HTML + Tailwind CSS"
+          description: Technology stack from vision document
+
+    SaveSprintRequest:
+      type: object
+      required:
+        - action
+        - sprint_plan
+      properties:
+        action:
+          type: string
+          enum:
+            - save
+          example: "save"
+        sprint_plan:
+          $ref: '#/components/schemas/SprintPlan'
+
+    SaveSprintResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Sprint plan saved successfully"
+        data:
+          type: object
+          properties:
+            sprint_id:
+              type: string
+              example: "SP-001"
+            file_path:
+              type: string
+              example: "static/appdocs/sprints/Sprint-SP-001.json"
+            status:
+              type: string
+              enum:
+                - planned
+                - executing
+                - completed
+                - failed
+              example: "planned"
+
+    ExecuteSprintRequest:
+      type: object
+      required:
+        - action
+      properties:
+        action:
+          type: string
+          enum:
+            - execute
+          example: "execute"
+
+    ExecuteSprintResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Sprint execution started"
+        data:
+          type: object
+          properties:
+            sprint_id:
+              type: string
+              example: "SP-001"
+            status:
+              type: string
+              enum:
+                - executing
+              example: "executing"
+            execution_log:
+              type: string
+              example: "static/appdocs/sprints/execution_log_SP-001.json"
+
+    SprintStatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            sprint_id:
+              type: string
+              example: "SP-001"
+            status:
+              type: string
+              enum:
+                - planned
+                - executing
+                - completed
+                - failed
+              example: "executing"
+            current_story:
+              type: string
+              nullable: true
+              example: "S-002"
+            current_task:
+              type: integer
+              nullable: true
+              example: 2
+            started_at:
+              type: string
+              format: date-time
+              example: "2025-10-27T14:35:00Z"
+            elapsed_minutes:
+              type: number
+              format: float
+              example: 15.5
+            summary:
+              $ref: '#/components/schemas/ExecutionSummary'
+            recent_events:
+              type: array
+              items:
+                $ref: '#/components/schemas/ExecutionEvent'
+
+    ExecutionSummary:
+      type: object
+      properties:
+        stories_completed:
+          type: integer
+          example: 1
+        stories_failed:
+          type: integer
+          example: 0
+        tasks_completed:
+          type: integer
+          example: 5
+        tests_passed:
+          type: integer
+          example: 3
+        tests_failed:
+          type: integer
+          example: 0
+
+    ExecutionEvent:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-10-27T14:50:00Z"
+        event_type:
+          type: string
+          enum:
+            - sprint_started
+            - story_started
+            - breakdown_complete
+            - task_completed
+            - test_passed
+            - test_failed
+            - retry_attempt
+            - story_completed
+            - story_failed
+            - sprint_completed
+            - sprint_failed
+          example: "story_completed"
+        data:
+          type: object
+          additionalProperties: true
+          example:
+            story_id: "S-001"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Sprint plan not found"
+        detail:
+          type: string
+          example: "No sprint plan exists with ID SP-999"
+
+    SprintPlanSummary:
+      type: object
+      properties:
+        sprint_id:
+          type: string
+          example: "SP-001"
+        stories:
+          type: array
+          items:
+            type: string
+        estimated_minutes:
+          type: integer
+          example: 45
+        rationale:
+          type: string
+          example: "Login flow is foundational. These 3 stories build the complete authentication system."
+        project_name:
+          type: string
+          example: "BrightHR"
+        tech_stack:
+          type: string
+          example: "Flask + HTML + Tailwind CSS"
+        status:
+          type: string
+          example: "planned"
+        saved_at:
+          type: string
+          format: date-time
+          example: "2025-10-27T14:35:00Z"
+        execution_log:
+          type: string
+          nullable: true
+          example: "static/appdocs/sprints/execution_log_SP-001.json"
+
+    ListSprintsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Sprint plans retrieved"
+        data:
+          type: object
+          properties:
+            plans:
+              type: array
+              items:
+                $ref: '#/components/schemas/SprintPlanSummary'

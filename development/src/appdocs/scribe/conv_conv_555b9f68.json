@@ -1,0 +1,35 @@
+{
+  "summary": "Quick stand-up where the PM asked what to work on today; Architect, Developer, and QA introduced themselves and stated availability for blocker review, help, and testing respectively. Team agreed on notification flows for testing readiness and offered an on-demand architectural sync for blockers.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM (Sarah)",
+      "task": "Clarify today's priorities and assign specific sprint tasks to the team",
+      "due": ""
+    },
+    {
+      "owner": "Developer (Alex)",
+      "task": "Monitor sprint tasks, surface any blockers, and ping the Architect if architectural review is needed",
+      "due": ""
+    },
+    {
+      "owner": "QA (Jordan)",
+      "task": "Be ready to test items; expect the team to send \"Ready for testing!\" along with the expected output when items are ready",
+      "due": ""
+    },
+    {
+      "owner": "Architect",
+      "task": "Join a quick sync on short notice if blockers requiring architectural input are reported",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Unreported or late-reported blockers could delay sprint progress.",
+      "mitigation": "Team to proactively report blockers in stand-ups or directly to the PM; PM to coordinate quick syncs with the Architect when needed; developers to escalate early."
+    }
+  ],
+  "participants": null
+}

@@ -1,0 +1,36 @@
+{
+  "summary": "The team discussed the issue of agents speaking for others and proposed changes to the system prompt to ensure each agent speaks only for themselves.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Modify system prompt to explicitly state that each agent's response should be independent and not include or comment on the responses of other agents."
+    },
+    {
+      "type": "add",
+      "id": "",
+      "title": "Update system prompt for each agent with a very explicit instruction: 'CRITICAL: Do NOT include, summarize, or comment on the responses of other agents. Respond ONLY as [Your Persona Name].'"
+    },
+    {
+      "type": "add",
+      "id": "",
+      "title": "Add a very explicit instruction to each agent's prompt: 'CRITICAL: Do NOT include, summarize, or comment on the responses of other personas. Your response must be entirely independent and only represent [Your Persona Name]'s perspective.'"
+    },
+    {
+      "type": "add",
+      "id": "",
+      "title": "Add a clear instruction to each agent's system prompt: 'CRITICAL: When responding, ONLY provide information from your own persona. Do NOT include, summarize, or comment on responses from other agents (Jordan, Mike, Alex, Sarah).'"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER",
+    "PM"
+  ]
+}

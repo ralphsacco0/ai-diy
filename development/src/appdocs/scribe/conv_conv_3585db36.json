@@ -1,0 +1,15 @@
+{
+  "summary": "The Sprint Execution Meeting for BrightHR Lite Vision was initiated by PM Sarah following the client's command to start the sprint execution.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER",
+    "Sarah"
+  ]
+}

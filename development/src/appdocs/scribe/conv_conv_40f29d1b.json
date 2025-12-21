@@ -1,0 +1,23 @@
+{
+  "summary": "The client requested the creation of a new plan for sprint 2, which was successfully updated as 'SP-002' by the SPRINT_PLANNING_ARCHITECT. Additionally, Story US-010 was updated successfully.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "SP-002",
+      "title": "Sprint plan updated successfully"
+    },
+    {
+      "type": "update",
+      "id": "US-010",
+      "title": "Story updated successfully"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

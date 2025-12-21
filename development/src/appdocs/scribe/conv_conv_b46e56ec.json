@@ -1,0 +1,18 @@
+{
+  "summary": "The sprint review meeting covered the progress on Sprint SP-001 for BrightHR Lite2 MVP, detailing the implementation of Employee Directory (US-006) and Leave Management (US-008), including built features, screens, and testing instructions. The PM requested the client to test the app and provide feedback on usability and alignment with requirements.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Run ./test-generated-app.command, test the flows (add/view employees, submit/approve leave requests, check responsiveness), and share feedback on usability, bugs, missing features, and whether it solves spreadsheet pain points",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_REVIEW_PM"
+  ]
+}

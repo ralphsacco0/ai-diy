@@ -1,0 +1,15 @@
+{
+  "summary": "The client asked about how meetings start and end in the Agile in a Box system. PM Sarah explained the structured meeting flow, trigger phrases for starting each type of meeting, and the command to end meetings.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer",
+    "QA",
+    "PM: Sarah",
+    "Architect"
+  ]
+}

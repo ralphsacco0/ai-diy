@@ -1,0 +1,23 @@
+{
+  "summary": "The sprint planning meeting concluded with the initiation of execution for sprint 'SP-001', and the AI team is instructed to begin working on the assigned stories.",
+  "decisions": [
+    {
+      "title": "Initiate sprint execution",
+      "details": "Execution started for sprint 'SP-001' as announced by Mike",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "AI team",
+      "task": "Begin working on the stories for sprint 'SP-001'",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Mike"
+  ]
+}

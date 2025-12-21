@@ -1,0 +1,13 @@
+{
+  "sprint_id": "SP-001",
+  "created_at": "2025-12-11T22:58:00.860621",
+  "status": "planned",
+  "stories": [
+    "NFR-001",
+    "US-009",
+    "NFR-004",
+    "US-999"
+  ],
+  "estimated_minutes": 20,
+  "rationale": "These stories form a coherent 'Secure Onboarding & Navigation' theme: NFR-001 establishes Node.js/Express/SQLite foundation with seeding (admin HR user + samples). US-009 adds login/logout endpoints/sessions (depends on NFR-001). NFR-004 enforces HR/Employee permissions via middleware/audits (depends on US-009). US-999 integrates role-based dashboard/sidebar nav (depends on US-009/NFR-004). Order: Foundation (tech/seeding) \u2192 Auth \u2192 RBAC \u2192 User-facing nav. Enables testing: Login \u2192 Role-specific dashboard with links/logout, audits on unauthorized access, npm test passes. Delivers secure MVP entry point per Vision, unlocking future features like directory search."
+}

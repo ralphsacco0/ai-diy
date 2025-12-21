@@ -1,0 +1,15 @@
+{
+  "summary": "The client inquired about ai-diy, and the Project Manager provided a detailed explanation of the company and its AI-powered product, Agile in a Box, which facilitates software development through a multi-agent agile workflow. Other team members did not contribute.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "PM",
+    "ARCHITECT",
+    "DEVELOPER"
+  ]
+}

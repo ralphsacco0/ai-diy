@@ -1,0 +1,240 @@
+[
+  {
+    "timestamp": "2025-11-27T01:40:56.456575",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's on the agenda today?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can I help get this project started or aligned today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test whatever comes our way."
+      }
+    ],
+    "summary": null,
+    "id": "conv_ec061a09"
+  },
+  {
+    "timestamp": "2025-11-27T10:49:34.023877",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "PM",
+      "ARCHITECT",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Mike here, ready to dive into any architecture discussions."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, ready for any testing needs."
+      }
+    ],
+    "summary": null,
+    "id": "conv_6c14be09"
+  },
+  {
+    "timestamp": "2025-11-27T16:46:02.682972",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_end_command)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: No active meeting to end. If you'd like to start a new one, let me know!"
+      }
+    ],
+    "summary": null,
+    "id": "conv_67718359"
+  },
+  {
+    "timestamp": "2025-11-27T16:53:59.120149",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting end command)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_4fcaeff3"
+  },
+  {
+    "timestamp": "2025-11-27T16:55:33.678978",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "open backlog meeting"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_4f248121"
+  },
+  {
+    "timestamp": "2025-11-27T17:12:59.096568",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "PM",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: The Requirements Meeting for BrightHR Lite Vision has already been ended. If you'd like to start a new one or discuss something else, let me know!"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_end_command)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_e542ca4d"
+  },
+  {
+    "timestamp": "2025-11-27T17:23:41.630952",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_end_command)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: \ud83d\udcdd Meeting already ended. If you'd like to start a new one or discuss next steps, let me know!"
+      }
+    ],
+    "summary": null,
+    "id": "conv_90da9bfa"
+  }
+]

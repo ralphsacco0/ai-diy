@@ -1,0 +1,21 @@
+{
+  "summary": "The client requested to rerun Sprint 1 due to issues. The PM acknowledged the request and suggested initiating a Sprint Planning meeting or focusing on specific reviews/adjustments, while other participants provided no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Respond to PM on whether to kick off Sprint Planning meeting or focus on specific aspects for Sprint 1 rerun",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "PM",
+    "ARCHITECT"
+  ]
+}

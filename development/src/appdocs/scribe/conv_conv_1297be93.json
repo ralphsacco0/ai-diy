@@ -1,0 +1,15 @@
+{
+  "summary": "Mike initiated a sprint planning meeting, but no further discussion or comments occurred from the QA, Architect, PM, or Developer.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Mike",
+    "QA",
+    "ARCHITECT",
+    "PM",
+    "DEVELOPER"
+  ]
+}

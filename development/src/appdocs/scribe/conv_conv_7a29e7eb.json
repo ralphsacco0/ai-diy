@@ -1,0 +1,18 @@
+{
+  "summary": "The client requested to simulate a time-off submission, and PM Sarah initiated a guided walkthrough of the process in the BrightHR Lite2 employee dashboard, starting with navigation to the Time Off section and prompting for specific dates and reasons.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide dates and reason for the simulated time-off request",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah"
+  ]
+}

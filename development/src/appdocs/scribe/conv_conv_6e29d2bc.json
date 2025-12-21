@@ -1,0 +1,15 @@
+{
+  "summary": "The sprint planning meeting for BrightHR Lite2 was initiated by the client and PM, with no comments provided by QA, Architect, or Developer due to no triggers.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER"
+  ]
+}

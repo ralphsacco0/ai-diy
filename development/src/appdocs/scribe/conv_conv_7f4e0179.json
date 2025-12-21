@@ -1,0 +1,17 @@
+{
+  "summary": "The discussion reviewed the status of ongoing sprints SP-001 (Auth and Backend Foundation) and SP-002 (Employee Directory Basics), both in progress since October 31, 2025, with no completed sprints yet. The architect recommended waiting for these to finish, particularly SP-001 for security dependencies, before planning new sprints and offered to propose the next one focused on leave management.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Dependency issues if new sprints are started before current ones complete, especially since Auth (SP-001) is required for secure access in subsequent features.",
+      "mitigation": "Wait for ongoing sprints to wrap up or monitor the Progress dashboard for status before defining new sprints like SP-003."
+    }
+  ],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

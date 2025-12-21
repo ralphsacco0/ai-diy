@@ -1,0 +1,11 @@
+{
+  "summary": "The client asked if something is running, with no further discussion or response in the conversation.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client"
+  ]
+}

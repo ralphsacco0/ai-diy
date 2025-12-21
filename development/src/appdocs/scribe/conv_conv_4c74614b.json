@@ -1,0 +1,41 @@
+{
+  "summary": "Brief kickoff/standup where each role introduced themselves and described how they will engage today; no specific tasks or decisions were made. Team agreement: PM will assign work, architect will surface blockers, developer will implement, and QA will test when notified.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah (PM)",
+      "task": "Confirm today's priorities and assign specific work items to the team",
+      "due": ""
+    },
+    {
+      "owner": "Mike (Architect)",
+      "task": "Review architecture and surface any blockers before implementation begins",
+      "due": ""
+    },
+    {
+      "owner": "Alex (Developer)",
+      "task": "Begin implementation once tasks are assigned and coordinate with Mike on architectural questions",
+      "due": ""
+    },
+    {
+      "owner": "Jordan (QA)",
+      "task": "Run QA checks when notified that features are ready for testing",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "No specific tasks or priorities were assigned during this check-in, which may lead to unclear ownership and delays.",
+      "mitigation": "PM to assign specific work items with owners and due dates; schedule a brief follow-up or backlog grooming if needed."
+    }
+  ],
+  "participants": [
+    "Client",
+    "Sarah (PM)",
+    "Mike (Architect)",
+    "Alex (Developer)",
+    "Jordan (QA)"
+  ]
+}

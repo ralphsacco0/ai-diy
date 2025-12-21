@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting focused on clarifying roles within the team, specifically Jordan's role as Quality Assurance and Testing Lead and the QA's role in meticulously testing changes.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Jordan",
+    "ARCHITECT",
+    "PM",
+    "DEVELOPER",
+    "QA"
+  ]
+}

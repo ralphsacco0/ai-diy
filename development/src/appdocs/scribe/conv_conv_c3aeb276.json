@@ -1,0 +1,15 @@
+{
+  "summary": "Team introductions and roles were shared. QA requested that when work is ready for testing team members post \"Ready for testing!\" with the expected output so QA can run tests.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Development team",
+      "task": "When an item is Ready for testing, post \"Ready for testing!\" with the expected output so QA can run tests",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": null
+}

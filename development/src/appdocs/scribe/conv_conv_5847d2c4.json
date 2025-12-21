@@ -1,0 +1,20 @@
+{
+  "summary": "Client asked Sarah to set a vision meeting; the PM asked for a project name. QA, Architect, and Developer did not provide input.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Schedule the vision meeting requested by the client",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "No project name decided and key roles (QA, Architect, Developer) did not provide input, risking unclear scope and delayed planning",
+      "mitigation": "PM to propose a project name and circulate it for feedback; schedule the vision meeting and request pre-meeting input from QA, Architect, and Developer."
+    }
+  ],
+  "participants": null
+}

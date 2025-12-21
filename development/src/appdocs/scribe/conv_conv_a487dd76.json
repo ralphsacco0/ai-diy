@@ -1,0 +1,20 @@
+{
+  "summary": "Client Sarah initiated a requirements meeting. No decisions were made: the PM asked for a project name and Architect, Developer, and QA did not provide comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Propose and confirm a project name (follow up on PM's question)",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Key roles (Architect, Developer, QA) did not provide input during the meeting, leaving requirements and naming unresolved.",
+      "mitigation": "Schedule a follow-up or assign owners to collect responses from each role; have the PM or client circulate the naming/options for review."
+    }
+  ],
+  "participants": null
+}

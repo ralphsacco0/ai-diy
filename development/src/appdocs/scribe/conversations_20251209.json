@@ -1,0 +1,84 @@
+[
+  {
+    "timestamp": "2025-12-09T00:39:28.603871",
+    "participants": [
+      "client"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "open backlog meeting"
+      }
+    ],
+    "summary": null,
+    "id": "conv_5c53e322"
+  },
+  {
+    "timestamp": "2025-12-09T00:45:09.452649",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test whenever you are."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we kick things off today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_f16dc9f2"
+  },
+  {
+    "timestamp": "2025-12-09T23:51:39.432704",
+    "participants": [
+      "client",
+      "PM",
+      "DEVELOPER",
+      "ARCHITECT",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can I help get this project started or clarify the vision today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any changes."
+      }
+    ],
+    "summary": null,
+    "id": "conv_6996c51a"
+  }
+]

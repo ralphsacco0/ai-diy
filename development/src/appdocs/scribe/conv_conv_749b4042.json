@@ -1,0 +1,49 @@
+{
+  "summary": "The client shared a terminal error indicating a Supabase initialization failure when starting the BrightHR Lite Vision app, due to missing configuration for local SQLite mode. Mike diagnosed the issue, provided manual fix steps, and proposed Sprint SP-003 to enforce local SQLite setup, conditionalize Supabase, and enable testing of user stories like login and employee search.",
+  "decisions": [
+    {
+      "title": "Propose Sprint SP-003 for Local Setup Fix",
+      "details": "Targeted sprint to re-execute US-016 for SQLite-only mode, add conditional guards in app.py, seed test data, and integrate with US-010 for end-to-end testing, aligning with Phase 1 Vision.",
+      "refs": [
+        "US-016",
+        "US-010",
+        "NFR-001",
+        "US-001"
+      ]
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Ralph",
+      "task": "Try manual fix steps: Create .env with SQLite config, patch app.py to conditionalize Supabase, install SQLAlchemy if needed, seed test data, and run the app to test login and search.",
+      "due": ""
+    },
+    {
+      "owner": "Mike",
+      "task": "Await approval for SP-003; if approved, execute sprint to generate updated code, update backlog statuses, and ensure app runs locally without Supabase dependencies.",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "SP-003",
+      "title": "Local SQLite Setup Fix & Integration Test (re-execute US-016, NFR-001, US-010; optional US-001)"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "App crashes on startup preventing testing of core features like login (US-010) and employee search (US-001).",
+      "mitigation": "Implement conditional Supabase initialization in app.py and enforce SQLite via setup script (US-016) to enable local mode without cloud dependencies."
+    },
+    {
+      "risk": "Future sprints regress to Supabase defaults, introducing setup complexity or costs misaligned with Phase 1 Vision.",
+      "mitigation": "Document local-only mode in backlog and code comments; re-execute setup in SP-003 to lock in SQLite configuration."
+    }
+  ],
+  "participants": [
+    "Ralph",
+    "Mike"
+  ]
+}

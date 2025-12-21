@@ -1,0 +1,18 @@
+{
+  "summary": "The client Alex requested to start working on their project immediately. The Developer explained the need to follow the AI-DIY structured process starting with a Vision Meeting and asked for the high-level project idea.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Alex",
+      "task": "Provide high-level idea for the project to initiate Vision Meeting with Sarah",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Alex",
+    "Developer"
+  ]
+}

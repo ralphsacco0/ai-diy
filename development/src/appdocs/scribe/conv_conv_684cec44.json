@@ -1,0 +1,24 @@
+{
+  "summary": "Mike proposed the first sprint (SP-001) focusing on updating employee profiles (US-002) and submitting leave requests (US-003) to build on the existing employee entry and search capabilities, seeking approval from the client to proceed.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Review and approve, tweak, or pivot the proposed Sprint SP-001",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "SP-001",
+      "title": "Proposed Sprint: Directory Maintenance + Intro to Leaves including US-002 and US-003"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "client",
+    "Mike"
+  ]
+}

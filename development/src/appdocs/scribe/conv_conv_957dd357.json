@@ -1,0 +1,15 @@
+{
+  "summary": "The team members exchanged greetings and brief introductions at the start of the meeting, with no specific agenda or discussions occurring yet.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "QA",
+    "PM",
+    "ARCHITECT"
+  ]
+}

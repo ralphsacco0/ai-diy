@@ -1,0 +1,36 @@
+[
+  {
+    "timestamp": "2025-11-13T19:50:43.143441",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_end_command)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: \ud83d\udcdd Meeting ended: Requirements Meeting: BrightHR Lite"
+      }
+    ],
+    "summary": null,
+    "id": "conv_111557b9"
+  }
+]

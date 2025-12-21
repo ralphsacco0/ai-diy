@@ -1,0 +1,27 @@
+{
+  "summary": "The client requested deletion and re-addition of NFR-004 to remove erroneous sprint tracking fields. PM Sarah confirmed the action was completed, with fields cleaned up and the item returned to the backlog as high-priority.",
+  "decisions": [
+    {
+      "title": "Delete and re-add NFR-004 with cleanup",
+      "details": "Removed sprint assignment, velocity estimates, and status trackers to focus on role-based access control post-authentication",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "NFR-004",
+      "title": "Cleaned up erroneous sprint tracking fields and refocused on core requirements; moved back to backlog as high-priority"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "ARCHITECT",
+    "Sarah"
+  ]
+}

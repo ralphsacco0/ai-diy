@@ -1,0 +1,34 @@
+{
+  "summary": "The Sprint Planning meeting ended with Mike announcing the start of execution for sprint 'SP-001'. The AI team will begin working on the stories, and participants are directed to monitor the Progress dashboard.",
+  "decisions": [
+    {
+      "title": "Start Sprint Execution",
+      "details": "Execution initiated for SP-001 following sprint planning",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "AI team",
+      "task": "Begin working on the stories",
+      "due": ""
+    },
+    {
+      "owner": "Team",
+      "task": "Watch the Progress dashboard",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "wf",
+      "id": "SP-001",
+      "title": "Sprint execution started"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "Mike"
+  ]
+}

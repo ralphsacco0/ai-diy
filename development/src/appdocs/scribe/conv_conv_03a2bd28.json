@@ -1,0 +1,12 @@
+{
+  "summary": "The client requested to rerun Sprint 1 (SP-001), and Mike confirmed the sprint details including US-001, US-010, and US-015, while seeking confirmation to proceed with execution via API.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

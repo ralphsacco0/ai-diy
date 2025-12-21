@@ -1,0 +1,15 @@
+{
+  "summary": "The Sprint Backlog Meeting was initiated by the client, and PM Sarah announced the start of the Sprint Planning Meeting for BrightHR Lite Vision. No comments were provided by DEVELOPER, QA, or ARCHITECT.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "QA",
+    "ARCHITECT",
+    "Sarah"
+  ]
+}

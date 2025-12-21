@@ -1,0 +1,36 @@
+<div class='min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8'>
+  <div class='max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden'>
+    <div class='px-6 py-4 border-b border-gray-200 bg-white'>
+      <h2 class='text-2xl font-bold text-gray-900'>Leave Calendar</h2>
+      <div class='flex space-x-4 mt-4'>
+        <select class='rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'>
+          <option>Monthly View</option>
+          <option>Weekly View</option>
+        </select>
+        <select class='rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'>
+          <option>All Employees</option>
+          <option>John Doe</option>
+        </select>
+        <select class='rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'>
+          <option>All Types</option>
+          <option>Vacation</option>
+          <option>Sick</option>
+        </select>
+      </div>
+    </div>
+    <div class='px-6 py-4 bg-white'>
+      <div class='grid grid-cols-7 gap-1 text-center text-sm font-medium text-gray-500 bg-gray-100 p-2 rounded-t-md'>
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+      </div>
+      <div class='grid grid-cols-7 gap-1 h-96 overflow-y-auto'>
+        <div class='border border-gray-200 p-2 h-24 bg-white'></div>
+        <div class='border border-gray-200 p-2 h-24 bg-white'></div>
+        <!-- Placeholder for calendar days -->
+        <div class='border border-gray-200 p-2 h-24 bg-blue-50 relative'>
+          <div class='absolute inset-0 flex items-center justify-center bg-blue-100 rounded text-blue-800 text-xs'>Vacation</div>
+        </div>
+        <!-- More days -->
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+{
+  "summary": "The client requested an answer to a question, and SPRINT_EXECUTION_PM confirmed successful retrieval of the sprint.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_EXECUTION_PM"
+  ]
+}

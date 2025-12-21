@@ -1,0 +1,11 @@
+{
+  "sprint_id": "SP-001",
+  "created_at": "2025-11-14T15:22:49.682826",
+  "status": "planned",
+  "stories": [
+    "NFR-005",
+    "US-009"
+  ],
+  "estimated_minutes": 20,
+  "rationale": "This sprint establishes the foundational local Mac environment (NFR-005) using Node/Express backend, React frontend, SQLite DB, and npm scripts for start/stop on ports 3000/3001, ensuring lightweight, offline MVP deployment per Vision constraints. It then implements core user authentication (US-009) with login/logout UI, hashed passwords in SQLite, and basic role-based sessions (30-min timeout), providing secure access for all future features. No external dependencies; high testability via scripts, API tests, and browser verification. Aligns with GDPR basics through secure hashing. Total ~20 min for code generation, setup, and tests."
+}

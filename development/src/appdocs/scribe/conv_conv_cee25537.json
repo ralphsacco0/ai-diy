@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting was opened as a backlog session by the client, but no substantive discussion took place. The PM inquired about naming the project, with no responses from other participants.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "PM",
+    "DEVELOPER",
+    "ARCHITECT"
+  ]
+}

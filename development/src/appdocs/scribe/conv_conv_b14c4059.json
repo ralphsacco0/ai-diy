@@ -1,0 +1,18 @@
+{
+  "summary": "In this brief exchange, the client insists on the counterpart initiating sprint execution, and Sarah from SPRINT_EXECUTION_PM provides the exact phrase required to start it.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Say exactly: 'team start sprint execution now' to initiate sprint execution",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "Sarah"
+  ]
+}

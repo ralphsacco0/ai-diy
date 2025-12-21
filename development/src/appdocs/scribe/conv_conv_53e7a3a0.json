@@ -1,0 +1,24 @@
+{
+  "summary": "The client suggested creating a new sprint plan after the SPRINT_PLANNING_ARCHITECT reported that no existing sprint plans were found.",
+  "decisions": [
+    {
+      "title": "Create a new sprint plan",
+      "details": "In response to finding zero existing plans",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "SPRINT_PLANNING_ARCHITECT",
+      "task": "Create a new sprint plan",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

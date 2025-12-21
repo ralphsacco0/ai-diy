@@ -1,0 +1,15 @@
+{
+  "summary": "Quick introductions and role call: Sarah (PM), Mike (Architect), Alex (Developer), Jordan (QA) and the client joined. Jordan requested to be notified with expected outputs whenever work is Ready for testing; other members offered availability for their respective responsibilities.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Team",
+      "task": "Notify Jordan (QA) when work is Ready for testing and include the expected output for test execution",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": null
+}

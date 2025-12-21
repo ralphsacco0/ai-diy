@@ -1,0 +1,26 @@
+{
+  "summary": "Client requested deletion of a draft; PM asked the client to confirm which draft to delete (specified filename) and requested a reply of \"yes\" to proceed. Developer, QA, and Architect provided no comments (reason: no_trigger).",
+  "decisions": [
+    {
+      "title": "Deletion pending confirmation",
+      "details": "PM will delete the specified draft only after the client replies 'yes' confirming BrightHR-Lite-DELME2-Vision-Draft_20251021_152745; no deletion has been performed yet.",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Delete draft BrightHR-Lite-DELME2-Vision-Draft_20251021_152745 upon client reply 'yes' confirming deletion",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Draft may be deleted accidentally or the wrong draft may be deleted if confirmation is ambiguous.",
+      "mitigation": "Require the client to reply exactly 'yes' and confirm the filename; PM to verify the filename before performing deletion and log the deletion action."
+    }
+  ],
+  "participants": null
+}

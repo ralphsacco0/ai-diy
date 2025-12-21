@@ -1,0 +1,27 @@
+{
+  "summary": "The client asked Sarah to set a vision meeting and the PM asked for a project name; QA, Architect, and Developer did not provide input. No decisions or sign-offs were made during this exchange.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Schedule a vision meeting as requested by the client and invite PM, QA, Architect, and Developer; include agenda and request proposed project names and pre-meeting input",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Key stakeholders (QA, Architect, Developer) have not provided input, risking misalignment and delays in defining scope and naming the project.",
+      "mitigation": "Ensure the vision meeting invites all stakeholders, request pre-meeting input (including project name suggestions) from PM and technical leads, and set clear decisions and deadlines during the meeting."
+    }
+  ],
+  "participants": [
+    "Client",
+    "Sarah",
+    "PM",
+    "QA",
+    "Architect",
+    "Developer"
+  ]
+}

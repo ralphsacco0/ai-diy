@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting focused on clarifying roles within the project team, with the Project Manager outlining their responsibilities.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "PM",
+    "DEVELOPER"
+  ]
+}

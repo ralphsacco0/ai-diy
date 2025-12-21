@@ -1,0 +1,20 @@
+{
+  "summary": "Client requested that Sarah set up a requirements meeting; the PM asked for the project name but no one (Architect, Developer, QA) provided input.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Set up requirements meeting",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Project name not decided, leaving scope/communications ambiguous",
+      "mitigation": "Add project naming to the requirements meeting agenda and have the PM or a designated stakeholder assign or confirm the project name during that meeting"
+    }
+  ],
+  "participants": null
+}

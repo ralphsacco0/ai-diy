@@ -1,0 +1,26 @@
+{
+  "summary": "A requirements meeting was started by Sarah to initiate project naming; the PM asked for the project name but no other attendees provided input. Next step is to obtain a proposed project name and confirm it with absent stakeholders.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Propose and confirm an official project name",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Create backlog item to decide and record the official project name"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Key roles (Architect, Developer, QA) did not provide input, risking incomplete requirements and delayed decisions.",
+      "mitigation": "Follow up with absent stakeholders to solicit input and schedule a short decision meeting or asynchronous poll to finalize the project name."
+    }
+  ],
+  "participants": null
+}

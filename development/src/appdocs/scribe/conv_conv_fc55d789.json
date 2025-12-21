@@ -1,0 +1,26 @@
+{
+  "summary": "The team started a sprint retrospective meeting, with the PM inquiring about the project name. The developer shared positives like smooth code reviews and quick bug fixes, and suggested improving integration testing to catch edge cases earlier.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "DEVELOPER",
+      "task": "Improve integration testing to catch edge cases earlier",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Edge cases not being caught early in the development process",
+      "mitigation": "Enhance integration testing practices"
+    }
+  ],
+  "participants": [
+    "client",
+    "PM",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER"
+  ]
+}

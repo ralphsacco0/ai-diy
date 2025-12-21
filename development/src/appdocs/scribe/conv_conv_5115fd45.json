@@ -1,0 +1,15 @@
+{
+  "summary": "The team members exchanged greetings and introductions at the beginning of the meeting, with the PM introducing herself as Sarah and inquiring about the agenda.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "DEVELOPER",
+    "ARCHITECT",
+    "QA",
+    "Sarah (PM)"
+  ]
+}

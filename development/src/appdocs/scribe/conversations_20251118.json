@@ -1,0 +1,36 @@
+[
+  {
+    "timestamp": "2025-11-18T00:18:05.829758",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start sprit execution meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: \ud83c\udfaf Starting Sprint Execution Meeting: BrightHR Lite Vision"
+      }
+    ],
+    "summary": null,
+    "id": "conv_3585db36"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "summary": "The client asked about the implementation status of US-4, and the developer confirmed it was fully implemented and tested successfully in the last sprint, offering further details if needed.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "summary": "The PM provided instructions to the client on starting and ending meetings in the app using specific chat commands, and invited the client to try it out.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Try starting a meeting using the provided commands",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM"
+  ]
+}

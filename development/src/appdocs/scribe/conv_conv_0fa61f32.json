@@ -1,0 +1,15 @@
+{
+  "summary": "The client requested help, and PM Sarah provided an overview of the AI-DIY process, explaining the Scrum team's workflow from Vision Meeting to Sprint Review for building software step-by-step.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Architect",
+    "QA",
+    "Developer",
+    "PM Sarah"
+  ]
+}

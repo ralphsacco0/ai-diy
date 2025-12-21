@@ -1,0 +1,21 @@
+{
+  "summary": "The client inquired about the reason for ending the meeting, and PM Sarah explained that it was concluded assuming resolution of local setup concerns with backlog updates to maintain structure, while offering to reopen discussions if needed.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Reopen discussion if client wants to continue refining requirements",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "QA",
+    "Architect",
+    "Sarah",
+    "Developer"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting began with greetings from the client and team members including QA, PM, Developer, and Architect. The PM inquired about how to assist in starting the project.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "PM",
+    "DEVELOPER",
+    "ARCHITECT"
+  ]
+}

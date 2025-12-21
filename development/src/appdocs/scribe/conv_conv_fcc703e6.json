@@ -1,0 +1,18 @@
+{
+  "summary": "Sarah from the PM team updated the client on the BrightHR Lite2 sprint delivery, covering the core employee dashboard, time-off requests, shift scheduling basics, and HR data integration, confirming alignment with acceptance criteria. The client affirmed with 'yes' and was prompted for feedback on vision alignment and any needed tweaks.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide thoughts on how the sprint delivery meets vision and any tweaks needed",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "summary": "Team introductions and alignment; QA requested that handoffs include expected output so testing can proceed without blockers.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Alex",
+      "task": "Provide handoff materials to QA including an 'Expected output' section for each deliverable",
+      "due": ""
+    },
+    {
+      "owner": "Jordan",
+      "task": "Run tests once the handoff with Expected output is provided",
+      "due": ""
+    },
+    {
+      "owner": "Sarah",
+      "task": "Coordinate priorities and confirm focus for the next meeting",
+      "due": ""
+    },
+    {
+      "owner": "Mike",
+      "task": "Be available to address architecture or design blockers as they arise",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "QA unable to test if handoffs lack expected output, causing testing delays",
+      "mitigation": "Require developers to include Expected output in handoffs; PM to enforce this requirement and schedule testing windows"
+    }
+  ],
+  "participants": null
+}

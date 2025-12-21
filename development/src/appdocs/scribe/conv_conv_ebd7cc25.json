@@ -1,0 +1,20 @@
+{
+  "summary": "Quick standup where team members introduced themselves. QA (Jordan) requested that when work is ready for testing the team send 'Ready for testing!' with the expected output; PM, Developer, and Architect are available for assignments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Team",
+      "task": "When a feature or change is ready for testing, send 'Ready for testing!' with the expected output to QA (Jordan)",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "No specific tasks or priorities were assigned during the meeting, which may lead to idle time or misaligned work.",
+      "mitigation": "PM (Sarah) to assign or prioritize tasks and communicate next work items; developers to confirm picks; architect to proactively review architecture/design backlog items."
+    }
+  ],
+  "participants": null
+}

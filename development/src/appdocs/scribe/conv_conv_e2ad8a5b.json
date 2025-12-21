@@ -1,0 +1,12 @@
+{
+  "summary": "The client asked about the number of items in the backlog for BrightHR Lite, and Sarah responded that there are currently 28 items including User Stories, Wireframes, Non-Functional Requirements, and Styles, covering MVP must-haves like employee directory and leave management, along with nice-to-haves and constraints. Sarah offered options to view the backlog, add items, update priorities, or proceed with other actions.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah"
+  ]
+}

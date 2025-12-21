@@ -1,0 +1,18 @@
+{
+  "summary": "In the sprint planning discussion, Mike identified a single deviation from standard ticket types with DEV-001 (Local Setup Guide) and confirmed that all other tickets conform to the expected prefixes. He sought confirmation on proceeding with SP-001, which combines US-010, US-015, and US-001.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "DEV-001",
+      "title": "Noted as non-standard 'DEV' prefix for documentation task"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

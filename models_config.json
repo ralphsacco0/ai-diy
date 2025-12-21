@@ -1,0 +1,19 @@
+{
+  "favorites": [
+    "deepseek/deepseek-r1:free",
+    "deepseek/deepseek-v3.2-exp",
+    "google/gemini-2.0-flash-001",
+    "google/gemini-2.5-flash",
+    "google/gemini-2.5-pro",
+    "openai/gpt-5-chat",
+    "openai/gpt-5-mini",
+    "openai/gpt-5.1-codex",
+    "openai/gpt-5.1-codex-mini",
+    "x-ai/grok-4",
+    "x-ai/grok-4-fast"
+  ],
+  "default": "x-ai/grok-4-fast",
+  "meta": {},
+  "last_used": "x-ai/grok-4-fast",
+  "last_session_name": ""
+}

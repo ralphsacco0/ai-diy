@@ -1,0 +1,903 @@
+[
+  {
+    "timestamp": "2025-11-08T07:31:35.227348",
+    "participants": [
+      "client",
+      "SPRINT_REVIEW_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah what artifacts do you get injected to you other then history"
+      },
+      {
+        "persona": "SPRINT_REVIEW_PM",
+        "message": "Sarah: For Sprint Reviews, I get injected with the project vision, current backlog (stories, statuses, notes), and the latest sprint execution summary (including completed stories, generated files location, and test command). This helps me demo accurately and update the backlog based on your feedback. No other artifacts\u2014keeps things focused on the review.\n\nNow, back to the sprint: Ready to demo US-006 (Leave Calendar)? Run the test command if you haven't, and let me know your thoughts after testing."
+      }
+    ],
+    "summary": null,
+    "id": "conv_d3fd4987"
+  },
+  {
+    "timestamp": "2025-11-08T07:32:31.772588",
+    "participants": [
+      "client",
+      "SPRINT_REVIEW_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "can you tell from the backlog what items are developed in which sprint"
+      },
+      {
+        "persona": "SPRINT_REVIEW_PM",
+        "message": "Sarah: Yes, the backlog tracks this via the \"Sprint_ID\" and \"Execution_Status\" columns. Here's a quick breakdown of developed/completed stories by sprint (based on the current data; \"In Sprint\" means queued but not fully done, \"Backlog\" means not started):\n\n- **SP-001** (Completed: US-006 - View Leave Calendar; US-008 - Onboarding Checklist; US-001 - Employee Directory Search; US-015 - Add Employee Profile):\n  - All marked \"done\" after execution.\n\n- **SP-002** (Partially completed: US-010 - Mock Login Page done; US-016 - Automated Local Setup Script \"In Sprint\"; NFR-001 - Local Testing: No Security Barriers \"In Sprint\"):\n  - Focused on setup and login for local testing.\n\n- **SP-003** (Completed: US-017 - Local SQLite Migration & App Consolidation):\n  - Consolidated code for local SQLite run.\n\nOther stories (e.g., US-002, US-003, etc.) are still in \"Backlog\" and unassigned to a sprint.\n\nThis is from the injected backlog\u2014helps prioritize for reviews. For today's Sprint Review on SP-001 (US-006 & US-008), shall we demo them? Run the test command if ready."
+      }
+    ],
+    "summary": null,
+    "id": "conv_cd75d7d2"
+  },
+  {
+    "timestamp": "2025-11-08T07:34:03.021180",
+    "participants": [
+      "client",
+      "SPRINT_REVIEW_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "is the vision injected"
+      },
+      {
+        "persona": "SPRINT_REVIEW_PM",
+        "message": "Sarah: Yes, the full project vision (problem, users, features, success criteria, constraints, etc.) is injected into my context for every Sprint Review. It ensures demos align with the overall goals, like streamlining HR for small businesses via local SQLite in Phase 1.\n\nReady to proceed with the SP-001 review? Let's demo US-006 if you've run the test command."
+      }
+    ],
+    "summary": null,
+    "id": "conv_62e134d3"
+  },
+  {
+    "timestamp": "2025-11-08T07:34:36.956329",
+    "participants": [
+      "client",
+      "SPRINT_REVIEW_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "doesn't the vision have the project name I wonder why you said unidentified before"
+      },
+      {
+        "persona": "SPRINT_REVIEW_PM",
+        "message": "Sarah: Good catch\u2014the vision clearly states \"PROJECT: BrightHR Lite Vision,\" but the sprint execution summary artifact lists \"Project Name: Unknown\" (likely a metadata glitch from the generation process). I prioritize the vision for all reviews, so we're aligned on BrightHR Lite.\n\nTo keep us moving: For the SP-001 review, run `./test-generated-app.command` if not already, then test US-006 (Leave Calendar) at http://localhost:8001/calendar. Feedback?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_9b2aabfb"
+  },
+  {
+    "timestamp": "2025-11-08T08:32:41.024310",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hey team, good to see you! What's on the agenda?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any changes."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we kick things off today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_71c97925"
+  },
+  {
+    "timestamp": "2025-11-08T08:36:45.350536",
+    "participants": [
+      "client",
+      "SPRINT_PLANNING_ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "what project is this for"
+      },
+      {
+        "persona": "SPRINT_PLANNING_ARCHITECT",
+        "message": "Mike: This sprint planning is for the **BrightHR Lite** project\u2014our streamlined HR platform for small businesses, focusing on employee directory, leave management, document storage, and more, all built with a local Mac-friendly setup (Flask, HTML/Tailwind, SQLite for now, with tests).\n\nWhat do you want to accomplish in this sprint? For example, are we building on the recent local setup (US-017 done, with mock login and employee search/add working)? Or tackling a specific feature like leave requests? Let me know your priorities so I can analyze the backlog and propose a logical set of 2-5 user stories."
+      }
+    ],
+    "summary": null,
+    "id": "conv_9d2b6326"
+  },
+  {
+    "timestamp": "2025-11-08T08:57:49.305399",
+    "participants": [
+      "client",
+      "SPRINT_PLANNING_ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hello so what project is this for"
+      },
+      {
+        "persona": "SPRINT_PLANNING_ARCHITECT",
+        "message": "Hello! This sprint planning session is for the **BrightHR Lite** project\u2014a lightweight HR platform for small businesses (10-50 employees) to manage employee directories, leave requests, documents, and more. It's built with a focus on simplicity, local development (Flask + SQLite for now), and self-service features to cut down on spreadsheet chaos.\n\nWhat are you hoping to accomplish in this sprint? For example, do you want to tackle a specific feature like leave management, build on the existing employee directory, or focus on something else from the backlog? Once I know, I can propose a logical set of user stories."
+      }
+    ],
+    "summary": null,
+    "id": "conv_bc7ae86d"
+  },
+  {
+    "timestamp": "2025-11-08T09:01:23.714416",
+    "participants": [
+      "client",
+      "SPRINT_PLANNING_ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "how are we today"
+      },
+      {
+        "persona": "SPRINT_PLANNING_ARCHITECT",
+        "message": "Mike: Hey, we're doing great today\u2014pumped to keep building out BrightHR Lite! The local setup with SQLite is solid now from the last sprint (US-017 wrapped up nicely), so we can focus on features without those cloud hiccups. How about you? What do you want to tackle in this sprint? Are we prioritizing leave management next, or something else from the MVP like document uploads? Let's nail down your goals so I can propose some stories."
+      }
+    ],
+    "summary": null,
+    "id": "conv_956936f1"
+  },
+  {
+    "timestamp": "2025-11-08T09:07:51.709520",
+    "participants": [
+      "client",
+      "REQUIREMENTS_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "how is the backlog how many items"
+      },
+      {
+        "persona": "REQUIREMENTS_PM",
+        "message": "The current backlog for BrightHR Lite contains 28 total items across User Stories (US), Wireframes (WF), Non-Functional Requirements (NFR), and Styles (STYLE). Of these, 16 are in \"Backlog\" status (ready for refinement), 6 are \"In Sprint\" (active), and 6 are \"Done\" (completed). Key areas include employee management (US-001 to US-017), UI wireframes (WF-001 to WF-015), and supporting NFRs like local testing (NFR-001)."
+      }
+    ],
+    "summary": null,
+    "id": "conv_82c5b992"
+  },
+  {
+    "timestamp": "2025-11-08T09:08:02.513179",
+    "participants": [
+      "client",
+      "REQUIREMENTS_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "REQUIREMENTS_PM",
+        "message": "Sarah: \ud83d\udcdd Meeting ended: Requirements Meeting: BrightHR Lite"
+      }
+    ],
+    "summary": null,
+    "id": "conv_3fda7083"
+  },
+  {
+    "timestamp": "2025-11-08T09:41:52.126333",
+    "participants": [
+      "client",
+      "VISION_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "how many vision statements do we have"
+      },
+      {
+        "persona": "VISION_PM",
+        "message": "We currently have one approved vision document: the BrightHR Lite Vision (from our previous session). You can view it anytime by clicking the Vision button in the interface.\n\nIf you'd like to refine that one, start a new vision meeting for a different project, or dive into answering those 7 questions to build or update it, just let me know how I can help! What's next on your mind?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_f49d414c"
+  },
+  {
+    "timestamp": "2025-11-08T09:42:04.246306",
+    "participants": [
+      "client",
+      "VISION_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "VISION_PM",
+        "message": "\ud83d\udcdd Meeting ended: Vision Meeting: BrightHR Lite"
+      }
+    ],
+    "summary": null,
+    "id": "conv_9bb65808"
+  },
+  {
+    "timestamp": "2025-11-08T09:42:27.505562",
+    "participants": [
+      "client",
+      "REQUIREMENTS_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "how many items do we have"
+      },
+      {
+        "persona": "REQUIREMENTS_PM",
+        "message": "Sarah: We currently have 28 items in the backlog for BrightHR Lite, including User Stories (US), Wireframes (WF), Non-Functional Requirements (NFR), and Styles (STYLE). This covers MVP must-haves like employee directory and leave management, along with nice-to-haves and constraints.\n\nYou can view the full backlog anytime by clicking the Backlog button. What would you like to do next\u2014add a new item, update priorities, or something else?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_e2ad8a5b"
+  },
+  {
+    "timestamp": "2025-11-08T09:42:34.069590",
+    "participants": [
+      "client",
+      "REQUIREMENTS_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "REQUIREMENTS_PM",
+        "message": "\ud83d\udcdd Meeting ended: Requirements Meeting: BrightHR Lite Vision"
+      }
+    ],
+    "summary": null,
+    "id": "conv_2b8c3dd6"
+  },
+  {
+    "timestamp": "2025-11-08T09:43:04.438120",
+    "participants": [
+      "client",
+      "REQUIREMENTS_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi"
+      },
+      {
+        "persona": "REQUIREMENTS_PM",
+        "message": "Sarah: Hi! Great to see you back in the Requirements Meeting for BrightHR Lite.\n\nWhat would you like to tackle today\u2014reviewing a specific item (e.g., US-001), adding new stories, updating priorities, or something else?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_2a700461"
+  },
+  {
+    "timestamp": "2025-11-08T10:03:33.404938",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test some code if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help get your project started today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_5fae6aa4"
+  },
+  {
+    "timestamp": "2025-11-08T10:03:52.739850",
+    "participants": [
+      "client",
+      "VISION_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi"
+      },
+      {
+        "persona": "VISION_PM",
+        "message": "Sarah: Hi! Great to see you back in our Vision Meeting for BrightHR Lite. We've already built out a solid vision document based on what we've discussed so far\u2014it covers everything from the problem it solves to features and constraints. Want me to recap it quickly, or is there something specific you'd like to tweak or add?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_dabd9986"
+  },
+  {
+    "timestamp": "2025-11-08T10:05:41.616736",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready for some testing if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Ready to kick off a project or meeting?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_58aa432a"
+  },
+  {
+    "timestamp": "2025-11-08T10:06:05.555889",
+    "participants": [
+      "client",
+      "VISION_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hello"
+      },
+      {
+        "persona": "VISION_PM",
+        "message": "Hi! Nice to \"meet\" you here. \ud83d\ude0a Since we're in the middle of crafting your vision for BrightHR Lite, let's dive right in. You've got those 7 key questions up on your screen\u2014where would you like to start? Maybe share your project name or the main problem it solves to get the ball rolling?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_aa3f2c35"
+  },
+  {
+    "timestamp": "2025-11-08T10:34:23.899828",
+    "participants": [
+      "client",
+      "VISION_PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hello"
+      },
+      {
+        "persona": "VISION_PM",
+        "message": "Hello! \ud83d\ude0a I'm Sarah, your Vision Meeting facilitator. We've just kicked off this session for BrightHR Lite\u2014excited to dive in and refine your app idea.\n\nTo get us started, could you share your thoughts on the project name, or maybe jump to the problem it solves? Or if you'd like, we can pick up from where we left off last time. What's on your mind first?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_ca5e16af"
+  },
+  {
+    "timestamp": "2025-11-08T10:44:25.132721",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, ready to test."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we get started on your project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_24533e61"
+  },
+  {
+    "timestamp": "2025-11-08T11:22:48.370599",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "PM",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "remember 27"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_4f5c86dd"
+  },
+  {
+    "timestamp": "2025-11-08T11:23:08.273154",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "ok everyone what was the number to remember"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "The number to remember is 27."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "The number to remember is 27."
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: The number to remember is 27."
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: The number to remember is 27. What's next on the agenda?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_e6a9ad97"
+  },
+  {
+    "timestamp": "2025-11-08T15:58:18.097696",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hey team! Ready to dive into some testing if needed."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code or tackle the next task?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team, Mike the Architect here\u2014good to see you all!"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we assist you today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_5a697dba"
+  },
+  {
+    "timestamp": "2025-11-08T16:04:53.733707",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! What's on the agenda today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test some code if needed."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we get started today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_a2d73c67"
+  },
+  {
+    "timestamp": "2025-11-08T16:07:34.974712",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test some code if needed."
+      }
+    ],
+    "summary": null,
+    "id": "conv_e26671f4"
+  },
+  {
+    "timestamp": "2025-11-08T16:52:23.176583",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! What's on the agenda today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! Ready to dive into some code."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready for some testing if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we get started on your project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_25f81525"
+  },
+  {
+    "timestamp": "2025-11-08T16:59:53.391670",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "PM",
+      "ARCHITECT",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help kick off your project today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! What's on the agenda?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test whenever you are."
+      }
+    ],
+    "summary": null,
+    "id": "conv_454e81aa"
+  },
+  {
+    "timestamp": "2025-11-08T17:00:34.439381",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "star backlog meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_954ad028"
+  },
+  {
+    "timestamp": "2025-11-08T18:52:48.251805",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "PM",
+      "QA",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help kick off your project today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test whenever you are."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Mike here, ready for any design discussions."
+      }
+    ],
+    "summary": null,
+    "id": "conv_d7ab2ca8"
+  },
+  {
+    "timestamp": "2025-11-08T19:27:18.404997",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team, good to see you all!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, ready to test any changes."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we get started on your project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_99bc7a56"
+  },
+  {
+    "timestamp": "2025-11-08T19:56:16.896786",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can I help get this project started?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test some code if needed."
+      }
+    ],
+    "summary": null,
+    "id": "conv_55a97c58"
+  },
+  {
+    "timestamp": "2025-11-08T22:03:15.516299",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "PM",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any changes."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! Ready to dive into some code."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we get started today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions."
+      }
+    ],
+    "summary": null,
+    "id": "conv_6e614204"
+  },
+  {
+    "timestamp": "2025-11-08T22:23:06.928751",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start a sprint review meeting"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: \ud83c\udfaf Starting Sprint Review Meeting: BrightHR Lite Vision"
+      }
+    ],
+    "summary": null,
+    "id": "conv_21ef766c"
+  }
+]

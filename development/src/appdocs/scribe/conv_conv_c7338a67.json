@@ -1,0 +1,21 @@
+{
+  "summary": "The client inquired about the process from idea to code, and the Project Manager explained the Agile in a Box methodology, which begins with a Vision Meeting to discuss project naming and goals, followed by requirements, sprint planning, development sprints, and a Sprint Review for approval.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "client",
+      "task": "Start the Vision Meeting by saying 'start vision meeting' and sharing project idea, naming, and goals",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "PM",
+    "DEVELOPER"
+  ]
+}

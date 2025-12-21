@@ -1,0 +1,31 @@
+{
+  "summary": "Client Sarah requested to start a vision meeting. The PM asked for a project name; Architect, Developer, and QA did not provide input.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Start the vision meeting and prepare a draft agenda",
+      "due": ""
+    },
+    {
+      "owner": "PM",
+      "task": "Define or confirm the project name",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Add backlog item to schedule and prepare the vision meeting / project kickoff"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Key roles (Architect, Developer, QA) did not provide input, risking missing perspectives for the vision meeting.",
+      "mitigation": "Follow up with each stakeholder, set a deadline for input, and circulate an agenda before scheduling the meeting to collect required feedback."
+    }
+  ],
+  "participants": null
+}

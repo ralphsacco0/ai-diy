@@ -1,0 +1,21 @@
+{
+  "summary": "The meeting for project \"aa\" has started with the Project Manager initiating a vision meeting. The Architect, Sarah, is beginning to create a new vision document and is seeking clarification on the primary goal or purpose of the project.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Clarify the primary goal or purpose of project \"aa\" for the vision document",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "PM",
+    "QA",
+    "DEVELOPER",
+    "ARCHITECT",
+    "Sarah"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "summary": "The client asked if the team has everything needed to proceed, and Sarah from the PM team confirmed that sprint deliverables are ready for review. Sarah requested any specific questions or feedback to help move forward.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide specific questions or feedback on the sprint deliverables",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah"
+  ]
+}

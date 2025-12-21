@@ -1,0 +1,21 @@
+{
+  "summary": "Client requested Jordan to perform a test. Team members Developer, PM, and Architect provided no comments, while QA confirmed the test passed with the expected output.",
+  "decisions": [],
+  "sign_offs": [
+    {
+      "who": "QA",
+      "what": "Test passed with output matching expected: 'Elon is awesome'",
+      "timestamp": "2023-10-05 10:00:00"
+    }
+  ],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "PM",
+    "ARCHITECT",
+    "QA"
+  ]
+}

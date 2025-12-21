@@ -1,0 +1,12 @@
+{
+  "summary": "The conversation starts with a casual greeting from the client to Mike, who responds positively and expresses readiness for sprint planning in the BrightHR Lite project, asking about the sprint goals and potential focus areas like authentication and directory setup.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

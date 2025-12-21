@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting involved a client note to 'remember 27', but all other participants (QA, Developer, PM, Architect) provided no comments due to lack of triggers or the topic not being addressed.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "PM",
+    "ARCHITECT"
+  ]
+}

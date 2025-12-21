@@ -1,0 +1,15 @@
+{
+  "summary": "The client inquired about the process of turning an idea into code. The Project Manager explained the agile methodology used in the ai-diy Agile in a Box app, outlining steps from Vision meeting to sprint reviews, and suggested initiating a Vision meeting.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER",
+    "PM"
+  ]
+}

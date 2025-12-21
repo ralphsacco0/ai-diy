@@ -1,0 +1,21 @@
+{
+  "summary": "The client requested Sarah to start a requirements meeting, but QA, Developer, and Architect did not comment as it was not addressed to them. The PM asked Sarah for a project name to kick off the Backlog Refinement Meeting for gathering and prioritizing requirements.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Provide a project name to kick off the Backlog Refinement Meeting",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "ARCHITECT",
+    "PM"
+  ]
+}

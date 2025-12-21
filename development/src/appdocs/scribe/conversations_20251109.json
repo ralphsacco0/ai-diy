@@ -1,0 +1,342 @@
+[
+  {
+    "timestamp": "2025-11-09T06:55:00.134574",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any changes."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! What's on the agenda today?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help get your project off the ground today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_ca6beedc"
+  },
+  {
+    "timestamp": "2025-11-09T06:55:31.743427",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi again team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi again! I'm available to tackle any development or implementation tasks\u2014what should I pick up next?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi again, team \u2014 Mike here. Ready to dive into architecture or design questions."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi again! What would you like to work on today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: Hi again! Ready to run tests or review any QA items whenever you are."
+      }
+    ],
+    "summary": null,
+    "id": "conv_5f4c8524"
+  },
+  {
+    "timestamp": "2025-11-09T09:18:14.829759",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "PM",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, ready for any testing needs."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! What's on the agenda today?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can I help get this project started or aligned today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_0a69cd52"
+  },
+  {
+    "timestamp": "2025-11-09T14:29:01.899597",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team, Mike here\u2014ready to dive into architecture and design discussions."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Alex here, excited to tackle some dev work."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team, ready to test whenever needed!"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Sarah here, ready to kick off our next project. What's on your mind today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_34ede4a2"
+  },
+  {
+    "timestamp": "2025-11-09T14:29:36.966624",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "DEVELOPER",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "how is everyone today"
+      },
+      {
+        "persona": "QA",
+        "message": "Doing well \u2014 ready to run tests or review changes whenever you are."
+      },
+      {
+        "persona": "PM",
+        "message": "All good here\u2014ready to help. What should we focus on today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Doing well\u2014ready to jump into development work. What should I start on?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Doing well\u2014ready to dive into architecture and design. How is everyone else?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_9b0a6596"
+  },
+  {
+    "timestamp": "2025-11-09T15:52:43.400750",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team, Mike here\u2014ready to dive into architecture and design whenever needed."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team, Alex here\u2014ready to dive into some code!"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team, Jordan here\u2014ready to ensure our code changes pass all tests!"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! I'm Sarah, the Project Manager\u2014excited to get started on whatever project you have in mind. What's on your agenda today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_d769f1c4"
+  },
+  {
+    "timestamp": "2025-11-09T17:09:12.791348",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team, Alex here\u2014ready to build some code!"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team, Mike here\u2014ready to tackle the architecture. What's on the agenda?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! I'm Sarah, the Project Manager\u2014excited to get started on whatever project you have in mind."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan the QA Tester here, ready for action."
+      }
+    ],
+    "summary": null,
+    "id": "conv_cab84dd7"
+  },
+  {
+    "timestamp": "2025-11-09T20:44:41.732764",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "PM",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "Hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team, Jordan here\u2014ready to test whenever needed!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team, Alex the Developer checking in\u2014ready to tackle some code!"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi! Sarah here, excited to get started on your project."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team, Mike here\u2014excited to dive into some solid architecture discussions!"
+      }
+    ],
+    "summary": null,
+    "id": "conv_7ae27660"
+  },
+  {
+    "timestamp": "2025-11-09T20:46:34.733729",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "QA",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "Sarah can you remember 27"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sure, I've noted down the number 27\u2014what's it in reference to for the project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_e1b9f506"
+  },
+  {
+    "timestamp": "2025-11-09T20:47:00.901155",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "DEVELOPER",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "sarah what was the number i wanted to remember"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: The number you asked me to remember was 27. If it's tied to something specific in the project, let me know how I can help connect it!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_d66a7223"
+  }
+]

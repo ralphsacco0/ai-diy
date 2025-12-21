@@ -1,0 +1,33 @@
+{
+  "summary": "Mike requests to re-run Sprint 1 but limited to only the login step (US-010). The SPRINT_PLANNING_ARCHITECT analyzes the request, confirms feasibility, and proposes a focused sprint plan for standalone execution of US-010, seeking approval to proceed.",
+  "decisions": [
+    {
+      "title": "Focus re-run on login step only",
+      "details": "Re-execute Sprint SP-001 narrowly to US-010 Mock Login Page, skipping US-001 and US-015 to avoid redundancy and keep it lightweight.",
+      "refs": [
+        "US-010",
+        "SP-001"
+      ]
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "SPRINT_PLANNING_ARCHITECT",
+      "task": "Proceed with re-running SP-001 (login-only) upon client approval",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "SP-001",
+      "title": "Re-run sprint narrowed to only US-010 Mock Login Page"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "Mike",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

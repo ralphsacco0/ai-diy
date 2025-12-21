@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting was concluded by the client with no comments from QA, Developer, or Architect due to lack of triggers or addressing. The PM, Sarah, noted the end of the Sprint Execution meeting.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "ARCHITECT",
+    "Sarah"
+  ]
+}

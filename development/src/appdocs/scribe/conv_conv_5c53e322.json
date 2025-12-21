@@ -1,0 +1,11 @@
+{
+  "summary": "The client initiated the opening of a backlog meeting.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client"
+  ]
+}

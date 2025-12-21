@@ -1,0 +1,18 @@
+{
+  "summary": "The client attempted to start test execution by addressing Sarah, but the Sprint Execution PM clarified that test execution follows the coding phase and instructed on how to initiate full sprint execution.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Use the command 'team start sprint execution now' to initiate full sprint execution",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah"
+  ]
+}

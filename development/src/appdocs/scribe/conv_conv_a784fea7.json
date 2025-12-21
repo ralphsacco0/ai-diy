@@ -1,0 +1,18 @@
+{
+  "summary": "In the sprint review meeting, Sarah provided detailed instructions to the client on how to set up and test the latest app sprint (SP-003) featuring consolidated SQLite setup, mock login, employee add/search. She requested feedback on completed user stories and inquired about preferred demo items.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Test the app by following the provided setup and testing steps, then share feedback on completed stories (US-017, US-010, US-015, US-001)",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah"
+  ]
+}

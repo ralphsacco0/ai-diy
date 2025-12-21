@@ -1,0 +1,15 @@
+{
+  "summary": "The team gathered for a meeting where members introduced themselves and expressed readiness to begin discussions on the next project.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "Mike (ARCHITECT)",
+    "Alex (DEVELOPER)",
+    "QA",
+    "Sarah (PM)"
+  ]
+}

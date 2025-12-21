@@ -1,0 +1,12 @@
+{
+  "summary": "In the meeting, Mike recommends the scope for Sprint 1 of the BrightHR Lite2 project, focusing on foundational stories like authentication, backend integration, wireframes, UI guide, and GDPR compliance to build a secure MVP base. He seeks alignment from the client on priorities, assuming a team of three with 40 story points capacity.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

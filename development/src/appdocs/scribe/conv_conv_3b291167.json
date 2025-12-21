@@ -1,0 +1,15 @@
+{
+  "summary": "The client inquired about how to start and stop meetings, and PM Sarah provided clear instructions on initiating meetings via chat commands and ending them explicitly or naturally upon objective completion.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer",
+    "QA",
+    "Sarah",
+    "Architect"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "summary": "The client asked Alex for help with their HR project. Alex offered development support but directed overall planning to Sarah and suggested initiating a Vision Meeting to define the project's goals and challenges.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Kick off a Vision Meeting to define project vision and backlog",
+      "due": ""
+    },
+    {
+      "owner": "Client",
+      "task": "Provide main goal or challenge for the project",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Limited access to client's existing apps or repos in this chat",
+      "mitigation": "Conduct development in the sandbox environment and follow structured sprints"
+    }
+  ],
+  "participants": [
+    "Client",
+    "Alex"
+  ]
+}

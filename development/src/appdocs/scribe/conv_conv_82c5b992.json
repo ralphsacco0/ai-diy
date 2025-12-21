@@ -1,0 +1,12 @@
+{
+  "summary": "The client asked about the current backlog status for BrightHR Lite, and the REQUIREMENTS_PM provided a detailed update on the total items, their statuses, and key areas covered.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "REQUIREMENTS_PM"
+  ]
+}

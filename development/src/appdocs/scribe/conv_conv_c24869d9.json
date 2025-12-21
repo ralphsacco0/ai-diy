@@ -1,0 +1,15 @@
+{
+  "summary": "The vision meeting was concluded at the client's request, with the PM confirming that key project vision details have been captured and asking about next steps.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Architect",
+    "QA",
+    "Developer",
+    "Sarah"
+  ]
+}

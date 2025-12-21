@@ -1,0 +1,15 @@
+{
+  "summary": "The client issued a command to end the Requirements Meeting for BrightHR Lite Vision, which the PM Sarah confirmed had already been concluded, with other team members providing no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "QA",
+    "Sarah",
+    "ARCHITECT"
+  ]
+}

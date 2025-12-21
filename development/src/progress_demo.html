@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI-DIY Sprint Progress (MVP)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 24px; color: #0f172a; }
+    h1 { font-size: 20px; margin: 0 0 12px; }
+    .row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+    input[type="text"] { flex: 1; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
+    button { padding: 8px 12px; border: 0; border-radius: 6px; background: #2563eb; color: white; cursor: pointer; }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+    #status { margin: 8px 0 16px; color: #334155; font-size: 14px; }
+    #events { border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px; height: 360px; overflow: auto; background: #f8fafc; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; }
+    .evt { margin: 0 0 6px; white-space: pre-wrap; }
+    .hb { color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <h1>AI-DIY Sprint Progress (MVP)</h1>
+  <div class="row">
+    <input id="sprintId" type="text" placeholder="Enter sprint ID (e.g., SP-20251029_153000)" />
+    <button id="connect">Connect</button>
+    <button id="disconnect" disabled>Disconnect</button>
+  </div>
+  <div id="status">Disconnected</div>
+  <div id="events" aria-live="polite"></div>
+
+  <script>
+    const sprintIdInput = document.getElementById('sprintId');
+    const connectBtn = document.getElementById('connect');
+    const disconnectBtn = document.getElementById('disconnect');
+    const statusEl = document.getElementById('status');
+    const eventsEl = document.getElementById('events');
+
+    let es = null;
+
+    function log(line, cls = '') {
+      const div = document.createElement('div');
+      div.className = 'evt ' + cls;
+      div.textContent = line;
+      eventsEl.appendChild(div);
+      eventsEl.scrollTop = eventsEl.scrollHeight;
+    }
+
+    function setConnected(connected) {
+      connectBtn.disabled = connected;
+      disconnectBtn.disabled = !connected;
+      statusEl.textContent = connected ? 'Connected' : 'Disconnected';
+    }
+
+    connectBtn.addEventListener('click', () => {
+      const id = sprintIdInput.value.trim();
+      if (!id) {
+        alert('Please enter a sprint ID');
+        return;
+      }
+
+      if (es) {
+        try { es.close(); } catch {}
+        es = null;
+      }
+
+      const url = `/api/sprints/${encodeURIComponent(id)}/stream`;
+      es = new EventSource(url);
+
+      es.addEventListener('open', () => {
+        setConnected(true);
+        log(`[open] Connected to ${url}`);
+      });
+
+      es.addEventListener('error', (e) => {
+        log('[error] Stream error or closed');
+        setConnected(false);
+      });
+
+      // Named event from backend for updates
+      es.addEventListener('update', (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          log(`[update] ${JSON.stringify(data)}`);
+        } catch {
+          log(`[update] ${e.data}`);
+        }
+      });
+
+      // Heartbeat keeps the connection alive
+      es.addEventListener('heartbeat', () => {
+        log('[heartbeat]', 'hb');
+      });
+
+      // Fallback for any unnamed messages (not expected)
+      es.onmessage = (e) => {
+        log(`[message] ${e.data}`);
+      };
+    });
+
+    disconnectBtn.addEventListener('click', () => {
+      if (es) {
+        try { es.close(); } catch {}
+        es = null;
+      }
+      setConnected(false);
+      log('[close] Disconnected');
+    });
+  </script>
+</body>
+</html>

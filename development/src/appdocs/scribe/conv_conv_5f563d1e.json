@@ -1,0 +1,20 @@
+{
+  "summary": "Client requested that Sarah start a vision meeting. The PM asked for a project name while Architect, Developer, and QA provided no comments (marked not_addressed).",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Start the vision meeting and propose a project name and draft agenda for stakeholder review",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Key technical and QA stakeholders did not provide input (not_addressed), risking misalignment on scope and requirements.",
+      "mitigation": "Follow up with the architect, developer, and QA to collect input before the meeting; circulate a clear agenda and proposed project name; assign roles and deadlines for pre-meeting prep."
+    }
+  ],
+  "participants": null
+}

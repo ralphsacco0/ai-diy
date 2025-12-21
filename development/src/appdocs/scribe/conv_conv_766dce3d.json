@@ -1,0 +1,18 @@
+{
+  "summary": "The client asked for clarification on how to start and end meetings in the Agile in a Box system. PM Sarah explained the process for initiating and concluding meetings and invited the client to share their project idea to begin.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Share project idea to start a meeting",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah"
+  ]
+}

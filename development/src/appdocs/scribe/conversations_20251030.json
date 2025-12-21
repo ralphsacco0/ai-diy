@@ -1,0 +1,399 @@
+[
+  {
+    "timestamp": "2025-10-30T08:19:47.128747",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "Everyone ready to work today"
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: Yes, I'm ready to dive into testing today!"
+      },
+      {
+        "persona": "PM",
+        "message": "Yes, we're all geared up and ready to dive in! What project or task should we tackle first?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Absolutely, geared up for some solid design work today!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: Absolutely, geared up for some dev work!"
+      }
+    ],
+    "summary": null,
+    "id": "conv_0eeea0ad"
+  },
+  {
+    "timestamp": "2025-10-30T08:53:11.782924",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Hi team! Ready to architect whatever comes next."
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: Hi team! Jordan here, geared up for any testing needs today."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: Hi team! Ready to jump into some development work."
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: Hi team! Great to see you\u2014how can we assist today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_768fde83"
+  },
+  {
+    "timestamp": "2025-10-30T12:42:20.934267",
+    "participants": [
+      "client",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Ready to kick off a project?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test some code if needed."
+      }
+    ],
+    "summary": null,
+    "id": "conv_3f2bc449"
+  },
+  {
+    "timestamp": "2025-10-30T13:53:34.170677",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "PM",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any changes."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help kick off your project today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      }
+    ],
+    "summary": null,
+    "id": "conv_5892867c"
+  },
+  {
+    "timestamp": "2025-10-30T13:56:50.813284",
+    "participants": [
+      "client",
+      "SPRINT_PLANNING_ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "SPRINT_PLANNING_ARCHITECT",
+        "message": "\ud83d\udcdd Meeting ended: Sprint Planning"
+      }
+    ],
+    "summary": null,
+    "id": "conv_5dfda2c5"
+  },
+  {
+    "timestamp": "2025-10-30T13:58:21.504601",
+    "participants": [
+      "client",
+      "PM",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start a sprint retrospective"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting start command)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "I'm ready for the retrospective. What went well in the sprint from a dev perspective: smooth code reviews and quick bug fixes. Areas for improvement: better integration testing to catch edge cases earlier."
+      }
+    ],
+    "summary": null,
+    "id": "conv_fc55d789"
+  },
+  {
+    "timestamp": "2025-10-30T14:54:32.969584",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's on the agenda today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! What's on the agenda today?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help kick off your project today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, ready for any testing needs."
+      }
+    ],
+    "summary": null,
+    "id": "conv_cbe3cfde"
+  },
+  {
+    "timestamp": "2025-10-30T14:54:50.815324",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "PM",
+      "QA",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "everyone ready to work"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Mike: Absolutely, team\u2014ready to architect some solid solutions!"
+      },
+      {
+        "persona": "PM",
+        "message": "Yes, the team is geared up and ready to dive in! What's our starting point today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Jordan: Yes, I'm geared up and ready to test any changes!"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: Yep, geared up and ready to code! What's the first task?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_c11ccb5e"
+  },
+  {
+    "timestamp": "2025-10-30T14:55:58.374496",
+    "participants": [
+      "client",
+      "SPRINT_PLANNING_ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "SPRINT_PLANNING_ARCHITECT",
+        "message": "\ud83d\udcdd Meeting ended: Sprint Planning"
+      }
+    ],
+    "summary": null,
+    "id": "conv_c724a2e6"
+  },
+  {
+    "timestamp": "2025-10-30T14:56:54.632938",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "PM",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start a sprint execution meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: not_addressed)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Alex: \ud83d\ude80 Sprint Execution Meeting started for: BrightHR Lite2\n\nLet's dive into implementing the sprint backlog. I'll propose code changes and handle development tasks\u2014Mike and Jordan are ready for reviews and testing as we go. What's the first story to tackle?"
+      },
+      {
+        "persona": "PM",
+        "message": "Sarah: After sprint planning, the team automatically handles execution through breakdown, implementation, and testing in our inner loops\u2014no separate meeting needed. If you'd like to adjust the plan or start a review, let me know!"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: not_addressed)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_aae418ac"
+  },
+  {
+    "timestamp": "2025-10-30T14:57:40.729176",
+    "participants": [
+      "client",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "end meeting"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_1d6871ee"
+  },
+  {
+    "timestamp": "2025-10-30T14:58:07.490670",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start sprint retrospective"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "As the developer, I'll kick off with: Technically, the sprint went smoothly on implementation, but we hit some integration snags with external APIs. What went well for everyone else?"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_6b650b10"
+  },
+  {
+    "timestamp": "2025-10-30T16:45:45.030921",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "PM",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, ready to test any code changes."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can I help get this project started or clarified today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      }
+    ],
+    "summary": null,
+    "id": "conv_0f8de569"
+  }
+]

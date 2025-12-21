@@ -1,0 +1,20 @@
+{
+  "summary": "The client asked Sarah to organize a vision meeting; the PM asked for a project name. Architect, Developer, and QA did not provide input.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Schedule and organize the vision meeting requested by the client; prepare proposed project name options for discussion",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "No agreed project name or stakeholder input, which may delay meeting outcomes and alignment.",
+      "mitigation": "PM to collect and propose project name options and follow up with Architect, Developer, and QA before the meeting; ensure agenda includes naming discussion."
+    }
+  ],
+  "participants": null
+}

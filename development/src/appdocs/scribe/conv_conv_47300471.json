@@ -1,0 +1,23 @@
+{
+  "summary": "The client asked to check the status of 'sp-1' for rerunning, but the SPRINT_PLANNING_ARCHITECT reported an HTTP POST error to the sprint API due to a missing Sprint ID.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "SPRINT_PLANNING_ARCHITECT",
+      "task": "Provide Sprint ID to resolve the API request failure for sp-1",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "API request failure due to missing Sprint ID may delay sprint rerunning",
+      "mitigation": "Ensure Sprint ID is included in future POST requests"
+    }
+  ],
+  "participants": [
+    "client",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

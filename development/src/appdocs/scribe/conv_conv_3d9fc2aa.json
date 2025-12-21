@@ -1,0 +1,15 @@
+{
+  "summary": "The team members greeted each other and expressed enthusiasm for starting or progressing the project. No substantive discussion occurred beyond initial check-ins.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "QA",
+    "ARCHITECT",
+    "PM"
+  ]
+}

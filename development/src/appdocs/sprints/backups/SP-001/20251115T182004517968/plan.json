@@ -1,0 +1,11 @@
+{
+  "sprint_id": "SP-001",
+  "created_at": "2025-11-15T18:20:04.513119",
+  "status": "planned",
+  "stories": [
+    "NFR-001",
+    "US-009"
+  ],
+  "estimated_minutes": 20,
+  "rationale": "This sprint establishes the foundational local Mac environment with NFR-001 (Node.js/Express backend on port 3001, React frontend on 3000, SQLite DB, npm scripts for start/stop/setup). US-009 then implements user authentication (login/logout with email/password, role-based sessions, hashed passwords) on this foundation, enabling secure access for all future features. Dependencies: US-009 relies on the database and session management from NFR-001. Testable via local runs: Verify env setup with npm start, then test login form and role checks. Aligns with vision for lightweight, GDPR-compliant MVP on Mac. ~20 minutes total execution."
+}

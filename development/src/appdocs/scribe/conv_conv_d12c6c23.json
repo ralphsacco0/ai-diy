@@ -1,0 +1,15 @@
+{
+  "summary": "The client asked about how to start and end meetings, and the Project Manager explained the process for initiating meetings with specific commands and wrapping them up naturally or explicitly.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER",
+    "PM"
+  ]
+}

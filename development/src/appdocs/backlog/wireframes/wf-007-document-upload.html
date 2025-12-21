@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        neutral: '#6B7280'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white font-sans">
+    <div class="container mx-auto p-6 max-w-md">
+        <h1 class="text-2xl font-bold text-neutral mb-6">Upload Employee Document</h1>
+        <form class="space-y-4">
+            <div>
+                <label for="employee" class="block text-sm font-medium text-neutral">Select Employee</label>
+                <select id="employee" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                    <option value="">Choose employee</option>
+                    <option value="1">John Doe</option>
+                    <option value="2">Jane Smith</option>
+                </select>
+            </div>
+            <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
+                <input type="file" id="file" accept=".pdf,.doc,.docx" class="hidden" required>
+                <label for="file" class="cursor-pointer">
+                    <div class="text-neutral mb-2">Drag & drop or click to select file</div>
+                    <div class="text-sm text-gray-500">Supported: PDF, DOC (max 10MB)</div>
+                </label>
+                <p id="file-name" class="mt-2 text-sm text-neutral hidden"></p>
+                <div class="w-full bg-gray-200 rounded-full h-2 mt-4">
+                    <div class="bg-primary h-2 rounded-full animate-pulse" style="width: 0%;"></div>
+                </div>
+            </div>
+            <button type="submit" class="w-full px-4 py-2 bg-primary text-white rounded-md shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50">Upload Document</button>
+            <p id="success" class="text-green-600 text-sm hidden">Document uploaded successfully!</p>
+        </form>
+    </div>
+</body>
+</html>

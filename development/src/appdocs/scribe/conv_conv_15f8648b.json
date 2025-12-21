@@ -1,0 +1,21 @@
+{
+  "summary": "Client requested Jordan to run tests. QA executed the test and confirmed it passed, with the output matching the expected value 'hi Jazz'.",
+  "decisions": [
+    {
+      "title": "Test passed and accepted",
+      "details": "QA verified that the output matches the expected string 'hi Jazz' and accepted the result; no further action required at this time.",
+      "refs": []
+    }
+  ],
+  "sign_offs": [
+    {
+      "who": "QA",
+      "what": "Approved test result: output matches expected 'hi Jazz'",
+      "timestamp": "2025-10-11 12:00:00"
+    }
+  ],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": null
+}

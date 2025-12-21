@@ -1,0 +1,25 @@
+{
+  "summary": "Quick stand-up: team members introduced themselves and checked for sprint updates/blockers. PM asked what to focus on, the Architect requested updates/blockers, the Developer offered help with code, and QA asked to be tagged when items are ready for testing.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Team",
+      "task": "Tag QA (Jordan) or send 'Ready for testing!' when a feature/task is ready for testing",
+      "due": ""
+    },
+    {
+      "owner": "Alex",
+      "task": "Assist with development and code tasks as needed",
+      "due": ""
+    },
+    {
+      "owner": "Team",
+      "task": "Provide current sprint updates and report any blockers to the Architect (Mike) and PM (Sarah)",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": null
+}

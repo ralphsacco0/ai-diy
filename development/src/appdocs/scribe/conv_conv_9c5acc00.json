@@ -1,0 +1,15 @@
+{
+  "summary": "The client inquired about the phases and roles of team members in the project, with only the Developer providing a detailed response outlining their involvement in Sprint Planning, Execution, and Review for the HR project, while PM, QA, and Architect offered no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER"
+  ]
+}

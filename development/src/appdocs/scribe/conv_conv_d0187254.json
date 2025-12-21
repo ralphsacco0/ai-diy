@@ -1,0 +1,31 @@
+{
+  "summary": "A requirements meeting was started; no decisions were made. Sarah (PM) asked for a project name and other roles (Architect, Developer, QA) did not provide input.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Propose and confirm the project name",
+      "due": ""
+    },
+    {
+      "owner": "Sarah",
+      "task": "Solicit input from Architect, Developer, and QA on the project name and initial requirements",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Add backlog item to decide and record the project name"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Key roles (Architect, Developer, QA) did not provide input during the meeting, risking incomplete or delayed requirements.",
+      "mitigation": "Schedule a follow-up meeting or set clear deadlines for input; assign owners for collecting responses and document feedback in the backlog item."
+    }
+  ],
+  "participants": null
+}

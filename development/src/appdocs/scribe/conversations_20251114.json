@@ -1,0 +1,303 @@
+[
+  {
+    "timestamp": "2025-11-14T08:25:01.930618",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "DEVELOPER",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any changes."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help get your project started today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! What's on the agenda today?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      }
+    ],
+    "summary": null,
+    "id": "conv_fa68a578"
+  },
+  {
+    "timestamp": "2025-11-14T08:56:44.318667",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready for any testing needs."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we assist you today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_35b97282"
+  },
+  {
+    "timestamp": "2025-11-14T09:25:57.006879",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test some code if needed."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! What's on the agenda today?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we kick off this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_d88823bd"
+  },
+  {
+    "timestamp": "2025-11-14T09:53:21.683897",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "DEVELOPER",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team!"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help get your project started today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team!"
+      }
+    ],
+    "summary": null,
+    "id": "conv_a9be8c60"
+  },
+  {
+    "timestamp": "2025-11-14T10:17:23.167329",
+    "participants": [
+      "client",
+      "QA",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any changes."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Good to see you all."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help kick off your project today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_8e4e6097"
+  },
+  {
+    "timestamp": "2025-11-14T10:29:23.441726",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "QA",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team, Jordan here\u2014ready to test!"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we assist today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_cdbbb191"
+  },
+  {
+    "timestamp": "2025-11-14T10:54:52.179163",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test some code if needed."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! Ready to dive into some code if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! Great to see you\u2014how can we get started today?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_83bf8980"
+  },
+  {
+    "timestamp": "2025-11-14T11:09:37.976522",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "PM",
+      "QA",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can we help you today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! All good here."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      }
+    ],
+    "summary": null,
+    "id": "conv_6c31bac2"
+  },
+  {
+    "timestamp": "2025-11-14T17:19:29.712204",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start spring execution meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_8f365c01"
+  }
+]

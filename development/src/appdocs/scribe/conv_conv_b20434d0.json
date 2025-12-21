@@ -1,0 +1,15 @@
+{
+  "summary": "The Sprint Review Meeting for BrightHR Lite Vision was initiated by PM Sarah, with other participants present but not contributing comments at the start.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "ARCHITECT",
+    "Sarah"
+  ]
+}

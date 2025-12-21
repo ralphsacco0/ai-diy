@@ -1,0 +1,15 @@
+{
+  "summary": "The project review meeting was started by the client, with QA, Architect, and Developer providing no comments due to triggers. The PM asked for suggestions on the project name.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "DEVELOPER",
+    "PM"
+  ]
+}

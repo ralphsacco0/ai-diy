@@ -1,0 +1,29 @@
+{
+  "summary": "The client questioned a discrepancy in the project name, which Sarah clarified as a metadata glitch in the sprint summary, confirming 'BrightHR Lite' from the vision document. Sarah then directed the team to proceed with testing the generated app for SP-001 review, focusing on US-006.",
+  "decisions": [
+    {
+      "title": "Confirm project name as BrightHR Lite",
+      "details": "Prioritize vision document over sprint execution summary artifact due to metadata glitch",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Run `./test-generated-app.command` if not already, then test US-006 (Leave Calendar) at http://localhost:8001/calendar and provide feedback",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Metadata glitches in sprint execution summary generation",
+      "mitigation": "Prioritize vision document for accurate project details in reviews"
+    }
+  ],
+  "participants": [
+    "client",
+    "Sarah"
+  ]
+}

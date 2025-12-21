@@ -1,0 +1,22 @@
+{
+  "summary": "The client requested Sarah to set up a vision meeting. Sarah agreed to start the Vision Meeting and asked for the project name.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide the project name for the Vision Meeting",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah",
+    "Architect",
+    "QA",
+    "Developer",
+    "PM"
+  ]
+}

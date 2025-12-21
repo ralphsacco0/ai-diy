@@ -1,0 +1,12 @@
+{
+  "summary": "The meeting was ended by the client, and the PM provided no comment due to no trigger.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM"
+  ]
+}

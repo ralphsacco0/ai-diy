@@ -1,0 +1,15 @@
+{
+  "summary": "The client questioned Mike's initial lack of response to the team, with Developer, PM, and QA providing no comment, while the Architect (Mike) apologized for missing the ping due to reviewing system architecture diagrams and inquired about the matter at hand.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer",
+    "PM",
+    "QA",
+    "Architect"
+  ]
+}

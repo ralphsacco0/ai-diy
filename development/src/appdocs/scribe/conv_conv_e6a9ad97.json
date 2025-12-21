@@ -1,0 +1,21 @@
+{
+  "summary": "The team confirmed that the number to remember is 27 in response to the client's question. The PM inquired about the next agenda item.",
+  "decisions": [
+    {
+      "title": "Confirmed number to remember",
+      "details": "All participants agreed the number is 27",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Architect",
+    "Developer",
+    "Jordan",
+    "Sarah"
+  ]
+}

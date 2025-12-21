@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Arial', system-ui, sans-serif; }
+    </style>
+</head>
+<body class="bg-white min-h-screen">
+    <div class="flex">
+        <!-- Mobile toggle button -->
+        <button id="toggle-sidebar" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-2xl shadow-xl border border-gray-200" aria-label="Toggle navigation">
+            <!-- Inline SVG for hamburger menu -->
+            <svg class="h-6 w-6 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+
+        <!-- Overlay for mobile sidebar -->
+        <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" aria-hidden="true"></div>
+
+        <!-- Sidebar -->
+        <nav id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 bg-gradient-to-b from-gray-50 to-white shadow-2xl transition-all duration-300 ease-in-out transform -translate-x-full md:translate-x-0 border-r border-gray-200" aria-label="Main navigation">
+            <div class="flex flex-col h-full p-4 space-y-4">
+                <ul id="nav-links" class="space-y-2">
+                    <!-- HR-specific links (populated by JS conditionally) -->
+                    <!-- <li><a href="/employee-directory" class="block px-3 py-2 text-gray-900 rounded-2xl hover:bg-gradient-to-r from-blue-500/20 to-blue-600/20 transition-all duration-200 ease-in-out focus:ring-2 focus:ring-blue-500/50" aria-label="Employee Directory">Employee Directory</a></li> -->
+                    <!-- <li><a href="/leave-approvals" class="block px-3 py-2 text-gray-900 rounded-2xl hover:bg-gradient-to-r from-blue-500/20 to-blue-600/20 transition-all duration-200 ease-in-out focus:ring-2 focus:ring-blue-500/50" aria-label="Leave Approvals">Leave Approvals</a></li> -->
+                    <!-- <li><a href="/documents" class="block px-3 py-2 text-gray-900 rounded-2xl hover:bg-gradient-to-r from-blue-500/20 to-blue-600/20 transition-all duration-200 ease-in-out focus:ring-2 focus:ring-blue-500/50" aria-label="Documents">Documents</a></li> -->
+
+                    <!-- Employee-specific links (populated by JS conditionally) -->
+                    <!-- <li><a href="/my-leaves" class="block px-3 py-2 text-gray-900 rounded-2xl hover:bg-gradient-to-r from-blue-500/20 to-blue-600/20 transition-all duration-200 ease-in-out focus:ring-2 focus:ring-blue-500/50" aria-label="My Leave Requests">My Leave Requests</a></li> -->
+                    <!-- <li><a href="/update-profile" class="block px-3 py-2 text-gray-900 rounded-2xl hover:bg-gradient-to-r from-blue-500/20 to-blue-600/20 transition-all duration-200 ease-in-out focus:ring-2 focus:ring-blue-500/50" aria-label="Update Profile">Update Profile</a></li> -->
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content area -->
+        <div class="flex-1 md:ml-72 w-full transition-all duration-300">
+            <!-- Header -->
+            <header class="bg-white shadow-2xl p-4 flex justify-between items-center border-b border-gray-200">
+                <h1 id="welcome" class="text-2xl font-semibold text-gray-900">Welcome, User</h1>
+                <a href="/logout" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-2xl shadow-lg hover:from-blue-600 to-blue-700 active:from-blue-700 active:to-blue-800 focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 ease-in-out" aria-label="Logout">Logout</a>
+            </header>
+
+            <!-- Main content -->
+            <main id="main-content" class="p-8">
+                <div class="bg-white shadow-2xl rounded-2xl border border-gray-200 p-8">
+                    <h2 class="text-xl font-medium text-gray-900 mb-4">Dashboard Overview</h2>
+                    <p class="text-gray-600">Welcome to your role-specific dashboard. Use the navigation sidebar to access features.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

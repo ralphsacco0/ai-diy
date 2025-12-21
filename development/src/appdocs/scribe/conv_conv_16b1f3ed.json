@@ -1,0 +1,15 @@
+{
+  "summary": "The planning meeting was initiated by the client, with the architect, QA, and developer providing no comments due to specific triggers. The PM raised a question about naming the project.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "QA",
+    "DEVELOPER",
+    "PM"
+  ]
+}

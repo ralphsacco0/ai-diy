@@ -1,0 +1,26 @@
+{
+  "summary": "Client requested Sarah set up a vision meeting; PM asked for a project name. Architect, Developer, and QA did not provide comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "sarah",
+      "task": "Schedule a vision meeting, propose agenda, and invite stakeholders; collect proposed project names from PM and team beforehand",
+      "due": "2025-10-24"
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Create backlog item to organize vision meeting and define project name/goals"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Lack of a defined project vision/name may cause scope ambiguity and delays.",
+      "mitigation": "Hold the vision meeting promptly; PM to propose a project name and preliminary goals before the meeting; document outcomes and update backlog items."
+    }
+  ],
+  "participants": null
+}

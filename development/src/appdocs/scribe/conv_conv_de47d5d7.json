@@ -1,0 +1,20 @@
+{
+  "summary": "Team introduced themselves and solicited updates, blockers, and testing readiness; no updates, blockers, decisions, or action items were reported during this interaction.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "No updates or blockers were reported, creating a risk of undiscovered issues delaying progress.",
+      "mitigation": "PM to follow up individually for explicit status and blockers; ask owners to state 'Ready for testing!' when appropriate and to surface any impediments."
+    }
+  ],
+  "participants": [
+    "client",
+    "Sarah (PM)",
+    "Mike (Architect)",
+    "Alex (Developer)",
+    "Jordan (QA)"
+  ]
+}

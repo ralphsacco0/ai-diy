@@ -1,0 +1,26 @@
+{
+  "summary": "Client requested that Sarah start a vision meeting. The PM asked what to call the project; other attendees gave no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Start and schedule a vision meeting to define the project vision and decide the project name",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Add backlog item to define project name and capture vision/outcomes from the vision meeting"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Project name and vision are undefined, risking unclear scope and misaligned work.",
+      "mitigation": "Hold the vision meeting promptly, document agreed name and scope, and circulate notes to stakeholders for confirmation."
+    }
+  ],
+  "participants": null
+}

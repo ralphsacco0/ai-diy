@@ -1,0 +1,21 @@
+{
+  "summary": "The vision meeting was initiated by the client, with Sarah from PM enthusiastically asking for a project name suggestion. Other participants provided no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Team",
+      "task": "Provide suggestions for the project name",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "Sarah",
+    "ARCHITECT"
+  ]
+}

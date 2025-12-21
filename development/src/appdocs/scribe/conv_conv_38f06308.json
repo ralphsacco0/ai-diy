@@ -1,0 +1,38 @@
+{
+  "summary": "Quick readiness check with all roles present; no decisions made. Action items: client to set agenda/priorities, PM to pick meeting type, and developer to wait for assignment; QA clarified testing handoff format.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Provide meeting agenda and priorities for today's session",
+      "due": "ASAP"
+    },
+    {
+      "owner": "Sarah (PM)",
+      "task": "Select and announce meeting type to run (vision, requirements, planning, review, retrospective)",
+      "due": "ASAP"
+    },
+    {
+      "owner": "Developer",
+      "task": "Stand by to receive implementation task assignment once agenda/priorities are defined",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "No clear agenda or priorities defined, which may stall the meeting and work assignments",
+      "mitigation": "Client to provide agenda/priorities immediately; PM to confirm meeting type and prioritize items"
+    },
+    {
+      "risk": "Potential architecture/design blockers if requirements are unclear",
+      "mitigation": "Mike (Architect) to be available to unblock architecture questions and provide rapid decisions when needed"
+    },
+    {
+      "risk": "Unclear testing handoff format could delay QA verification",
+      "mitigation": "Team to use the established convention: post \"Ready for testing!\" with an explicit Expected output string so QA can run tests promptly"
+    }
+  ],
+  "participants": null
+}

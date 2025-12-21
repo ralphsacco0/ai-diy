@@ -1,0 +1,14 @@
+{
+  "summary": "The client asked how the app works, and PM Sarah provided a detailed explanation of AI-DIY's Agile in a Box process, outlining the collaborative AI team, meeting structure, and how to initiate and end meetings.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "QA",
+    "Developer",
+    "Sarah"
+  ]
+}

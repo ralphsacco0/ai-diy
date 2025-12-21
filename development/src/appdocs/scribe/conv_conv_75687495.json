@@ -1,0 +1,55 @@
+{
+  "summary": "The team discussed challenges in recreating deleted sprint plans due to API limitations on deletions, leading to potential ghost records, and agreed to use a new sprint ID like SP-004 if needed. They then outlined next steps for sprint planning, focusing on prioritizing user stories for foundational features like login and employee management.",
+  "decisions": [
+    {
+      "title": "Use new sprint ID if SP-001 not cleared",
+      "details": "To avoid conflicts from lingering sprint records, proceed with SP-004 as a safe alternative post-restore.",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Client",
+      "task": "Complete the re-restore process to clear old sprint records",
+      "due": ""
+    },
+    {
+      "owner": "Mike",
+      "task": "Propose 2-5 user stories for the next sprint based on client's priorities (e.g., auth or employee management)",
+      "due": ""
+    },
+    {
+      "owner": "Client",
+      "task": "Provide top priorities for the sprint (e.g., authentication first or employee directory basics)",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "US-001",
+      "title": "Story reset to Backlog status"
+    },
+    {
+      "type": "update",
+      "id": "US-010",
+      "title": "Story reset to Backlog status"
+    },
+    {
+      "type": "update",
+      "id": "US-015",
+      "title": "Story reset to Backlog status"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "API lacks delete functionality, leading to ghost sprint records that prevent ID recreation",
+      "mitigation": "Use new sprint IDs (e.g., SP-004) or manually wipe records via admin tools during restore"
+    }
+  ],
+  "participants": [
+    "Client",
+    "Mike"
+  ]
+}

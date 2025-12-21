@@ -1,0 +1,25 @@
+{
+  "summary": "Client requested Sarah to start a requirements meeting. Developer, Architect, and QA did not comment; PM asked what the project should be called.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Sarah",
+      "task": "Start the requirements meeting",
+      "due": ""
+    },
+    {
+      "owner": "PM",
+      "task": "Propose or decide the project name",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Key stakeholders (Developer, Architect, QA) did not provide input, risking incomplete or delayed requirements gathering",
+      "mitigation": "Follow up with non-responsive stakeholders, confirm required attendees, and schedule the requirements meeting with pre-meeting prep and assigned inputs."
+    }
+  ],
+  "participants": null
+}

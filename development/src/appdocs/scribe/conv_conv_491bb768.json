@@ -1,0 +1,12 @@
+{
+  "summary": "The client asked about available backlog items for the BrightHR Lite2 MVP, and the SPRINT_PLANNING_ARCHITECT outlined draft stories, priorities, and existing approvals while seeking the client's priority on starting with authentication or the employee directory.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "SPRINT_PLANNING_ARCHITECT"
+  ]
+}

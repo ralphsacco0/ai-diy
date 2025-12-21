@@ -1,0 +1,11 @@
+{
+  "sprint_id": "SP-001",
+  "created_at": "2025-11-15T16:58:30.139020",
+  "status": "planned",
+  "stories": [
+    "NFR-001",
+    "US-009"
+  ],
+  "estimated_minutes": 20,
+  "rationale": "NFR-001 establishes the local Mac environment (Node/Express/React/SQLite with npm scripts) as the required foundation. US-009 adds user authentication (login/logout, role sessions) on top, enabling secure access for all MVP features. This creates a testable app skeleton: run `npm start`, login at localhost:3000, verify roles. Aligns with vision constraints (local, lightweight, GDPR basics) and keeps execution under 20 mins."
+}

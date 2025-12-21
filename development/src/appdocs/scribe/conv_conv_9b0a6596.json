@@ -1,0 +1,61 @@
+{
+  "summary": "Quick team check-in: everyone reported they are doing well and ready to work. QA is ready to run tests/review changes, PM is ready to help/prioritize, Developer is awaiting assignment to start development, and Architect (Mike) is ready to work on architecture and design.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "QA",
+      "task": "Run tests and/or review changes when available",
+      "due": ""
+    },
+    {
+      "owner": "Developer",
+      "task": "Start development work once assigned (awaiting task assignment)",
+      "due": ""
+    },
+    {
+      "owner": "PM",
+      "task": "Define focus/prioritize tasks and assign work to the team",
+      "due": ""
+    },
+    {
+      "owner": "Mike (Architect)",
+      "task": "Begin architecture and design work as required",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "",
+      "title": "Create task for QA: run tests and review current changes"
+    },
+    {
+      "type": "add",
+      "id": "",
+      "title": "Create task for Developer: assign initial development work"
+    },
+    {
+      "type": "add",
+      "id": "",
+      "title": "Create task for PM: define priorities and assign owners"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "No explicit task assignments or priorities were made during the check-in, which may cause delays or idle time.",
+      "mitigation": "PM should assign clear tasks and priorities with owners and due dates."
+    },
+    {
+      "risk": "No deadlines or timelines were established, increasing the chance of scope drift.",
+      "mitigation": "Set due dates for actions and backlog items and communicate expectations to the team."
+    }
+  ],
+  "participants": [
+    "Client",
+    "QA",
+    "PM",
+    "Developer",
+    "Mike (Architect)"
+  ]
+}

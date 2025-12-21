@@ -1,0 +1,15 @@
+{
+  "summary": "The team members exchanged greetings and indicated their readiness for testing code, kicking off a project or meeting, and discussing architecture.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "DEVELOPER",
+    "PM",
+    "ARCHITECT"
+  ]
+}

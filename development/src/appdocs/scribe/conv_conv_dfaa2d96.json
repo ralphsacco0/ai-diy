@@ -1,0 +1,15 @@
+{
+  "summary": "The client initiated a version meeting, but QA, Architect, PM, and Developer provided no comments due to reasons like no trigger or not addressed.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "QA",
+    "ARCHITECT",
+    "PM",
+    "DEVELOPER"
+  ]
+}

@@ -1,0 +1,36 @@
+[
+  {
+    "timestamp": "2025-11-19T18:40:19.632602",
+    "participants": [
+      "client",
+      "QA",
+      "PM",
+      "ARCHITECT",
+      "DEVELOPER"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start spint execution meeting"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "I'm here for the sprint execution meeting\u2014ready to discuss dev tasks and implementation. What's the agenda?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_d85d1a27"
+  }
+]

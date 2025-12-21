@@ -1,0 +1,30 @@
+{
+  "summary": "The client highlighted that US-4 was not implemented despite being marked in the backlog, and Alex acknowledged the oversight and committed to prioritizing the full user authentication flow in the next sprint plan.",
+  "decisions": [
+    {
+      "title": "Prioritize US-4 in next sprint",
+      "details": "Implement full user authentication flow after confirming it was not executed",
+      "refs": []
+    }
+  ],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Alex",
+      "task": "Implement full user authentication flow for US-4",
+      "due": "Next sprint"
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "US-4",
+      "title": "Full user authentication flow implementation"
+    }
+  ],
+  "risks": [],
+  "participants": [
+    "client",
+    "Alex"
+  ]
+}

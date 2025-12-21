@@ -1,0 +1,20 @@
+{
+  "summary": "Client Sarah initiated a vision meeting; architecture, development, and QA provided no comments. The PM asked for a project name, indicating a decision/action is needed to name the project.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Propose and confirm a name for the project with the client (Sarah)",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Lack of input from architect, developer, and QA may delay clarifying vision and scope or finalizing the project name.",
+      "mitigation": "Follow up with each stakeholder to gather input, schedule a short naming/vision decision session, and set a deadline for confirming the name."
+    }
+  ],
+  "participants": null
+}

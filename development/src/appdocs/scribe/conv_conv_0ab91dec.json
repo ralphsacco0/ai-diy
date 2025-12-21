@@ -1,0 +1,20 @@
+{
+  "summary": "Client Sarah convened a vision meeting and the PM asked for a project name; Architect, Developer, and QA did not provide input (marked not_addressed). No decisions were made.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Propose project name options and circulate to client and team for selection",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Project name not decided, which may delay vision alignment and subsequent planning.",
+      "mitigation": "PM to propose name options promptly and solicit responses from the client and team to finalize the project name."
+    }
+  ],
+  "participants": null
+}

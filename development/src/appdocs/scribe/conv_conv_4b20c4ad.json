@@ -1,0 +1,20 @@
+{
+  "summary": "Client Sarah initiated a vision meeting and the PM asked for a project name. Architect, Developer, and QA provided no comments (marked not_addressed).",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Collect and propose project name options and follow up with stakeholders for approval",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "Key roles (Architect, Developer, QA) did not provide input, risking misaligned requirements or delayed decision-making.",
+      "mitigation": "Follow up with each role to solicit their input, set a deadline for name proposals, and assign clear owners for decision and communication."
+    }
+  ],
+  "participants": null
+}

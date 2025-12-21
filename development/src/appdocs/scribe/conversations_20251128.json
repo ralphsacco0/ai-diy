@@ -1,0 +1,99 @@
+[
+  {
+    "timestamp": "2025-11-28T00:33:15.216729",
+    "participants": [
+      "client",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hello team"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! Ready to dive into some code."
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hello team! Ready to dive into some architecture discussions if needed."
+      },
+      {
+        "persona": "PM",
+        "message": "Hello team! How can I help get this project started or aligned today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Ready to test any code changes."
+      }
+    ],
+    "summary": null,
+    "id": "conv_eb7599f5"
+  },
+  {
+    "timestamp": "2025-11-28T13:44:21.346409",
+    "participants": [
+      "client",
+      "PM",
+      "DEVELOPER",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! How can I help get this project started or aligned today?"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hi team! What's up?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Looking forward to some solid testing today."
+      }
+    ],
+    "summary": null,
+    "id": "conv_7ca93348"
+  },
+  {
+    "timestamp": "2025-11-28T14:47:47.764355",
+    "participants": [
+      "client",
+      "ARCHITECT",
+      "DEVELOPER",
+      "PM",
+      "QA"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "hi team"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "Hi team! Ready to dive into some architecture discussions if needed."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "Hey team! What's up?"
+      },
+      {
+        "persona": "PM",
+        "message": "Hi team! What can we tackle today?"
+      },
+      {
+        "persona": "QA",
+        "message": "Hi team! Jordan here, ready for any testing needs."
+      }
+    ],
+    "summary": null,
+    "id": "conv_380291c6"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "summary": "Client Sarah initiated a vision meeting and the PM asked what to call the project; no name or decisions were made and other participants (Architect, Developer, QA) did not comment.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "PM",
+      "task": "Propose project name options and confirm preferred name with Sarah (client)",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [],
+  "risks": [
+    {
+      "risk": "No project name decided yet which may delay alignment on scope and documentation",
+      "mitigation": "PM to propose name options and schedule a follow-up to confirm the project name with Sarah"
+    }
+  ],
+  "participants": null
+}

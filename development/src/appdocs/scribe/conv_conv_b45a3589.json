@@ -1,0 +1,21 @@
+{
+  "summary": "The Sprint Planning meeting was ended by the client and formally noted by PM Sarah, with no additional comments from the developer, QA, or architect.",
+  "decisions": [],
+  "sign_offs": [
+    {
+      "who": "Sarah (PM)",
+      "what": "Meeting ended: Sprint Planning",
+      "timestamp": "2025-10-05 09:09:49"
+    }
+  ],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Sarah (PM)",
+    "Developer",
+    "QA",
+    "Architect"
+  ]
+}

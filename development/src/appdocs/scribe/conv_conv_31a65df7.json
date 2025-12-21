@@ -1,0 +1,15 @@
+{
+  "summary": "The client asked Mike how far back he tracks conversation turns. The Architect role responded that it maintains full history from turn 9 onward, while other roles provided no comment.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer",
+    "PM",
+    "QA",
+    "Architect"
+  ]
+}

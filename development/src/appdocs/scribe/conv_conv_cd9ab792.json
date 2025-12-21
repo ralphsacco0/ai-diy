@@ -1,0 +1,15 @@
+{
+  "summary": "The client inquired about the process from idea to code, and the PM explained the structured Agile in a Box methodology, starting with a Vision meeting to clarify ideas and goals, followed by backlog building, sprint planning, and iterative development involving the Architect, Developer, and QA.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "ARCHITECT",
+    "DEVELOPER",
+    "PM",
+    "QA"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "summary": "The meeting started with greetings from the client, PM, and developers. The architect and QA had no comments.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM",
+    "ARCHITECT",
+    "Sarah",
+    "Mike",
+    "QA"
+  ]
+}

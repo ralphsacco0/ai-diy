@@ -1,0 +1,13 @@
+{
+  "summary": "The client asked for guidance on using the Agile in a Box app, and the PM provided an overview of its chat-based collaboration features with the AI team and suggested starting with a vision description or meeting request. The Architect recommended consulting Sarah for general app usage.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM",
+    "ARCHITECT"
+  ]
+}

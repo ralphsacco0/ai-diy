@@ -1,0 +1,95 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+share/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+
+# Donor files (archives and extracted content)
+donor/
+
+# History files
+.history/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup
+archive/
+dist/
+stable/
+
+# Cache
+.cache/
+
+# Execution sandbox and runtime files
+sandbox/
+sandbox/**/.runs/
+execution-sandbox/
+progress.log
+*.log
+
+# Generated documentation and scribe data
+development/src/static/
+**/static/appdocs/scribe/
+**/static/appdocs/visions/
+stable/src/static/appdocs/scribe/
+stable/src/static/appdocs/visions/
+
+# Broken/backup files
+*.broken
+*copy.md
+*copy.png
+*copy 2*
+* copy*
+system_prompts copy*
+system_prompts copy 2*
+
+# Static runtime data only (not the code)
+static/
+**/static/appdocs/scribe/
+**/static/appdocs/visions/
+**/static/img/
+
+# App-generated files that change each turn
+**/_scratchpad.md

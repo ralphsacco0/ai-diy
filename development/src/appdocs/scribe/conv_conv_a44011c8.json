@@ -1,0 +1,15 @@
+{
+  "summary": "The client ended the meeting, with no comments from the developer, QA, architect, or PM due to lack of triggers or the meeting end command.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "DEVELOPER",
+    "QA",
+    "ARCHITECT",
+    "PM"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "summary": "The meeting began with a casual check-in where the client greeted the team, and all participants—PM, QA, Developer, and Architect—responded positively, indicating they are doing well and ready for their respective roles and discussions.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "client",
+    "PM",
+    "QA",
+    "DEVELOPER",
+    "ARCHITECT"
+  ]
+}

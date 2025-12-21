@@ -1,0 +1,15 @@
+{
+  "summary": "The vision meeting ended as initiated by the client, with no comments from Developer, Architect, or QA, and PM Sarah thanking participants and suggesting to pick up vision details later or discuss next steps.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [],
+  "backlog_deltas": [],
+  "risks": [],
+  "participants": [
+    "Client",
+    "Developer",
+    "Architect",
+    "QA",
+    "Sarah"
+  ]
+}

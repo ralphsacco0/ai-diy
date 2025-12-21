@@ -1,0 +1,26 @@
+{
+  "summary": "Brief introductions from PM (Sarah), Architect (Mike), Developer (Alex), QA (Jordan), and the client; QA requested a required format for submitting changes for automated testing.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "Developers",
+      "task": "When changes are ready for testing, post \"Ready for testing!\" and include the expected output in quotes so QA can run automated tests.",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "update",
+      "id": "",
+      "title": "Update testing submission process to require posting 'Ready for testing!' with expected output in quotes"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Automated tests may not run or may produce false failures if the expected output is not provided with a testing submission.",
+      "mitigation": "Enforce the submission format; QA to reject or request resubmission for any change that lacks 'Ready for testing!' and the expected output; remind team of the requirement."
+    }
+  ],
+  "participants": null
+}

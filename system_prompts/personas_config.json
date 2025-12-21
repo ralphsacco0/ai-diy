@@ -1,0 +1,405 @@
+{
+  "comment": "Your comments go here",
+  "metadata": {
+    "version": "1.0",
+    "title": "Virtual Scrum Team \u2014 Persona Documentation (Strict Roles)",
+    "delivery_model": "Delivery model: Every user message is broadcast to all **selected** personas. There is no routing by mentions/keywords/defaults. Each persona decides locally whether to respond based on its System Prompt rules.",
+    "created": "2025-09-19",
+    "personas_count": 14,
+    "test_framework_mapping": {
+      "nodejs_express": {
+        "framework": "node:test",
+        "language": "JavaScript"
+      },
+      "Node.js": {
+        "framework": "node:test",
+        "language": "JavaScript"
+      },
+      "flask": {
+        "framework": "pytest",
+        "language": "Python"
+      },
+      "django": {
+        "framework": "pytest",
+        "language": "Python"
+      },
+      "default": {
+        "framework": "pytest",
+        "language": "Python"
+      }
+    },
+    "schema": {
+      "personas": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Persona name"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Display name for UI"
+          },
+          "role": {
+            "type": "string",
+            "description": "Full role description"
+          },
+          "role_key": {
+            "type": "string",
+            "description": "Unique role identifier"
+          },
+          "system_prompt": {
+            "type": "string",
+            "description": "AI system prompt"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether persona is active"
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Response priority (1=highest)"
+          },
+          "tools": {
+            "type": "array",
+            "description": "Available tools for this persona"
+          },
+          "persona_role": {
+            "type": "string",
+            "description": "Persona role for meeting context mapping (e.g., 'developer_alex', 'pm_sprint_review')"
+          }
+        }
+      }
+    }
+  },
+  "personas": {
+    "PM": {
+      "name": "Sarah",
+      "display_name": "Sarah \u00b7 Project Manager",
+      "role": "Project Manager (PM)",
+      "role_key": "PM",
+      "enabled": true,
+      "priority": 1,
+      "tools": [
+        "http_post"
+      ],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [],
+      "system_prompt_file": "system_prompts/PM_system_prompt.txt"
+    },
+    "REQUIREMENTS_PM": {
+      "name": "Sarah",
+      "display_name": "Sarah \u00b7 Requirements PM",
+      "role": "Requirements & Backlog Facilitator (REQUIREMENTS_PM)",
+      "role_key": "REQUIREMENTS_PM",
+      "meeting_display_name": "Requirements Meeting",
+      "enabled": true,
+      "priority": 1,
+      "tools": [
+        "http_post"
+      ],
+      "meeting_triggers": [
+        "start a requirements meeting",
+        "start requirements meeting",
+        "start a backlog meeting",
+        "start backlog meeting"
+      ],
+      "solo_mode": true,
+      "inject_context": [
+        "vision",
+        "backlog"
+      ],
+      "meeting_announcement": {
+        "start": "\u2705 Requirements Meeting started for: {project_name}\n\nLet's work on your requirements and backlog together. We are in a requirements meeting, so Mike, Alex, and Jordan won't chime in \u2014 it's just us for this focused discussion. This keeps our requirements conversation productive and clear.",
+        "end": "\ud83d\udcdd Meeting ended: Requirements Meeting: {project_name}"
+      },
+      "scribe_active_during_meeting": false,
+      "system_prompt_file": "system_prompts/REQUIREMENTS_PM_system_prompt.txt"
+    },
+    "VISION_PM": {
+      "name": "Sarah",
+      "display_name": "Sarah",
+      "role": "Vision Meeting Facilitator (VISION_PM)",
+      "role_key": "VISION_PM",
+      "meeting_display_name": "Vision Meeting",
+      "enabled": true,
+      "priority": 1,
+      "tools": [
+        "http_post"
+      ],
+      "meeting_triggers": [
+        "start a vision meeting",
+        "start vision meeting"
+      ],
+      "solo_mode": true,
+      "inject_context": [
+        "vision"
+      ],
+      "meeting_announcement": {
+        "start": "\u2705 Vision Meeting started for: {project_name}\n\nLet's work on your vision together. We are in a vision meeting, so Mike, Alex, and Jordan won't chime in \u2014 it's just us for this focused discussion. This keeps our vision conversation productive and clear.\n\nGreat \u2014 to create a clear, actionable vision I need a few details. Please answer these (or tell me which to start with):\n\n1. Project name (what should we call this?)\n2. What problem does your app solve? Why will users care?\n3. Who are the target users (personas, demographics, tech comfort)?\n4. Key features you envision (MVP must-haves vs nice-to-haves)\n5. Success criteria / metrics (how will we know this is successful?)\n6. Constraints or requirements (budget, timeline, platforms, tech stack, legal/privacy, integrations)\n7. Any competitors or inspiration we should consider?",
+        "end": "\ud83d\udcdd Meeting ended: Vision Meeting: {project_name}"
+      },
+      "scribe_active_during_meeting": false,
+      "system_prompt_file": "system_prompts/VISION_PM_system_prompt.txt"
+    },
+    "SPRINT_PLANNING_ARCHITECT": {
+      "name": "Mike",
+      "display_name": "Mike \u00b7 Sprint Planning Architect",
+      "role": "Sprint Planning Facilitator (SPRINT_PLANNING_ARCHITECT)",
+      "role_key": "SPRINT_PLANNING_ARCHITECT",
+      "meeting_display_name": "Sprint Planning Meeting",
+      "enabled": true,
+      "priority": 1,
+      "tools": [
+        "http_post"
+      ],
+      "meeting_triggers": [
+        "start sprint planning",
+        "start a sprint planning meeting",
+        "start sprint planning meeting",
+        "plan a sprint",
+        "let's plan a sprint"
+      ],
+      "meeting_announcement": {
+        "start": "\ud83c\udfaf Sprint Planning Meeting started\n\nLet's select stories that will generate working code. I'll analyze the backlog and propose a sprint scope.",
+        "end": "\ud83d\udcdd Meeting ended: Sprint Planning"
+      },
+      "solo_mode": true,
+      "inject_context": [
+        "vision",
+        "backlog"
+      ],
+      "scribe_active_during_meeting": false,
+      "system_prompt_file": "system_prompts/SPRINT_PLANNING_ARCHITECT_system_prompt.txt"
+    },
+    "SCRIBE": {
+      "name": "Scribe",
+      "display_name": "Scribe \u00b7 Recorder",
+      "role": "Meeting Recorder (SCRIBE)",
+      "role_key": "SCRIBE",
+      "enabled": false,
+      "priority": 2,
+      "tools": [],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [],
+      "system_prompt_file": "system_prompts/SCRIBE_system_prompt.txt"
+    },
+    "ARCHITECT": {
+      "name": "Mike",
+      "display_name": "Mike \u00b7 Architect",
+      "role": "Architect (ARCHITECT)",
+      "role_key": "ARCHITECT",
+      "enabled": true,
+      "priority": 3,
+      "tools": [],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [],
+      "system_prompt_file": "system_prompts/ARCHITECT_system_prompt.txt"
+    },
+    "QA": {
+      "name": "Jordan",
+      "display_name": "Jordan \u00b7 QA",
+      "role": "QA Tester (QA)",
+      "role_key": "QA",
+      "enabled": true,
+      "priority": 5,
+      "tools": [
+        "http_post"
+      ],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [],
+      "system_prompt_file": "system_prompts/QA_system_prompt.txt"
+    },
+    "DEVELOPER": {
+      "name": "Alex",
+      "display_name": "Alex \u00b7 Developer",
+      "role": "Developer (DEVELOPER)",
+      "role_key": "DEVELOPER",
+      "persona_role": "developer_alex",
+      "enabled": true,
+      "priority": 4,
+      "tools": [
+        "http_post"
+      ],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "system_prompt_file": "system_prompts/DEVELOPER_system_prompt.txt"
+    },
+    "SPRINT_REVIEW_PM": {
+      "name": "Sarah",
+      "display_name": "Sarah \u00b7 Sprint Review PM",
+      "role": "Sprint Review Facilitator (SPRINT_REVIEW_PM)",
+      "role_key": "SPRINT_REVIEW_PM",
+      "meeting_display_name": "Sprint Review Meeting",
+      "enabled": true,
+      "priority": 2,
+      "tools": [
+        "http_post"
+      ],
+      "meeting_triggers": [
+        "start sprint review meeting",
+        "start sprint review",
+        "review the sprint",
+        "demo the work"
+      ],
+      "solo_mode": true,
+      "inject_context": [
+        "vision",
+        "backlog",
+        "sprint_log"
+      ],
+      "meeting_announcement": {
+        "start": "\ud83c\udf89 Starting Sprint Review Meeting: {project_name}\n\nLet's review what was built in this sprint. I'll walk you through the completed work, and Alex is here to answer technical questions and help with any issues you find.",
+        "end": "\ud83d\udcdd Meeting ended: Sprint Review"
+      },
+      "scribe_active_during_meeting": false,
+      "additional_meeting_personas": [
+        "SPRINT_REVIEW_ALEX"
+      ],
+      "persona_role_mapping": {
+        "developer_alex": "SPRINT_REVIEW_ALEX"
+      },
+      "system_prompt_file": "system_prompts/SPRINT_REVIEW_PM_system_prompt.txt"
+    },
+    "SPRINT_RETROSPECTIVE_PM": {
+      "name": "Sarah",
+      "display_name": "Sarah \u00b7 Sprint Retrospective PM",
+      "role": "Sprint Retrospective Facilitator (SPRINT_RETROSPECTIVE_PM)",
+      "role_key": "SPRINT_RETROSPECTIVE_PM",
+      "enabled": true,
+      "priority": 2,
+      "tools": [
+        "http_post"
+      ],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [],
+      "system_prompt_file": "system_prompts/SPRINT_RETROSPECTIVE_PM_system_prompt.txt"
+    },
+    "SPRINT_EXECUTION_PM": {
+      "name": "Sarah",
+      "display_name": "Sarah \u00b7 Sprint Execution PM",
+      "role": "Sprint Execution Facilitator (SPRINT_EXECUTION_PM)",
+      "role_key": "SPRINT_EXECUTION_PM",
+      "meeting_display_name": "Sprint Execution Meeting",
+      "enabled": true,
+      "priority": 2,
+      "tools": [
+        "http_post"
+      ],
+      "meeting_triggers": [
+        "start sprint execution meeting",
+        "start sprint meeting"
+      ],
+      "solo_mode": true,
+      "inject_context": [
+        "vision",
+        "backlog",
+        "sprint_plan"
+      ],
+      "meeting_announcement": {
+        "start": "\ud83c\udfaf Starting Sprint Execution Meeting: {project_name}",
+        "end": "\ud83d\udcdd Meeting ended: Sprint Execution"
+      },
+      "scribe_active_during_meeting": false,
+      "system_prompt_file": "system_prompts/SPRINT_EXECUTION_PM_system_prompt.txt"
+    },
+    "SPRINT_EXECUTION_ARCHITECT": {
+      "name": "Mike",
+      "display_name": "Mike \u00b7 Execution Architect",
+      "role": "Sprint Execution Architect (SPRINT_EXECUTION_ARCHITECT)",
+      "role_key": "SPRINT_EXECUTION_ARCHITECT",
+      "enabled": true,
+      "priority": 10,
+      "tools": [],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [],
+      "system_prompt_file": "system_prompts/SPRINT_EXECUTION_ARCHITECT_system_prompt.txt"
+    },
+    "SPRINT_EXECUTION_DEVELOPER": {
+      "name": "Alex",
+      "display_name": "Alex \u00b7 Execution Developer",
+      "role": "Sprint Execution Developer (SPRINT_EXECUTION_DEVELOPER)",
+      "role_key": "SPRINT_EXECUTION_DEVELOPER",
+      "enabled": true,
+      "priority": 10,
+      "tools": [],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [],
+      "system_prompt_file": "system_prompts/SPRINT_EXECUTION_DEVELOPER_system_prompt.txt"
+    },
+    "SPRINT_EXECUTION_QA": {
+      "name": "Jordan",
+      "display_name": "Jordan \u00b7 Execution QA",
+      "role": "Sprint Execution QA (SPRINT_EXECUTION_QA)",
+      "role_key": "SPRINT_EXECUTION_QA",
+      "enabled": true,
+      "priority": 10,
+      "tools": [],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [],
+      "system_prompt_file": "system_prompts/SPRINT_EXECUTION_QA_system_prompt.txt"
+    },
+    "SPRINT_REVIEW_ALEX": {
+      "name": "Alex",
+      "display_name": "Alex \u00b7 Sprint Review Developer",
+      "role": "Sprint Review Developer (SPRINT_REVIEW_ALEX)",
+      "role_key": "SPRINT_REVIEW_ALEX",
+      "persona_role": "developer_alex",
+      "enabled": true,
+      "priority": 3,
+      "tools": [
+        "read_file",
+        "write_text",
+        "http_post",
+        "list_directory",
+        "run_command",
+        "list_snapshots",
+        "restore_snapshot"
+      ],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [
+        "vision",
+        "backlog",
+        "architecture"
+      ],
+      "scribe_active_during_meeting": false,
+      "system_prompt_file": "system_prompts/SPRINT_REVIEW_ALEX_system_prompt.txt"
+    },
+    "SPRINT_EXECUTION_ARCHITECT_RECOVERY": {
+      "name": "Mike",
+      "display_name": "Mike \u00b7 Recovery Architect",
+      "role": "Sprint Execution Architect Recovery (SPRINT_EXECUTION_ARCHITECT_RECOVERY)",
+      "role_key": "SPRINT_EXECUTION_ARCHITECT_RECOVERY",
+      "enabled": true,
+      "priority": 10,
+      "tools": [],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [],
+      "system_prompt_file": "system_prompts/SPRINT_EXECUTION_ARCHITECT_RECOVERY_system_prompt.txt"
+    },
+    "SPRINT_EXECUTION_DEVELOPER_RECOVERY": {
+      "name": "Alex",
+      "display_name": "Alex \u00b7 Recovery Developer",
+      "role": "Sprint Execution Developer Recovery (SPRINT_EXECUTION_DEVELOPER_RECOVERY)",
+      "role_key": "SPRINT_EXECUTION_DEVELOPER_RECOVERY",
+      "enabled": true,
+      "priority": 10,
+      "tools": [],
+      "meeting_triggers": [],
+      "solo_mode": false,
+      "inject_context": [],
+      "system_prompt_file": "system_prompts/SPRINT_EXECUTION_DEVELOPER_RECOVERY_system_prompt.txt"
+    }
+  },
+  "personas_count": 14
+}

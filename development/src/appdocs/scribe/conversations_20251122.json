@@ -1,0 +1,70 @@
+[
+  {
+    "timestamp": "2025-11-22T21:59:15.937030",
+    "participants": [
+      "client",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT",
+      "PM"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start sprint execution plan"
+      },
+      {
+        "persona": "QA",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      },
+      {
+        "persona": "PM",
+        "message": "What should we call this project?"
+      }
+    ],
+    "summary": null,
+    "id": "conv_be1e2811"
+  },
+  {
+    "timestamp": "2025-11-22T22:52:46.701385",
+    "participants": [
+      "client",
+      "PM",
+      "QA",
+      "DEVELOPER",
+      "ARCHITECT"
+    ],
+    "messages": [
+      {
+        "persona": "client",
+        "message": "start execution meeting"
+      },
+      {
+        "persona": "PM",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "QA",
+        "message": "Ready for the execution meeting, team."
+      },
+      {
+        "persona": "DEVELOPER",
+        "message": "No comment (reason: no_trigger)"
+      },
+      {
+        "persona": "ARCHITECT",
+        "message": "No comment (reason: meeting_start_command)"
+      }
+    ],
+    "summary": null,
+    "id": "conv_850644e7"
+  }
+]

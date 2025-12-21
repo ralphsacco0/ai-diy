@@ -1,0 +1,26 @@
+{
+  "summary": "Client requested Sarah to start a vision meeting; the PM asked what to call the project. Other roles did not provide input.",
+  "decisions": [],
+  "sign_offs": [],
+  "actions": [
+    {
+      "owner": "sarah",
+      "task": "Schedule and start the vision meeting as requested by the client",
+      "due": ""
+    }
+  ],
+  "backlog_deltas": [
+    {
+      "type": "add",
+      "id": "vm-1",
+      "title": "Add vision meeting to the meeting schedule/agenda"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Project name undecided, causing potential ambiguity in communication and planning",
+      "mitigation": "PM to propose project name options before or during the vision meeting and include naming as a confirmed agenda item to reach a decision"
+    }
+  ],
+  "participants": null
+}

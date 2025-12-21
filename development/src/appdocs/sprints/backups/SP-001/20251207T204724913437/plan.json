@@ -1,0 +1,13 @@
+{
+  "sprint_id": "SP-001",
+  "created_at": "2025-12-07T20:47:24.892788",
+  "status": "planned",
+  "stories": [
+    "NFR-001",
+    "US-009",
+    "NFR-004",
+    "US-001"
+  ],
+  "estimated_minutes": 20,
+  "rationale": "This sprint establishes the foundational tech stack and secure authentication system for BrightHR Lite, enabling a testable basic user flow. NFR-001 first sets up the Node.js/Express/SQLite environment with seeding (admin user and sample employees), providing a running app on localhost:3000. US-009 implements user login/logout with sessions, depending on the seeded database. NFR-004 builds directly on US-009 for role-based access (HR vs. Employee), ensuring secure differentiation in views. US-001 (Employee Directory Search) follows as a simple, testable feature for HR users to search seeded employee data post-login, with its dependency on adding employees met via seeding. Order: Foundation (NFR-001) \u2192 Core Auth (US-009) \u2192 Access Control (NFR-004) \u2192 Basic Feature (US-001). This creates a coherent 'Secure Access to Employee Directory' theme, with no conflicts, full dependency chain (all met or included), and a demonstrable increment: Admin logs in, accesses role-specific dashboard, searches employees\u2014verifiable in ~20 minutes. Delivers MVP value by proving secure, functional HR access without half-done elements."
+}
