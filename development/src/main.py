@@ -222,11 +222,22 @@ async def control_app(request: AppControlRequest):
         logger.error(f"Error controlling app: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# Serve static files
+# Ensure required directory structure exists
 static_dir = Path(__file__).parent / "static"
-if not static_dir.exists():
-    logger.error(f"Static directory does not exist: {static_dir}")
-    raise RuntimeError(f"Required static directory missing: {static_dir}")
+static_dir.mkdir(parents=True, exist_ok=True)
+
+# Create required appdocs subdirectories
+appdocs_dirs = [
+    static_dir / "appdocs" / "visions",
+    static_dir / "appdocs" / "backlog" / "wireframes",
+    static_dir / "appdocs" / "sprints" / "backups",
+    static_dir / "appdocs" / "scribe",
+    static_dir / "appdocs" / "sessions",
+]
+for dir_path in appdocs_dirs:
+    dir_path.mkdir(parents=True, exist_ok=True)
+
+logger.info(f"Static directory ready: {static_dir}")
 
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
