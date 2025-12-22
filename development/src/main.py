@@ -16,7 +16,7 @@ import sys
 import logging
 from datetime import datetime
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
