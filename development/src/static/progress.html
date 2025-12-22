@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI-DIY • Progress (Demo)</title>
+  <style>
+    :root{
+      --bg:#0f172a; /* slate-900 */
+      --panel:#111827; /* gray-900 */
+      --card:#0b1220;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --ok:#22c55e;
+      --fail:#ef4444;
+      --warn:#f59e0b;
+      --accent:#38bdf8;
+      --border:#1f2937;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Noto Sans, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 10% -10%, #0b1220 10%, #0f172a 40%, #0a0f1c 100%);
+      color:var(--text);
+    }
+    header{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:20px 24px; border-bottom:1px solid var(--border); backdrop-filter:saturate(120%) blur(2px);
+      position:sticky; top:0; background:linear-gradient(180deg, rgba(11,18,32,.9), rgba(11,18,32,.6));
+    }
+    header h1{font-size:18px; margin:0; letter-spacing:.2px}
+    header .meta{font-size:12px; color:var(--muted)}
+    .wrap{max-width:1200px; margin:0 auto; padding:20px}
+    .grid{display:grid; gap:16px; grid-template-columns: repeat(12, 1fr)}
+    .card{
+      background:linear-gradient(180deg, rgba(25,32,54,.8), rgba(15,23,42,.9));
+      border:1px solid var(--border);
+      border-radius:16px; padding:16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.02);
+    }
+    .card h2{font-size:14px; margin:0 0 8px 0; color:#cbd5e1; letter-spacing:.3px}
+    .muted{color:var(--muted)}
+    .kpi{display:flex; gap:16px; flex-wrap:wrap}
+    .pill{display:inline-flex; align-items:center; gap:8px; font-size:12px; padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:#0a1325}
+    .bar{height:10px; background:#0a1428; border:1px solid var(--border); border-radius:999px; overflow:hidden}
+    .bar > i{display:block; height:100%; width:40%; background:linear-gradient(90deg, #22d3ee, #38bdf8)}
+    .row{display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .list{display:flex; flex-direction:column; gap:10px; margin:0; padding:0; list-style:none}
+    .item{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:#0a1424}
+    .item .left{display:flex; gap:10px; align-items:center}
+    .badge{font-size:11px; border:1px solid var(--border); padding:3px 8px; border-radius:999px; color:#cbd5e1; background:#0b1220}
+    .stage{display:flex; gap:6px; flex-wrap:wrap}
+    .tick{width:14px; height:14px; border-radius:3px; border:1px solid var(--border); background:#0a1424}
+    .tick.done{background:linear-gradient(180deg,#10b981,#059669)}
+    .tick.fail{background:linear-gradient(180deg,#ef4444,#b91c1c)}
+    .tick.pending{background:linear-gradient(180deg,#1f2937,#0f172a)}
+    .ok{color:var(--ok)} .fail{color:var(--fail)} .warn{color:var(--warn)}
+    code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px; color:#cbd5e1}
+    .small{font-size:12px}
+    @media (max-width: 960px){
+      .grid{grid-template-columns: repeat(6, 1fr)}
+    }
+    @media (max-width: 640px){
+      .grid{grid-template-columns: repeat(4, 1fr)}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Progress • Sprint <span id="sprint-id">Loading...</span></h1>
+    <div class="meta" id="meta">Auto-refreshing demo • 0s ago</div>
+  </header>
+
+  <div class="wrap">
+    <div class="grid">
+      <!-- Sprint Summary -->
+      <section class="card" style="grid-column: span 12;">
+        <h2>Sprint Summary</h2>
+        <div class="kpi">
+          <span class="pill">Stories: <b id="kpi-total">3</b></span>
+          <span class="pill">Done: <b id="kpi-done">0</b></span>
+          <span class="pill">In progress: <b id="kpi-inprog">1</b></span>
+          <span class="pill">Blocked: <b id="kpi-blocked">0</b></span>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div class="bar" style="flex:1"><i id="progress-overall" style="width:0%"></i></div>
+          <div class="small muted" id="progress-text" style="min-width:60px; text-align:right">0%</div>
+        </div>
+      </section>
+
+      <!-- Inner Loop Tracker -->
+      <section class="card" style="grid-column: span 7;">
+        <h2>Inner Loop • Current Story <span class="badge" id="current-story">S-003</span></h2>
+        <div class="muted small" id="stage-label">Architect → Dev → QA (tick…tick…)</div>
+        <div class="stage" id="ticks" style="margin-top:10px"></div>
+        <ul class="list" style="margin-top:12px" id="microtasks"></ul>
+      </section>
+
+      <!-- Live Tests -->
+      <section class="card" style="grid-column: span 5;">
+        <h2>Live Tests</h2>
+        <ul class="list" id="tests">
+          <!-- items inserted by JS -->
+        </ul>
+      </section>
+
+      <!-- Recent Changes -->
+      <section class="card" style="grid-column: span 7;">
+        <h2>Recent Changes</h2>
+        <ul class="list" id="changes"></ul>
+      </section>
+
+      <!-- Replans & Model Stats -->
+      <section class="card" style="grid-column: span 5;">
+        <h2>Replans & Stats</h2>
+        <ul class="list" id="replans"></ul>
+        <div class="row" style="margin-top:10px">
+          <span class="pill">AI Calls Today: <b id="stat-calls">0</b></span>
+          <span class="pill">Avg Latency: <b id="stat-lat">0.0s</b></span>
+          <span class="pill">Budget Used: <b id="stat-budget">0%</b></span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // ------- Real data from execution log -------
+    let currentSprintId = null;
+    let progressData = null;
+
+    const testsEl = document.getElementById('tests');
+    const changesEl = document.getElementById('changes');
+    const replansEl = document.getElementById('replans');
+    const ticksEl = document.getElementById('ticks');
+    const microEl = document.getElementById('microtasks');
+    const metaEl = document.getElementById('meta');
+
+    function renderSummary(){
+      if (!progressData) return;
+      const summary = progressData.summary;
+      document.getElementById('kpi-total').textContent = summary.total;
+      document.getElementById('kpi-done').textContent = summary.done;
+      document.getElementById('kpi-inprog').textContent = summary.in_progress;
+      document.getElementById('kpi-blocked').textContent = summary.blocked;
+      document.getElementById('progress-overall').style.width = summary.progress_pct + '%';
+      document.getElementById('progress-text').textContent = summary.progress_pct + '%';
+    }
+
+    function renderTicks(){
+      if (!progressData) return;
+      const current = progressData.current_story;
+      const totalTasks = current.total_tasks;
+      const completedTasks = current.completed_tasks;
+      
+      ticksEl.innerHTML = '';
+      for(let i=0;i<totalTasks;i++){
+        const d = document.createElement('div');
+        d.className = 'tick' + (i < completedTasks ? ' done' : (i === completedTasks ? ' pending' : ' pending'));
+        ticksEl.appendChild(d);
+      }
+      
+      microEl.innerHTML='';
+      current.tasks.forEach((task, idx)=>{
+        const li = document.createElement('li');
+        li.className='item';
+        const status = task.status === 'done' ? 'Completed' : (idx === completedTasks ? 'In progress' : 'Pending');
+        const icon = task.status === 'done' ? '✅' : (idx === completedTasks ? '⏳' : '·');
+        const desc = task.description || `Task ${idx+1}`;
+        li.innerHTML = `<div class="left">
+            <span class="badge">${idx+1 < 10 ? '0'+(idx+1) : idx+1}</span>
+            <div>
+              <div>${desc}</div>
+              <div class="small muted">${status}</div>
+            </div>
+          </div>
+          <div>${icon}</div>`;
+        microEl.appendChild(li);
+      });
+      document.getElementById('current-story').textContent = current.id;
+    }
+
+    function renderTests(){
+      if (!progressData) return;
+      testsEl.innerHTML = '';
+      progressData.tests.forEach(t=>{
+        const li = document.createElement('li');
+        li.className='item';
+        li.innerHTML = `<div class="left">
+            <span class="badge">${t.ok ? 'PASS' : 'FAIL'}</span>
+            <div>${t.name}<div class="small muted">${t.ts}</div></div>
+          </div>
+          <div class="${t.ok?'ok':'fail'}">${t.ok?'✅':'❌'}</div>`;
+        testsEl.appendChild(li);
+      });
+    }
+
+    function renderChanges(){
+      if (!progressData) return;
+      changesEl.innerHTML='';
+      progressData.changes.forEach(c=>{
+        const li = document.createElement('li');
+        li.className='item';
+        li.innerHTML = `<div class="left">
+            <span class="badge">CHANGE</span>
+            <div>${c.msg}<div class="small muted">${c.ts}</div></div>
+          </div>`;
+        changesEl.appendChild(li);
+      });
+    }
+
+    function renderReplans(){
+      if (!progressData) return;
+      replansEl.innerHTML='';
+      progressData.replans.forEach(r=>{
+        const li = document.createElement('li');
+        li.className='item';
+        li.innerHTML = `<div class="left">
+            <span class="badge">REPLAN</span>
+            <div>${r.msg}<div class="small muted">${r.ts}</div></div>
+          </div>`;
+        replansEl.appendChild(li);
+      });
+    }
+
+    function renderStats(){
+      if (!progressData) return;
+      const stats = progressData.stats;
+      document.getElementById('stat-calls').textContent = stats.ai_calls;
+      document.getElementById('stat-lat').textContent = stats.avg_latency.toFixed(1)+'s';
+      document.getElementById('stat-budget').textContent = stats.budget_used+'%';
+    }
+
+    function renderAll(){
+      renderSummary();
+      renderTicks();
+      renderTests();
+      renderChanges();
+      renderReplans();
+      renderStats();
+      metaEl.textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    }
+
+    async function fetchProgress(){
+      if (!currentSprintId) return;
+      try {
+        const response = await fetch(`/api/sprints/progress/${currentSprintId}`);
+        if (response.ok) {
+          progressData = await response.json();
+          renderAll();
+        }
+      } catch (e) {
+        console.error('Failed to fetch progress:', e);
+      }
+    }
+
+    // Boot - fetch latest sprint and start polling
+    fetch('/api/sprints')
+      .then(r => r.json())
+      .then(response => {
+        const sprints = response.data?.sprints || [];
+        if (sprints.length > 0) {
+          currentSprintId = sprints[0].sprint_id;
+          document.getElementById('sprint-id').textContent = currentSprintId;
+          fetchProgress();
+          // Auto-refresh every 3 seconds
+          setInterval(fetchProgress, 3000);
+        } else {
+          metaEl.textContent = 'No sprints found';
+        }
+      })
+      .catch(e => {
+        console.error('Failed to fetch sprint:', e);
+        metaEl.textContent = 'Error loading sprint data';
+      });
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,3900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Scrum Sim V3 - AI-First Team Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+        
+        .header p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            height: 68vh;
+            min-height: 520px;
+        }
+        
+        .sidebar {
+            width: 280px;
+            min-width: 280px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-right: 2px solid #e9ecef;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+        }
+        
+        .section h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            padding: 0;
+        }
+        
+        .chat-room-select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .model-select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .persona-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .persona-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .persona-item:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .persona-item.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        .persona-checkbox {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .persona-info {
+            flex: 1;
+        }
+        
+        .persona-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .persona-role {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 380px;
+            min-height: 300px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: white;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 80%;
+        }
+        
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+        
+        .persona-card {
+            margin-bottom: 20px;
+            padding: 0;
+            border-radius: 12px;
+            max-width: 85%;
+            background: white;
+            border: 2px solid #e9ecef;
+            margin-right: auto;
+            overflow: hidden;
+        }
+        
+        .persona-card.thinking {
+            border-color: #ffc107;
+            background: #fffbf0;
+        }
+        
+        .persona-card.complete {
+            border-color: #22c55e;
+            background: #f0fdf4;
+        }
+        
+        .persona-card-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(0,0,0,0.02);
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .persona-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        
+        .persona-avatar.PM { background: #6f42c1; }
+        .persona-avatar.ARCHITECT { background: #fd7e14; }
+        .persona-avatar.DEVELOPER { background: #20c997; }
+        .persona-avatar.QA { background: #e83e8c; }
+        
+        .persona-name-role {
+            flex: 1;
+        }
+        
+        .persona-card-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #2c3e50;
+        }
+        
+        .persona-status {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .persona-content {
+            padding: 16px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: none;
+            min-height: 50px;
+        }
+        
+        .send-button {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        
+        .send-button:hover {
+            background: #5a6fd8;
+        }
+        
+        .send-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Meeting Control Buttons */
+        .meeting-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .meeting-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 6px 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+            height: 32px;
+        }
+
+        .meeting-btn:hover:not(:disabled) {
+            background: #5a6fd8;
+            transform: translateY(-1px);
+        }
+
+        .meeting-btn:disabled {
+            background: #6b7280;
+            color: #9ca3af;
+            cursor: pointer; /* Still clickable to show message */
+        }
+
+        .meeting-btn.active {
+            background: #10b981;
+            box-shadow: 0 0 0 2px #34d399;
+        }
+
+        .meeting-btn.end-meeting {
+            background: #ef4444;
+            flex: 0 0 auto;
+        }
+
+        .meeting-btn.end-meeting:hover:not(:disabled) {
+            background: #dc2626;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .settings-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .settings-btn:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid #d1d5db;
+            color: #1f2937;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        .model-management {
+            margin-bottom: 20px;
+        }
+        
+        .model-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .model-controls button {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .model-controls button:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .model-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-input {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .model-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        
+        .model-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .model-item:last-child {
+            border-bottom: none;
+        }
+        
+        .model-item label {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        
+        .loading, .error {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .error {
+            color: #dc3545;
+        }
+        
+        .persona-card.error .persona-status {
+            color: #dc3545;
+        }
+
+        .thinking-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .thinking-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .thinking-dots span {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: thinking-pulse 1.4s infinite ease-in-out;
+        }
+
+        .thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .thinking-dots span:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes thinking-pulse {
+            0%, 80%, 100% { 
+                transform: scale(0.6);
+                opacity: 0.5;
+            }
+            40% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .thinking-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .thinking-personas {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .persona-thinking {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            animation: persona-glow 2s infinite alternate;
+        }
+
+        .persona-thinking.alex { animation-delay: 0s; }
+        .persona-thinking.jordan { animation-delay: 0.5s; }
+        .persona-thinking.mike { animation-delay: 1s; }
+        .persona-thinking.sarah { animation-delay: 1.5s; }
+
+        @keyframes persona-glow {
+            from { 
+                background: rgba(255, 255, 255, 0.2);
+                transform: scale(1);
+            }
+            to { 
+                background: rgba(255, 255, 255, 0.4);
+                transform: scale(1.05);
+            }
+        }
+
+        /* Status Strip Styles */
+        .status-strip {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            padding: 8px 16px;
+            margin: 0 10px 10px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+            animation: status-slide-in 0.3s ease-out;
+        }
+
+        .status-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .status-text {
+            flex: 1;
+            opacity: 0.95;
+        }
+
+        .status-spinner {
+            display: flex;
+            gap: 3px;
+        }
+
+        .status-spinner span {
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: status-pulse 1.2s infinite ease-in-out;
+        }
+
+        .status-spinner span:nth-child(1) { animation-delay: -0.24s; }
+        .status-spinner span:nth-child(2) { animation-delay: -0.12s; }
+        .status-spinner span:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes status-pulse {
+            0%, 80%, 100% { 
+                transform: scale(0.8);
+                opacity: 0.6;
+            }
+            40% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes status-slide-in {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .status-strip.error {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+        }
+
+        .status-strip.success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        .response-block {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+
+        .response-block.error {
+            background: #fff5f5;
+            border-left-color: #dc3545;
+        }
+
+        .response-header {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .response-content {
+            color: #212529;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        
+        .windsurf-setting {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+        
+        .windsurf-setting label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .windsurf-setting input {
+            width: calc(100% - 80px);
+            margin-right: 10px;
+        }
+        
+        .windsurf-setting button {
+            width: 70px;
+        }
+
+        .env-indicator {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 12px;
+            margin-left: 10px;
+        }
+
+        .env-indicator.dev {
+            color: #212529;
+            background-color: #ffc107;
+        }
+
+        .env-indicator.stable {
+            color: #fff;
+            background-color: #28a745;
+        }
+        
+        .artifact-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .artifact-buttons .row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+        .artifact-buttons button {
+            flex: 1;
+            max-width: 100px;
+            padding: 6px 8px;
+            font-size: 12px;
+            border-radius: 6px;
+            background: #0a1424;
+            border: 1px solid #1f2937;
+            color: #e5e7eb;
+            cursor: pointer;
+        }
+        .artifact-buttons button:hover {
+            background: #1e293b;
+        }
+
+        /* Loading Animation - Corner Style */
+        .loading-overlay {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.95);
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: none;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+        }
+
+        .bubble-loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bubble {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: bubble-bounce 1.4s infinite ease-in-out;
+        }
+
+        .bubble:nth-child(1) { animation-delay: -0.32s; }
+        .bubble:nth-child(2) { animation-delay: -0.16s; }
+        .bubble:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes bubble-bounce {
+            0%, 80%, 100% {
+                transform: scale(0.6);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .loading-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .meeting-status {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            background: #1f2937;
+            color: #e5e7eb;
+        }
+        
+        .meeting-info {
+            text-align: center;
+        }
+        
+        .meeting-name {
+            font-weight: bold;
+            font-size: 14px;
+            color: #60a5fa;
+            margin-bottom: 4px;
+        }
+        
+        .meeting-type {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        
+        .meeting-status.active {
+            border-color: #10b981;
+            background: #064e3b;
+        }
+        
+        .meeting-status.active .meeting-name {
+            color: #34d399;
+        }
+
+        /* Budget Progress Styles - Compact inline display */
+        .budget-progress {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .budget-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .budget-icon {
+            font-size: 1.1em;
+        }
+
+        .budget-stats {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .budget-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .budget-progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .budget-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80 0%, #fbbf24 50%, #ef4444 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        /* Budget Progress in Overlay (Blue Status Bar) */
+        .budget-progress-overlay {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .budget-progress-overlay .budget-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        /* Thinking dots in budget header use existing .thinking-dots animation */
+        
+        .thinking-status {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .thinking-status .thinking-text {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .budget-progress-overlay .budget-stats {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .budget-progress-overlay .budget-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        
+        .budget-progress-overlay .stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+        
+        .budget-progress-overlay .stat-value {
+            font-weight: 600;
+        }
+        
+        .budget-progress-overlay .budget-progress-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .budget-progress-overlay .budget-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80 0%, #fbbf24 50%, #ef4444 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/static/img/logo.png" alt="ai-diy" style="height: 32px; position: absolute; left: 20px;">
+            <div style="text-align: center; flex: 1;">
+                <h1>Agile in a Box<span id="env-indicator"></span></h1>
+                <p>Your personal agile project team</p>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                
+                <div class="section">
+                    <div class="sidebar-header">
+                        <h3>Meeting Status</h3>
+                        <button class="settings-btn" id="settingsBtn">⚙️</button>
+                    </div>
+                    <div class="meeting-status" id="meetingStatus">
+                        <div class="meeting-info">
+                            <div class="meeting-name" id="meetingName">No Active Meeting</div>
+                            <div class="meeting-type" id="meetingType">Ready for collaboration</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3>Team Members</h3>
+                    <div class="persona-list" id="personaList">
+                        <div class="persona-item" data-persona="PM">
+                            <input type="checkbox" class="persona-checkbox" checked>
+                            <div class="persona-info">
+                                <div class="persona-name">Sarah</div>
+                                <div class="persona-role">Project Manager</div>
+                            </div>
+                        </div>
+                        <div class="persona-item" data-persona="VISION_PM" style="display: none;">
+                            <input type="checkbox" class="persona-checkbox">
+                            <div class="persona-info">
+                                <div class="persona-name">Sarah</div>
+                                <div class="persona-role">Vision Facilitator</div>
+                            </div>
+                        </div>
+                        <div class="persona-item" data-persona="REQUIREMENTS_PM" style="display: none;">
+                            <input type="checkbox" class="persona-checkbox">
+                            <div class="persona-info">
+                                <div class="persona-name">Sarah</div>
+                                <div class="persona-role">Requirements PM</div>
+                            </div>
+                        </div>
+                        <div class="persona-item" data-persona="SPRINT_REVIEW_PM" style="display: none;">
+                            <input type="checkbox" class="persona-checkbox">
+                            <div class="persona-info">
+                                <div class="persona-name">Sarah</div>
+                                <div class="persona-role">Sprint Review PM</div>
+                            </div>
+                        </div>
+                        <div class="persona-item" data-persona="SPRINT_EXECUTION_PM" style="display: none;">
+                            <input type="checkbox" class="persona-checkbox">
+                            <div class="persona-info">
+                                <div class="persona-name">Sarah</div>
+                                <div class="persona-role">Sprint Execution PM</div>
+                            </div>
+                        </div>
+                        <div class="persona-item" data-persona="SPRINT_PLANNING_ARCHITECT" style="display: none;">
+                            <input type="checkbox" class="persona-checkbox">
+                            <div class="persona-info">
+                                <div class="persona-name">Mike</div>
+                                <div class="persona-role">Sprint Planning Architect</div>
+                            </div>
+                        </div>
+                        <div class="persona-item" data-persona="ARCHITECT">
+                            <input type="checkbox" class="persona-checkbox" checked>
+                            <div class="persona-info">
+                                <div class="persona-name">Mike</div>
+                                <div class="persona-role">Architect</div>
+                            </div>
+                        </div>
+                        <div class="persona-item" data-persona="DEVELOPER">
+                            <input type="checkbox" class="persona-checkbox" checked>
+                            <div class="persona-info">
+                                <div class="persona-name">Alex</div>
+                                <div class="persona-role">Developer</div>
+                            </div>
+                        </div>
+                        <div class="persona-item" data-persona="QA">
+                            <input type="checkbox" class="persona-checkbox" checked>
+                            <div class="persona-info">
+                                <div class="persona-name">Jordan</div>
+                                <div class="persona-role">QA Tester</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="artifact-buttons">
+                        <div class="row">
+                            <button onclick="viewBacklog()">Backlog</button>
+                            <button onclick="viewSprintPlans()">Sprints</button>
+                        </div>
+                        <div class="row">
+                            <button onclick="showScribeModal()">Scribe</button>
+                            <button onclick="showVisionModal()">Vision</button>
+                        </div>
+                        <div class="row">
+                            <button onclick="openProgressStatus()">Progress</button>
+                            <button id="appControlBtn" onclick="toggleApp()">Run App</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-area">
+                <div class="chat-messages" id="chatMessages">
+                    <div style="text-align: center; color: #666; padding: 20px;">
+                        Select team members and start chatting.
+                    </div>
+                </div>
+                
+                <!-- Ephemeral Status Strip -->
+                <div id="statusStrip" class="status-strip" style="display: none;">
+                    <div class="status-content">
+                        <div class="status-text" id="statusText">Starting...</div>
+                        <div class="status-spinner" id="statusSpinner">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="meeting-controls">
+                    <button class="meeting-btn" id="visionBtn" data-meeting="vision">Vision</button>
+                    <button class="meeting-btn" id="backlogBtn" data-meeting="backlog" disabled>Backlog</button>
+                    <button class="meeting-btn" id="planBtn" data-meeting="plan" disabled>Plan</button>
+                    <button class="meeting-btn" id="executeBtn" data-meeting="execute" disabled>Execute</button>
+                    <button class="meeting-btn" id="reviewBtn" data-meeting="review" disabled>Review</button>
+                    <button class="meeting-btn end-meeting" id="endMeetingBtn" style="display: none;">End Meeting</button>
+                </div>
+                <div class="input-area">
+                    <textarea
+                        class="message-input"
+                        id="messageInput"
+                        placeholder="Type your message to the team..."
+                        rows="2"
+                    ></textarea>
+                    <button class="send-button" id="sendButton">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sprint Plans Modal -->
+    <div id="sprintModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🚀 Sprint Plans</h2>
+                <span class="close" id="closeSprintModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="sprintContent">
+                    <!-- Sprint content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-container">
+            <div class="bubble-loader">
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+            </div>
+            <div class="loading-text">AI Team is thinking...</div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Model Settings</h2>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            
+            <div class="current-model-section">
+                <h3>Current Model</h3>
+                <select class="model-select" id="modelSelector">
+                    <option value="">Loading models...</option>
+                </select>
+            </div>
+            
+            <div class="model-management">
+                <div class="model-controls">
+                    <button id="refreshModels">Refresh from OpenRouter</button>
+                    <button id="saveFavorites">Save Favorites</button>
+                    <button id="resetDefaults">Reset to Defaults</button>
+                </div>
+                
+                <div class="windsurf-setting">
+                    <label for="windsurfModel">Windsurf Model:</label>
+                    <input type="text" id="windsurfModel" class="filter-input" placeholder="GPT-5 (low reasoning)" value="GPT-5 (low reasoning)">
+                    <button id="saveWindsurfModel">Save</button>
+                </div>
+                
+                <div class="model-filters">
+                    <label>
+                        <input type="checkbox" id="showFreeOnly"> Show only free models
+                    </label>
+                    <select id="sortBy" class="filter-input">
+                        <option value="Alphabetical">Alphabetical</option>
+                        <option value="Price (input)">Price (input)</option>
+                        <option value="Price (output)">Price (output)</option>
+                    </select>
+                    <input type="text" id="filterText" class="filter-input" placeholder="Filter models...">
+                </div>
+                
+                <div id="modelList" class="model-list">
+                    <div class="loading">Loading models...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vision Modal -->
+    <div id="visionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Project Vision Documents</h2>
+                <span class="close" id="closeVisionModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="visionContent">
+                    <!-- Vision content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backlog Modal -->
+    <div id="backlogModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Requirements Backlog</h2>
+                <span class="close" id="closeBacklogModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="backlogContent">
+                    <!-- Backlog content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scribe Modal -->
+    <div id="scribeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2> Scribe Notes</h2>
+                <span class="close" id="closeScribeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="scribe-content">
+                    <!-- Scribe content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wireframe Preview Modal -->
+    <div id="wireframeModal" class="modal">
+        <div class="modal-content" style="width: 90%; height: 90%; max-width: none;">
+            <div class="modal-header">
+                <h2>Wireframe Preview</h2>
+                <span class="close" id="closeWireframeModal">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 0; height: calc(100% - 60px);">
+                <iframe id="wireframeFrame" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const personaList = document.getElementById('personaList');
+        // Sprint activity feed state
+        let lastSprintId = null;
+        let sprintFeedES = null;
+
+        function openProgressStatus() {
+            // Open the real-time progress page
+            window.open('/progress', '_blank');
+            // Also ensure in-window activity feed is running
+            ensureSprintActivityFeed();
+        }
+
+        async function ensureSprintActivityFeed() {
+            try {
+                let sid = lastSprintId || localStorage.getItem('lastSprintId');
+                if (!sid) return; // No sprint to track
+                
+                // Check if sprint is actually executing before opening SSE
+                const response = await fetch(`/api/sprints/${sid}/status`);
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.status === 'executing') {
+                    lastSprintId = sid;
+                    localStorage.setItem('lastSprintId', sid);
+                    startSprintActivityFeed();
+                } else {
+                    // Sprint not executing, clear stale ID
+                    console.log(`Sprint ${sid} not executing (status: ${data.data?.status || 'unknown'}), clearing stale ID`);
+                    localStorage.removeItem('lastSprintId');
+                    lastSprintId = null;
+                }
+            } catch (e) {
+                console.error('Failed to start sprint activity feed:', e);
+                // Clear stale ID on error
+                localStorage.removeItem('lastSprintId');
+                lastSprintId = null;
+            }
+        }
+
+        function sprintEventToLine(ev) {
+            const t = ev.event_type || ev.type;
+            const d = ev.data || {};
+            const sid = d.story_id || '';
+            const tid = d.task_id || '';
+
+            if (t === 'team_message') {
+                const persona = String(ev.persona || '').toLowerCase();
+                const who = persona === 'mike' ? 'Mike · ARCHITECT'
+                    : persona === 'alex' ? 'Alex · DEVELOPER'
+                    : persona === 'jordan' ? 'Jordan · QA TESTER'
+                    : 'Sprint Execution';
+                const text = ev.message || '';
+                const personaKey = persona === 'mike' ? 'mike'
+                    : persona === 'alex' ? 'alex'
+                    : persona === 'jordan' ? 'jordan'
+                    : 'system';
+                return text ? { who, text, persona: personaKey } : null;
+            }
+
+            switch (t) {
+                case 'sprint_started':
+                    return { who: 'Sprint Execution', text: 'Sprint execution started', persona: 'system' };
+                case 'story_started':
+                    return { who: 'Sprint Execution', text: `Starting work on ${sid}`, persona: 'system' };
+                case 'tests_generated': {
+                    const n = Array.isArray(d.tests) ? d.tests.length : (d.count || 0);
+                    return { who: 'Jordan · QA TESTER', text: `Generated ${n} test stubs for ${sid}`, persona: 'jordan' };
+                }
+                case 'mike_breakdown': {
+                    const details = d.summary || (d.task_count != null ? `task_count=${d.task_count}` : 'analyzing requirements');
+                    return { who: 'Mike · ARCHITECT', text: `Breaking down ${sid}: ${details}`, persona: 'mike' };
+                }
+                case 'alex_implemented': {
+                    const taskDesc = d.summary || tid || 'implementation task';
+                    const fileCount = d.files_count || d.files_written || '';
+                    const fileInfo = fileCount ? ` (${fileCount} files)` : '';
+                    return { who: 'Alex · DEVELOPER', text: `${tid}${fileInfo}`, persona: 'alex' };
+                }
+                case 'jordan_tested': {
+                    const passed = d.passed ?? 0;
+                    const failed = d.failed ?? 0;
+                    return { who: 'Jordan · QA TESTER', text: `Testing ${sid}: ${passed} passed, ${failed} failed`, persona: 'jordan' };
+                }
+                case 'story_completed':
+                    return { who: 'Sprint Execution', text: `✅ Completed ${sid}`, persona: 'system' };
+                case 'sprint_completed':
+                case 'sprint_complete':
+                    return { who: 'Sprint Execution', text: '✅ Sprint execution completed', persona: 'system' };
+                default:
+                    return null;
+            }
+        }
+
+        function appendSprintSystemLine(who, text, persona) {
+            if (!who || !text) return;
+            const autoScroll = (chatMessages.scrollTop + chatMessages.clientHeight) >= (chatMessages.scrollHeight - 4);
+            const div = document.createElement('div');
+            div.className = 'response';
+            const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+            
+            // Use black text for Mike/Alex/Jordan headers (no background)
+            const headerStyle = (persona === 'mike' || persona === 'alex' || persona === 'jordan') 
+                ? 'color: #000;' 
+                : '';
+            
+            div.innerHTML = `
+                <div class="response-header" style="${headerStyle}">${esc(who)}</div>
+                <div class="response-content">${esc(text)}</div>
+            `;
+            chatMessages.appendChild(div);
+            if (autoScroll) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        function startSprintActivityFeed() {
+            try {
+                // Only open stream once (global stream for all sprints)
+                if (sprintFeedES) {
+                    console.log('Sprint activity feed already connected');
+                    return;
+                }
+                
+                const es = new EventSource('/api/sprints/stream');
+                sprintFeedES = es;
+                
+                console.log('✅ Connected to global sprint activity stream');
+                
+                // Listen for sprint_execution_started event (structured, reliable)
+                es.addEventListener('sprint_execution_started', (e) => {
+                    try {
+                        const data = JSON.parse(e.data);
+                        console.log(`✅ Sprint execution started (structured event): ${data.sprint_id}`);
+                        // Meeting should already be started, just log confirmation
+                    } catch (err) {
+                        console.warn('Bad sprint_execution_started event:', err);
+                    }
+                });
+                
+                es.addEventListener('message', (e) => {
+                    try {
+                        const ev = JSON.parse(e.data);
+                        // Events now include sprint_id in payload
+                        console.log(`📨 Sprint event from ${ev.sprint_id}:`, ev.event_type || ev.type);
+                        const line = sprintEventToLine(ev);
+                        if (line) {
+                            appendSprintSystemLine(line.who, line.text, line.persona);
+                        }
+                    } catch (err) {
+                        console.warn('Bad sprint event:', err);
+                    }
+                });
+                es.addEventListener('error', () => {
+                    console.warn('Sprint stream connection error, will auto-reconnect');
+                });
+            } catch (e) {
+                console.error('Failed to open sprint stream:', e);
+            }
+        }
+        const modelSelector = document.getElementById('modelSelector');
+        
+        let currentMeeting = null;
+        let currentConfig = null;
+        let savedPersonaStates = {};
+        let uiPersonaMap = null; // Maps base UI personas (PM, DEVELOPER, QA, ARCHITECT) -> meeting personas
+        let pendingMeetingTransition = null; // {from, to, fromName, toName} - for confirmation flow
+
+        async function loadEnvironment() {
+            try {
+                const response = await fetch('/api/env');
+                const data = await response.json();
+                const env = data.environment || 'DEV';
+                
+                const indicator = document.getElementById('env-indicator');
+                const pageTitle = document.querySelector('title');
+
+                indicator.textContent = ` - ${env}`;
+                if (env === 'STABLE') {
+                    indicator.classList.add('stable');
+                } else {
+                    indicator.classList.add('dev');
+                }
+                
+                pageTitle.textContent = `Agile in a Box - ${env}`;
+                
+            } catch (error) {
+                console.error('Failed to load environment:', error);
+                const indicator = document.getElementById('env-indicator');
+                indicator.textContent = ' - DEV';
+                indicator.classList.add('dev');
+            }
+        }
+
+        // System message polling for orchestrator activity
+        let lastSystemMessageTimestamp = null;
+        let pollFailureCount = 0;
+        let systemMessagePollInterval = null;
+        let isSprintExecuting = false;
+        
+        function startSystemMessagePolling() {
+            if (systemMessagePollInterval) return; // Already polling
+            console.log('🚀 Starting system message polling (sprint execution active)');
+            isSprintExecuting = true;
+            systemMessagePollInterval = setInterval(pollSystemMessages, 2000);
+            pollSystemMessages(); // Immediate poll
+        }
+        
+        function stopSystemMessagePolling() {
+            if (systemMessagePollInterval) {
+                console.log('🛑 Stopping system message polling (sprint execution ended)');
+                clearInterval(systemMessagePollInterval);
+                systemMessagePollInterval = null;
+                isSprintExecuting = false;
+            }
+        }
+        
+        function pollSystemMessages() {
+            const url = lastSystemMessageTimestamp 
+                ? `/api/chat/system-messages?since=${encodeURIComponent(lastSystemMessageTimestamp)}`
+                : '/api/chat/system-messages';
+            
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.messages && data.messages.length > 0) {
+                        data.messages.forEach(msg => {
+                            addSystemMessage(msg.persona, msg.message);
+                            lastSystemMessageTimestamp = msg.timestamp;
+                        });
+                        pollFailureCount = 0; // Reset on success
+                    } else {
+                        // No new messages - check if timestamp is too old (server restart)
+                        pollFailureCount++;
+                        if (pollFailureCount > 30) { // After 60 seconds of no messages
+                            // Reset timestamp to get fresh messages
+                            console.log('Resetting system message timestamp due to inactivity');
+                            lastSystemMessageTimestamp = null;
+                            pollFailureCount = 0;
+                        }
+                    }
+                })
+                .catch(e => {
+                    console.error('System message poll error:', e);
+                    // On error, reset timestamp to recover
+                    pollFailureCount++;
+                    if (pollFailureCount > 5) {
+                        lastSystemMessageTimestamp = null;
+                        pollFailureCount = 0;
+                    }
+                });
+        }
+        
+        function addSystemMessage(persona, message) {
+            if (!message) {
+                return;
+            }
+
+            // Create a system message div (different style from user/persona messages)
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'response-block system-message';
+            messageDiv.innerHTML = `
+                <div class="response-header" style="color: #60a5fa;">${persona}</div>
+                <div class="response-content" style="font-style: italic; color: #94a3b8;">${message}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEnvironment();
+            loadModelConfig();
+            setupSettingsModal();
+            loadWindsurfModel();
+            initializeMeetingButtons();
+
+            // Periodically refresh button states to pick up new artifacts (every 10 seconds)
+            setInterval(() => {
+                updateMeetingButtonStates();
+            }, 10000);
+
+            // Don't start polling on page load - only during sprint execution
+            // Polling will start when "🎯 Starting Sprint Execution Meeting" is detected
+
+            // Ensure VISION_PM starts unchecked
+            const visionPmItem = document.querySelector('[data-persona="VISION_PM"]');
+            if (visionPmItem) {
+                const checkbox = visionPmItem.querySelector('.persona-checkbox');
+                if (checkbox) {
+                    checkbox.checked = false;
+                }
+            }
+            
+            // Add model selector change listener
+            modelSelector.addEventListener('change', async function() {
+                const selectedModel = this.value;
+                localStorage.setItem('selectedModel', selectedModel);
+
+                // Immediately update backend configuration
+                try {
+                    const response = await fetch('/models/set-default', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            model_id: selectedModel
+                        })
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        console.log('Model updated successfully:', result.default_model);
+                        // Update current config display
+                        await loadModelConfig();
+                    } else {
+                        console.error('Failed to update model');
+                        alert('Failed to update model selection');
+                    }
+                } catch (error) {
+                    console.error('Error updating model:', error);
+                    alert('Error updating model selection');
+                }
+            });
+        });
+
+        // Handle persona selection
+        personaList.addEventListener('click', (e) => {
+            const personaItem = e.target.closest('.persona-item');
+            if (personaItem) {
+                const checkbox = personaItem.querySelector('.persona-checkbox');
+                checkbox.checked = !checkbox.checked;
+                personaItem.classList.toggle('selected', checkbox.checked);
+            }
+        });
+
+        // Handle send message
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function getSelectedPersonas() {
+            const selected = [];
+            document.querySelectorAll('.persona-checkbox:checked').forEach(checkbox => {
+                const personaItem = checkbox.closest('.persona-item');
+                selected.push(personaItem.dataset.persona);
+            });
+            return selected;
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Check if this is a response to pending meeting transition confirmation
+            if (pendingMeetingTransition) {
+                const response = message.toLowerCase();
+
+                if (['yes', 'y'].includes(response)) {
+                    // Confirmed - execute transition
+                    const transition = pendingMeetingTransition;
+                    pendingMeetingTransition = null;
+
+                    addSystemMessageToChat(`✅ Ended ${transition.fromName}, starting ${transition.toName}...`);
+
+                    // Simulate typing the meeting trigger
+                    messageInput.value = '';
+                    simulateMeetingStart(transition.toConfig);
+                    return; // Don't send "yes" to backend
+                } else {
+                    // Anything else = no, cancel transition
+                    addSystemMessageToChat('Meeting switch cancelled');
+                    pendingMeetingTransition = null;
+                    messageInput.value = '';
+                    sendButton.disabled = false;
+                    return; // Don't send the cancellation message to backend
+                }
+            }
+
+            const selectedPersonas = getSelectedPersonas();
+            if (selectedPersonas.length === 0) {
+                alert('Please select at least one team member');
+                return;
+            }
+
+            // If sprint is executing, pause it for user interaction
+            if (isSprintExecuting && lastSprintId) {
+                console.log('🛑 Pausing sprint execution for user message');
+                fetch(`/api/sprints/${lastSprintId}/pause`, { method: 'POST' })
+                    .catch(err => console.error('Failed to pause sprint:', err));
+                
+                // Close SSE connection
+                if (sprintFeedES) {
+                    sprintFeedES.close();
+                    sprintFeedES = null;
+                }
+            }
+
+            // Map base UI personas (PM/DEVELOPER/QA/ARCHITECT) to meeting personas when applicable (only during an active meeting)
+            let personasToSend = selectedPersonas.slice();
+            if (currentMeeting && uiPersonaMap && typeof uiPersonaMap === 'object') {
+                personasToSend = selectedPersonas.map(p => uiPersonaMap[p] || p);
+            }
+
+            // Add user message to chat
+            addUserMessage(message);
+            
+            // Clear input and disable send button
+            messageInput.value = '';
+            sendButton.disabled = true;
+
+            // Send to API
+            streamChat(message, personasToSend);
+        }
+
+        function addUserMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user';
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showThinkingBanner(selectedPersonas = []) {
+            // Remove any existing banner
+            hideThinkingBanner();
+
+            if (selectedPersonas.length === 1) {
+                const personaKey = selectedPersonas[0];
+
+                // Check if this is a Vision or Requirements meeting (specialized PM personas)
+                if (personaKey === 'VISION_PM' || personaKey === 'REQUIREMENTS_PM') {
+                    // Vision/Requirements meeting - show budget progress in blue status bar
+                    showBudgetProgress();
+                    return; // Don't add anything to chat messages
+                }
+                
+                // Regular single persona - show individual thinking with progress capability
+                const personaName = getPersonaName(selectedPersonas[0]);
+                const banner = document.createElement('div');
+                banner.id = 'thinkingBanner';
+                banner.className = 'thinking-banner';
+                banner.innerHTML = `
+                    <div class="thinking-content">
+                        <div class="thinking-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div class="thinking-text">${personaName} is thinking...</div>
+                        <div class="thinking-progress" style="font-size: 0.9em; margin-top: 5px; color: #666;">
+                            Preparing response...
+                        </div>
+                    </div>
+                `;
+                chatMessages.appendChild(banner);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } else {
+                // Multiple personas - show collaboration banner
+                const banner = document.createElement('div');
+                banner.id = 'thinkingBanner';
+                banner.className = 'thinking-banner';
+                banner.innerHTML = `
+                    <div class="thinking-content">
+                        <div class="thinking-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div class="thinking-text">AI Team is collaborating...</div>
+                        <div class="thinking-personas">
+                            <span class="persona-thinking alex">Alex</span>
+                            <span class="persona-thinking jordan">Jordan</span>
+                            <span class="persona-thinking mike">Mike</span>
+                            <span class="persona-thinking sarah">Sarah</span>
+                        </div>
+                    </div>
+                `;
+                chatMessages.appendChild(banner);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        function hideThinkingBanner() {
+            const banner = document.getElementById('thinkingBanner');
+            if (banner) {
+                banner.remove();
+            }
+        }
+
+
+        // Chat history storage
+        let chatHistory = [];
+        
+        function addToChatHistory(role, content) {
+            chatHistory.push({
+                role: role,
+                content: content
+            });
+            
+            // Keep only last 20 messages to avoid token limits
+            if (chatHistory.length > 20) {
+                chatHistory = chatHistory.slice(-20);
+            }
+        }
+
+        function streamChat(message, selectedPersonas) {
+            const model = modelSelector.value;
+            const room = "general"; // Default to general since chat room selector removed
+            
+            // Add user message to history
+            addToChatHistory("user", message);
+            
+            
+            // Show immediate feedback
+            if (selectedPersonas.length === 1 && 
+                (selectedPersonas[0] === 'VISION_PM' || selectedPersonas[0] === 'REQUIREMENTS_PM')) {
+                // Vision/Requirements: Show thinking status (will upgrade to budget display on first progress)
+                showThinkingStatus();
+            } else {
+                // Other personas: Show loading text and thinking banner
+                const loadingText = selectedPersonas.length === 1 ? "AI is thinking..." : "AI Team is collaborating...";
+                showLoading(loadingText);
+                showThinkingBanner(selectedPersonas);
+            }
+            
+            fetch('/api/stream-chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    selected_personas: selectedPersonas,
+                    model: model,
+                    chat_room: room,
+                    chat_history: chatHistory.slice(0, -1) // Send history without current message
+                })
+            })
+            .then(response => {
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                
+                function readStream() {
+                    reader.read().then(({ done, value }) => {
+                        if (done) {
+                            console.log('📖 Stream ended');
+                            sendButton.disabled = false;
+                            return;
+                        }
+                        
+                        const chunk = decoder.decode(value);
+                        console.log('📦 Raw chunk received:', chunk.length, 'chars');
+                        
+                        const lines = chunk.split('\n');
+                        console.log('📝 Lines in chunk:', lines.length);
+                        
+                        lines.forEach(line => {
+                            console.log('🔍 Processing line:', repr(line));
+                            if (line.startsWith('data: ')) {
+                                try {
+                                    const data = JSON.parse(line.slice(6));
+                                    console.log('✅ Parsed event:', data.type, data);
+                                    handleStreamEvent(data);
+                                } catch (e) {
+                                    console.error('❌ Parse error:', e, 'on line:', line);
+                                }
+                            } else if (line.trim()) {
+                                console.log('⚠️  Non-data line:', repr(line));
+                            }
+                        });
+                        
+                        readStream();
+                    });
+                }
+                
+                readStream();
+            })
+            .catch(error => {
+                console.error('Stream error:', error);
+                hideLoading();
+                hideThinkingBanner();
+                sendButton.disabled = false;
+            });
+        }
+
+        function repr(str) {
+            return JSON.stringify(str);
+        }
+
+        function handleStreamEvent(data) {
+            console.log('🔄 Stream event received:', data.type, data);
+            
+            switch (data.type) {
+                case 'sprint_execution_started':
+                    // Sprint execution started - open SSE stream for execution messages
+                    const sprintId = data.sprint_id;
+                    console.log(`🚀 Sprint execution started: ${sprintId}, opening SSE stream`);
+                    lastSprintId = sprintId;
+                    localStorage.setItem('lastSprintId', sprintId);
+                    startSprintActivityFeed();
+                    // Start the meeting UI
+                    if (!currentMeeting || currentMeeting.persona !== 'SPRINT_EXECUTION_PM') {
+                        startMeeting('SPRINT_EXECUTION_PM', `Sprint ${sprintId}`, 'Sprint Execution Meeting');
+                    }
+                    break;
+                
+                case 'start':
+                    console.log('▶️  Stream started');
+                    // For Vision/Requirements meetings, hide loading overlay to show budget progress banner
+                    // For other personas, keep loading overlay visible
+                    const startBanner = document.getElementById('thinkingBanner');
+                    if (startBanner && startBanner.querySelector('.budget-progress')) {
+                        // This is a Vision/Requirements meeting - hide loading overlay to show budget display
+                        hideLoading();
+                    } else {
+                        // Regular persona - hide thinking banner, keep loading overlay
+                        hideThinkingBanner();
+                    }
+                    break;
+                
+                case 'content_chunk':
+                    console.log('📝 Content chunk received:', data.persona, data.content.length, 'chars');
+                    // Find or create streaming response div for this persona
+                    var streamingDiv = document.getElementById(`streaming-${data.persona}`);
+                    if (!streamingDiv) {
+                        streamingDiv = document.createElement('div');
+                        streamingDiv.id = `streaming-${data.persona}`;
+                        streamingDiv.className = 'response-block streaming';
+                        streamingDiv.innerHTML = `
+                            <div class="response-header">${data.name}</div>
+                            <div class="response-content" id="streaming-content-${data.persona}"></div>
+                        `;
+                        chatMessages.appendChild(streamingDiv);
+                    }
+                    // Append content chunk to the streaming div
+                    const contentDiv = document.getElementById(`streaming-content-${data.persona}`);
+                    if (contentDiv) {
+                        contentDiv.textContent += data.content;
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                    break;
+                    
+                case 'status':
+                    console.log('📊 Status update:', data);
+                    // Update loading text when Scribe starts processing
+                    if (data.message === 'scribe_processing') {
+                        showLoading('Scribe compiling notes...');
+                    }
+                    break;
+                    
+                case 'progress':
+                    console.log('⏱️  Progress update received:', data.persona, data.progress);
+                    
+                    // Check if this is Vision/Requirements meeting (budget display in overlay)
+                    const overlay = document.getElementById('loadingOverlay');
+                    const budgetOverlay = overlay ? overlay.querySelector('.budget-progress-overlay') : null;
+                    const thinkingStatus = overlay ? overlay.querySelector('.thinking-status') : null;
+                    
+                    // If we're still showing "Thinking..." status, upgrade to budget display
+                    if (thinkingStatus && data.progress) {
+                        console.log('⬆️  Upgrading from thinking status to budget display');
+                        showBudgetProgress();
+                        // Now budgetOverlay should exist, fall through to update it
+                    }
+                    
+                    // Get budgetOverlay again in case we just created it
+                    const budgetOverlayNow = overlay ? overlay.querySelector('.budget-progress-overlay') : null;
+                    
+                    if (budgetOverlayNow && data.progress) {
+                        // Update budget progress display in blue status bar for Vision/Requirements meetings
+                        const elapsed = data.progress.elapsed_seconds;
+                        const budget = data.progress.budget_seconds;
+                        const tokensOut = data.progress.tokens_out;
+                        const tokensMax = data.progress.tokens_max;
+                        const tokensK = (tokensOut / 1000).toFixed(1);
+                        const maxK = (tokensMax / 1000).toFixed(0);
+
+                        // Update budget stats - show current / limit
+                        const timeEl = document.getElementById('budgetTime');
+                        const tokensEl = document.getElementById('budgetTokens');
+                        const progressFill = document.getElementById('budgetProgressFill');
+
+                        if (timeEl) timeEl.textContent = `${elapsed}s / ${budget}s`;
+                        if (tokensEl) tokensEl.textContent = `${tokensK}K / ${maxK}K`;
+
+                        // Update progress bar (percentage of time used)
+                        const timePercent = Math.min((elapsed / budget) * 100, 100);
+                        if (progressFill) progressFill.style.width = `${timePercent}%`;
+
+                        console.log(`💰 Budget update: ${elapsed}s / ${budget}s • ${tokensK}K / ${maxK}K tokens`);
+                    } else {
+                        // Regular thinking banner update for non-Vision/Requirements personas
+                        const progressBanner = document.getElementById('thinkingBanner');
+                        if (progressBanner) {
+                            const progressDiv = progressBanner.querySelector('.thinking-progress');
+                            if (progressDiv && data.progress) {
+                                const elapsed = data.progress.elapsed_seconds;
+                                const budget = data.progress.budget_seconds;
+                                const tokensOut = data.progress.tokens_out;
+                                const tokensMax = data.progress.tokens_max;
+                                const tokensK = (tokensOut / 1000).toFixed(1);
+                                const maxK = (tokensMax / 1000).toFixed(0);
+
+                                progressDiv.innerHTML = `⏱️ ${elapsed}s / ${budget}s  •  🎯 ${tokensK}K / ${maxK}K tokens`;
+                            }
+                        } else {
+                            console.log('⚠️  Banner not found for progress update');
+                        }
+                    }
+                    break;
+                    
+                case 'meeting_started':
+                    // Structured meeting start signal from backend
+                    try {
+                        const persona = data.persona;
+                        const projectName = (data.project_name || '').toString();
+                        const meetingDisplayName = data.meeting_display_name || 'Meeting';
+                        uiPersonaMap = data.ui_persona_map || null;
+                        
+                        // Use generic startMeeting function with data from backend
+                        startMeeting(persona, projectName, meetingDisplayName);
+                        
+                        // If this is a sprint execution meeting, open SSE stream for execution messages
+                        if (persona === 'SPRINT_EXECUTION_PM') {
+                            console.log('🚀 Sprint execution meeting started, opening SSE stream');
+                            ensureSprintActivityFeed();
+                        }
+
+                        // If backend indicates additional participants (e.g., DEVELOPER), re-check those base personas in UI
+                        if (uiPersonaMap && typeof uiPersonaMap === 'object') {
+                            Object.keys(uiPersonaMap).forEach(base => {
+                                // PM/ARCHITECT are swapped to meeting personas by startMeeting();
+                                // re-check any other base personas (e.g., DEVELOPER, QA)
+                                if (base !== 'PM' && base !== 'ARCHITECT') {
+                                    const item = document.querySelector(`[data-persona="${base}"]`);
+                                    if (item) {
+                                        const cb = item.querySelector('.persona-checkbox');
+                                        if (cb) {
+                                            cb.checked = true;
+                                            item.classList.add('selected');
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    } catch (e) {
+                        console.warn('Failed to handle meeting_started event', e);
+                    }
+                    break;
+
+                case 'persona_response':
+                    // Update progress display with final stats if available
+                    console.log('Persona response received:', data.persona, 'Has progress:', !!data.progress);
+                    if (data.progress) {
+                        console.log('Progress data:', data.progress);
+                        const elapsed = data.progress.elapsed_seconds;
+                        const budget = data.progress.budget_seconds;
+                        const tokensUsed = data.progress.tokens_in + data.progress.tokens_out;
+                        const tokensMax = data.progress.tokens_max;
+                        const tokensK = (tokensUsed / 1000).toFixed(1);
+                        const maxK = (tokensMax / 1000).toFixed(0);
+
+                        // Check if budget display is in overlay (Vision/Requirements)
+                        const overlay = document.getElementById('loadingOverlay');
+                        const budgetOverlay = overlay ? overlay.querySelector('.budget-progress-overlay') : null;
+                        
+                        if (budgetOverlay) {
+                            // Update budget display in blue status bar with final stats
+                            const timeEl = document.getElementById('budgetTime');
+                            const tokensEl = document.getElementById('budgetTokens');
+                            const progressFill = document.getElementById('budgetProgressFill');
+
+                            if (timeEl) timeEl.textContent = `${elapsed}s / ${budget}s`;
+                            if (tokensEl) tokensEl.textContent = `${tokensK}K / ${maxK}K`;
+                            if (progressFill) progressFill.style.width = '100%';
+
+                            console.log(`💰 Final: ${elapsed}s / ${budget}s • ${tokensK}K / ${maxK}K tokens`);
+                            
+                            // Keep budget display visible briefly, then hide
+                            setTimeout(() => hideLoading(), 2000);
+                        } else {
+                            // Regular thinking banner update
+                            const banner = document.getElementById('thinkingBanner');
+                            if (banner) {
+                                const progressDiv = banner.querySelector('.thinking-progress');
+                                if (progressDiv) {
+                                    // Update progress text in single-persona banner
+                                    progressDiv.innerHTML = `⏱️ ${elapsed}s / ${budget}s  •  🎯 ${tokensK}K / ${maxK}K tokens`;
+                                    // Hide after showing briefly
+                                    setTimeout(() => hideThinkingBanner(), 3000);
+                                } else {
+                                    // Fallback for multi-persona - hide immediately
+                                    hideThinkingBanner();
+                                }
+                            }
+                        }
+                    } else {
+                        // No progress data - hide displays immediately
+                        hideThinkingBanner();
+                        hideLoading();
+                    }
+                    
+                    // Remove streaming div if it exists (for Vision/Requirements that streamed content)
+                    const existingStreamingDiv = document.getElementById(`streaming-${data.persona}`);
+                    if (existingStreamingDiv) {
+                        existingStreamingDiv.remove();
+                    }
+
+                    // If content redundantly starts with the same persona name shown in the header (e.g., "Sarah: ..."),
+                    // strip it for display so the UI doesn't show the name twice.
+                    const headerName = getPersonaName(data.persona);
+                    let displayContent = data.content;
+                    try {
+                        if (typeof displayContent === 'string' && typeof headerName === 'string') {
+                            const trimmed = displayContent.trimStart();
+                            const prefix = `${headerName}:`;
+                            if (trimmed.toLowerCase().startsWith(prefix.toLowerCase())) {
+                                displayContent = trimmed.slice(prefix.length).trimStart();
+                            }
+                        }
+                    } catch (e) {
+                        // If anything goes wrong, fall back to original content
+                        displayContent = data.content;
+                    }
+                    
+                    // Create simple response block
+                    const responseDiv = document.createElement('div');
+                    responseDiv.className = 'response-block';
+                    responseDiv.innerHTML = `
+                        <div class="response-header">${headerName}</div>
+                        <div class="response-content">${displayContent}</div>
+                    `;
+                    chatMessages.appendChild(responseDiv);
+                    
+                    // Add persona response to chat history
+                    addToChatHistory("assistant", `${getPersonaName(data.persona)}: ${data.content}`);
+
+                    // Refresh button states after Sprint Planning responses (sprint plan may have been created)
+                    if (data.persona === 'SPRINT_PLANNING_ARCHITECT') {
+                        console.log('Sprint Planning response received, refreshing button states');
+                        setTimeout(() => updateMeetingButtonStates(), 1000);
+                    }
+
+                    // Check for sprint execution started
+                    if (data.persona === 'SPRINT_EXECUTION_PM' && data.content.includes('Sprint execution started for')) {
+                        console.log('🚀 Sprint execution started, opening SSE stream');
+                        // Extract sprint ID from message
+                        const sprintMatch = data.content.match(/SP-\d+/);
+                        if (sprintMatch) {
+                            const sprintId = sprintMatch[0];
+                            lastSprintId = sprintId;
+                            localStorage.setItem('lastSprintId', sprintId);
+                            startSprintActivityFeed();
+                        }
+                    }
+                    
+                    // If sprint was paused for user interaction, resume it now
+                    if (isSprintExecuting && lastSprintId) {
+                        console.log('▶️ Resuming sprint execution after response');
+                        setTimeout(() => {
+                            fetch(`/api/sprints/${lastSprintId}/resume`, { method: 'POST' })
+                                .then(() => {
+                                    // Stream already connected (global), just resume execution
+                                    console.log('Sprint resumed, stream already connected');
+                                })
+                                .catch(err => console.error('Failed to resume sprint:', err));
+                        }, 1000); // Brief delay to ensure response is displayed
+                    }
+                    
+                    // Check for meeting announcements from Sarah/PM
+                    if ((data.persona === 'PM' || data.persona === 'REQUIREMENTS_PM' || data.persona === 'VISION_PM' || data.persona === 'SPRINT_PLANNING_ARCHITECT' || data.persona === 'SPRINT_EXECUTION_PM' || data.persona === 'SPRINT_REVIEW_PM') && 
+                        (data.content.includes('🎯 Starting Vision Meeting:') || 
+                         data.content.includes('🎯 Starting Requirements Meeting:') ||
+                         data.content.includes('✅ Requirements Meeting started for:') ||
+                         data.content.includes('✅ Vision Meeting started for:') ||
+                         data.content.includes('🎯 Sprint Planning Meeting started') ||
+                         data.content.includes('🎯 Starting Sprint Execution Meeting:') ||
+                         data.content.includes('🚀 Sprint') ||
+                         data.content.includes('Sprint execution started') ||
+                         data.content.includes('🎉 Starting Sprint Review Meeting:'))) {
+                        detectAndHandleMeeting(data.content);
+                    }
+
+                    // Check for meeting end announcements
+                    if ((data.persona === 'VISION_PM' || data.persona === 'REQUIREMENTS_PM' || data.persona === 'SPRINT_PLANNING_ARCHITECT' || data.persona === 'SPRINT_EXECUTION_PM' || data.persona === 'SPRINT_REVIEW_PM') && data.content.includes('📝 Meeting ended:')) {
+                        // Use generic end function for all meeting types
+                        endMeetingByPersona(data.persona);
+                    }
+                    
+                case 'complete':
+                    console.log('✅ Stream complete');
+                    // Hide loading overlay (Scribe processing finished)
+                    hideLoading();
+                    hideThinkingBanner();
+                    sendButton.disabled = false;
+                    break;
+                    
+                case 'error':
+                    console.error('Stream error:', data.content);
+                    hideLoading();
+                    hideThinkingBanner();
+                    sendButton.disabled = false;
+                    break;
+            }
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function getPersonaName(persona) {
+            const names = {
+                'PM': 'Sarah',
+                'VISION_PM': 'Sarah',
+                'REQUIREMENTS_PM': 'Sarah',
+                'DEVELOPER': 'Alex', 
+                'QA': 'Jordan',
+                'ARCHITECT': 'Mike',
+                'SPRINT_PLANNING_ARCHITECT': 'Mike',
+                'SPRINT_EXECUTION_PM': 'Sarah'
+            };
+            return names[persona] || persona;
+        }
+
+        // Model configuration functions
+        async function loadModelConfig() {
+            try {
+                const response = await fetch('/models/config');
+                currentConfig = await response.json();
+                
+                // Populate model selector with favorites
+                modelSelector.innerHTML = '';
+                
+                currentConfig.favorites.forEach(modelId => {
+                    const option = document.createElement('option');
+                    option.value = modelId;
+                    option.textContent = modelId;
+                    modelSelector.appendChild(option);
+                });
+                
+                // Set default selection - check localStorage first, then config default
+                const savedModel = localStorage.getItem('selectedModel');
+                if (savedModel && Array.from(modelSelector.options).some(opt => opt.value === savedModel)) {
+                    modelSelector.value = savedModel;
+                } else if (currentConfig.default_model && modelSelector.options.length > 0) {
+                    modelSelector.value = currentConfig.default_model;
+                } else if (modelSelector.options.length > 0) {
+                    modelSelector.value = modelSelector.options[0].value;
+                }
+            } catch (error) {
+                console.error('Failed to load model config:', error);
+            }
+        }
+
+        function setupSettingsModal() {
+            const modal = document.getElementById('settingsModal');
+            const settingsBtn = document.getElementById('settingsBtn');
+            const closeModal = document.getElementById('closeModal');
+            
+            settingsBtn.onclick = function() {
+                modal.style.display = 'block';
+                loadModelsForSettings();
+            }
+            
+            closeModal.onclick = function() {
+                modal.style.display = 'none';
+            }
+            
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
+            
+            // Setup event listeners
+            document.getElementById('refreshModels').onclick = loadModelsForSettings;
+            document.getElementById('saveFavorites').onclick = saveFavorites;
+            document.getElementById('resetDefaults').onclick = resetDefaults;
+            document.getElementById('showFreeOnly').onchange = filterModels;
+            document.getElementById('sortBy').onchange = filterModels;
+            document.getElementById('filterText').oninput = filterModels;
+            document.getElementById('saveWindsurfModel').onclick = saveWindsurfModel;
+        }
+
+        async function loadModelsForSettings() {
+            const modelList = document.getElementById('modelList');
+            modelList.innerHTML = '<div class="loading">Loading models...</div>';
+            
+            try {
+                const showFree = document.getElementById('showFreeOnly').checked;
+                const sortBy = document.getElementById('sortBy').value;
+                const filterText = document.getElementById('filterText').value;
+                
+                const response = await fetch(`/models/?show_free_only=${showFree}&sort_by=${encodeURIComponent(sortBy)}&filter_text=${encodeURIComponent(filterText)}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    modelList.innerHTML = `<div class="error">Error: ${data.error}</div>`;
+                    return;
+                }
+                
+                allModels = data.models;
+                renderModelList();
+            } catch (error) {
+                modelList.innerHTML = '<div class="error">Failed to load models</div>';
+            }
+        }
+
+        function renderModelList() {
+            const modelList = document.getElementById('modelList');
+            
+            if (allModels.length === 0) {
+                modelList.innerHTML = '<div class="loading">No models found</div>';
+                return;
+            }
+            
+            modelList.innerHTML = '';
+            
+            allModels.forEach(model => {
+                const item = document.createElement('div');
+                item.className = 'model-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = model.id;
+                checkbox.checked = currentConfig.favorites.includes(model.id);
+                
+                const label = document.createElement('label');
+                label.textContent = model.description;
+                label.style.cursor = 'pointer';
+                label.onclick = () => checkbox.checked = !checkbox.checked;
+                
+                item.appendChild(checkbox);
+                item.appendChild(label);
+                modelList.appendChild(item);
+            });
+        }
+
+        function filterModels() {
+            loadModelsForSettings();
+        }
+
+        async function saveFavorites() {
+            const checkboxes = document.querySelectorAll('#modelList input[type="checkbox"]:checked');
+            const favorites = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (favorites.length === 0) {
+                alert('Please select at least one model as favorite.');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/models/favorites', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        favorites: favorites,
+                        default_model: favorites[0]
+                    })
+                });
+                
+                if (response.ok) {
+                    await loadModelConfig();
+                    document.getElementById('settingsModal').style.display = 'none';
+                } else {
+                    alert('Failed to save favorites');
+                }
+            } catch (error) {
+                alert('Error saving favorites');
+            }
+        }
+
+        async function resetDefaults() {
+            if (!confirm('Reset to default model selection?')) return;
+            
+            try {
+                const response = await fetch('/models/reset', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    await loadModelConfig();
+                    await loadModelsForSettings();
+                } else {
+                    alert('Failed to reset defaults');
+                }
+            } catch (error) {
+                alert('Error resetting defaults');
+            }
+        }
+
+        async function saveWindsurfModel() {
+            const windsurfModel = document.getElementById('windsurfModel').value.trim();
+            
+            if (!windsurfModel) {
+                alert('Please enter a Windsurf model name');
+                return;
+            }
+            
+            try {
+                // Save to localStorage for now (could be enhanced to save to backend)
+                localStorage.setItem('windsurfModel', windsurfModel);
+                alert('Windsurf model saved successfully');
+            } catch (error) {
+                alert('Error saving Windsurf model');
+            }
+        }
+
+        // Load Windsurf model on page load
+        function loadWindsurfModel() {
+            const saved = localStorage.getItem('windsurfModel');
+            if (saved) {
+                document.getElementById('windsurfModel').value = saved;
+            }
+        }
+
+        // Loading animation functions
+        function showLoading(text = "AI Team is thinking...") {
+            console.log('showLoading called with text:', text);
+            const overlay = document.getElementById('loadingOverlay');
+            if (!overlay) {
+                console.error('Loading overlay not found!');
+                return;
+            }
+            const loadingText = overlay.querySelector('.loading-text');
+            if (loadingText) {
+                loadingText.textContent = text;
+            }
+            overlay.style.display = 'block';
+        }
+        
+        function showThinkingStatus() {
+            console.log('showThinkingStatus called - showing animated dots');
+            const overlay = document.getElementById('loadingOverlay');
+            if (!overlay) {
+                console.error('Loading overlay not found!');
+                return;
+            }
+            
+            // Show simple thinking status with animated dots
+            const container = overlay.querySelector('.loading-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="thinking-status">
+                        <div class="thinking-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div class="thinking-text">Thinking...</div>
+                    </div>
+                `;
+            }
+            overlay.style.display = 'block';
+        }
+        
+        function showBudgetProgress() {
+            console.log('showBudgetProgress called');
+            const overlay = document.getElementById('loadingOverlay');
+            if (!overlay) {
+                console.error('Loading overlay not found!');
+                return;
+            }
+            
+            // Replace loading content with budget progress display
+            const container = overlay.querySelector('.loading-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="budget-progress-overlay">
+                        <div class="budget-header">
+                            <div class="thinking-dots">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div class="budget-stats">
+                            <div class="budget-stat">
+                                <span class="stat-label">Time:</span>
+                                <span class="stat-value" id="budgetTime">--s / --s</span>
+                            </div>
+                            <div class="budget-stat">
+                                <span class="stat-label">Tokens:</span>
+                                <span class="stat-value" id="budgetTokens">--K / --K</span>
+                            </div>
+                            <div class="budget-progress-bar">
+                                <div class="budget-progress-fill" id="budgetProgressFill"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            overlay.style.display = 'block';
+        }
+        
+        function hideLoading() {
+            console.log('hideLoading called');
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+                
+                // Restore original loading content (remove budget display if it was shown)
+                const container = overlay.querySelector('.loading-container');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="bubble-loader">
+                            <div class="bubble"></div>
+                            <div class="bubble"></div>
+                            <div class="bubble"></div>
+                        </div>
+                        <div class="loading-text">AI Team is thinking...</div>
+                    `;
+                }
+            }
+        }
+
+        // Vision Modal Functions
+        async function showVisionModal() {
+            const modal = document.getElementById('visionModal');
+            const content = document.getElementById('visionContent');
+            
+            modal.style.display = 'block';
+            content.innerHTML = '<div class="loading">Loading vision documents...</div>';
+            
+            try {
+                const response = await fetch('/api/vision', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'list'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Handle refactored API response format (data is nested in data.data)
+                const visions = data.data?.visions || data.visions || [];
+                
+                if (data.success && visions.length > 0) {
+                    let html = '<div style="margin-bottom: 20px;"><h3>Vision Documents</h3></div>';
+                    
+                    visions.forEach(vision => {
+                        const isApproved = vision.status === 'approved' || vision.client_approval;
+                        const statusBadge = isApproved ? 
+                            '<span style="background: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">Approved</span>' :
+                            '<span style="background: #ffc107; color: black; padding: 2px 8px; border-radius: 12px; font-size: 12px;">Draft</span>';
+                        
+                        html += `
+                            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: white;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <h4 style="margin: 0; color: #2c3e50;">${vision.title}</h4>
+                                    ${statusBadge}
+                                </div>
+                                <div style="font-size: 14px; color: #666; margin-bottom: 8px;">
+                                    Updated: ${new Date(vision.updated_at).toLocaleDateString()}
+                                </div>
+                                <div style="font-size: 12px; color: #6c757d; margin-bottom: 10px; font-family: monospace; background: #f8f9fa; padding: 4px 8px; border-radius: 4px; border: 1px solid #e9ecef;">
+                                    ID: ${vision.id}
+                                </div>
+                                <button onclick="viewVision('${vision.id}')" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+                                    View Vision
+                                </button>
+                            </div>
+                        `;
+                    });
+                    
+                    content.innerHTML = html;
+                } else {
+                    content.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #666;">
+                            <h3>No Vision Documents Found</h3>
+                            <p>Start a conversation with Sarah (PM) about your app vision to create your first vision document.</p>
+                            <p style="font-style: italic;">Try saying: "I want to create a vision for my app"</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading visions:', error);
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #dc3545;">
+                        <h3>Error Loading Visions</h3>
+                        <p>Failed to load vision documents. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function viewVision(visionId) {
+            const content = document.getElementById('visionContent');
+            content.innerHTML = '<div class="loading">Loading vision content...</div>';
+            
+            try {
+                const response = await fetch('/api/vision', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'get',
+                        id: visionId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Handle refactored API response format (vision data is nested)
+                    const vision = data.data?.vision || {};
+                    const content_text = vision.content || 'No content available';
+                    const title = vision.title || 'Vision Document';
+                    
+                    content.innerHTML = `
+                        <div style="margin-bottom: 20px;">
+                            <button onclick="showVisionModal()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+                                ← Back to List
+                            </button>
+                        </div>
+                        <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+                            <h2 style="margin-top: 0; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">${title}</h2>
+                            <pre style="white-space: pre-wrap; font-family: inherit; line-height: 1.6; margin: 0;">${content_text}</pre>
+                        </div>
+                    `;
+                } else {
+                    content.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #dc3545;">
+                            <h3>Error Loading Vision</h3>
+                            <p>${data.message || 'Failed to load vision content.'}</p>
+                            <button onclick="showVisionModal()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+                                Back to List
+                            </button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading vision:', error);
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #dc3545;">
+                        <h3>Error Loading Vision</h3>
+                        <p>Failed to load vision content. Please try again.</p>
+                        <button onclick="showVisionModal()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+                            Back to List
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Backlog Modal Functions
+        async function viewBacklog() {
+            const modal = document.getElementById('backlogModal');
+            const content = document.getElementById('backlogContent');
+            
+            modal.style.display = 'block';
+            content.innerHTML = '<div class="loading">Loading backlog...</div>';
+            
+            try {
+                // Add timestamp to prevent Safari caching
+                const cacheBuster = new Date().getTime();
+                const response = await fetch(`/api/backlog/latest?_=${cacheBuster}`);
+                
+                if (response.status === 404) {
+                    content.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #666;">
+                            <h3>No Backlog Found</h3>
+                            <p>Start a conversation with Sarah (PM) about requirements to create your first backlog.</p>
+                            <p style="font-style: italic;">Try saying: "I want to create requirements" or "Let's start a requirements meeting"</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const csvText = await response.text();
+                
+                // Parse CSV properly (handles quoted fields with commas)
+                function parseCSV(text) {
+                    const lines = [];
+                    let currentLine = [];
+                    let currentField = '';
+                    let inQuotes = false;
+                    
+                    for (let i = 0; i < text.length; i++) {
+                        const char = text[i];
+                        const nextChar = text[i + 1];
+                        
+                        if (char === '"') {
+                            if (inQuotes && nextChar === '"') {
+                                currentField += '"';
+                                i++; // Skip next quote
+                            } else {
+                                inQuotes = !inQuotes;
+                            }
+                        } else if (char === ',' && !inQuotes) {
+                            currentLine.push(currentField.trim());
+                            currentField = '';
+                        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+                            if (currentField || currentLine.length > 0) {
+                                currentLine.push(currentField.trim());
+                                lines.push(currentLine);
+                                currentLine = [];
+                                currentField = '';
+                            }
+                            if (char === '\r' && nextChar === '\n') {
+                                i++; // Skip \n in \r\n
+                            }
+                        } else {
+                            currentField += char;
+                        }
+                    }
+                    
+                    // Push last field and line
+                    if (currentField || currentLine.length > 0) {
+                        currentLine.push(currentField.trim());
+                        lines.push(currentLine);
+                    }
+                    
+                    return lines;
+                }
+                
+                const parsedLines = parseCSV(csvText);
+                const headers = parsedLines[0];
+                const rows = parsedLines.slice(1).map(values => {
+                    const row = {};
+                    headers.forEach((header, i) => {
+                        row[header] = values[i] || '';
+                    });
+                    return row;
+                });
+                
+                // Render as card-based layout (better for long text)
+                let html = `
+                    <div style="padding: 10px;">
+                        <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
+                            <strong>${rows.length}</strong> requirement(s) in backlog
+                        </p>
+                `;
+                
+                rows.forEach((row, index) => {
+                    const storyId = row['Story_ID'] || 'N/A';
+                    const title = row['Title'] || 'Untitled';
+                    const userStory = row['User_Story'] || '';
+                    const priority = row['Priority'] || 'Medium';
+                    const status = row['Status'] || 'Draft';
+                    const executionStatus = row['Execution_Status'] || '';
+                    const visionRef = row['Vision_Ref'] || '';
+                    const wireframeRef = row['Wireframe_Ref'] || '';
+
+                    // Priority color
+                    const priorityColor = priority === 'High' ? '#dc3545' : priority === 'Medium' ? '#ffc107' : '#28a745';
+
+                    // Status color based on Status field (Done=green, In Sprint=yellow, Backlog=gray)
+                    const statusColor = status === 'Done' ? '#28a745' :
+                                       status === 'In Sprint' ? '#ffc107' : '#6c757d';
+
+                    html += `
+                        <div style="border: 2px solid #e9ecef; border-radius: 8px; padding: 16px; margin-bottom: 16px; background: white;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div>
+                                    <h3 style="margin: 0 0 4px 0; color: #2c3e50; font-size: 16px;">
+                                        <span style="background: #667eea; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 8px;">${storyId}</span>
+                                        ${title}
+                                    </h3>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <span style="background: ${priorityColor}; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">${priority}</span>
+                                    <span style="background: ${statusColor}; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">${status}</span>
+                                </div>
+                            </div>
+                            
+                            ${userStory ? `
+                                <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #667eea;">
+                                    <strong style="color: #495057; font-size: 12px;">User Story:</strong>
+                                    <p style="margin: 4px 0 0 0; color: #212529; font-size: 13px; line-height: 1.5;">${userStory}</p>
+                                </div>
+                            ` : ''}
+                            
+                            <details style="margin-bottom: 8px;">
+                                <summary style="cursor: pointer; color: #667eea; font-weight: 600; font-size: 13px; padding: 4px 0;">📋 Functional Requirements</summary>
+                                <div style="padding: 10px; margin-top: 8px; background: #f8f9fa; border-radius: 6px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">${row['Functional_Requirements'] || 'Not specified'}</div>
+                            </details>
+                            
+                            <details style="margin-bottom: 8px;">
+                                <summary style="cursor: pointer; color: #667eea; font-weight: 600; font-size: 13px; padding: 4px 0;">⚡ Non-Functional Requirements</summary>
+                                <div style="padding: 10px; margin-top: 8px; background: #f8f9fa; border-radius: 6px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">${row['Non_Functional_Requirements'] || 'Not specified'}</div>
+                            </details>
+                            
+                            <details style="margin-bottom: 8px;">
+                                <summary style="cursor: pointer; color: #667eea; font-weight: 600; font-size: 13px; padding: 4px 0;">✅ Acceptance Criteria</summary>
+                                <div style="padding: 10px; margin-top: 8px; background: #f8f9fa; border-radius: 6px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">${row['Acceptance_Criteria'] || 'Not specified'}</div>
+                            </details>
+                            
+                            <div style="display: flex; gap: 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e9ecef; font-size: 12px; color: #6c757d;">
+                                ${visionRef ? `<div><strong>Vision:</strong> ${visionRef}</div>` : ''}
+                                ${wireframeRef ? `<div><a href="#" onclick="openWireframeModal('${wireframeRef}'); return false;" style="color: #007bff; text-decoration: underline;">🎨 View Wireframe</a></div>` : ''}
+                                ${row['Dependencies'] && row['Dependencies'] !== 'None' ? `<div><strong>Dependencies:</strong> ${row['Dependencies']}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+                
+                content.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading backlog:', error);
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #dc3545;">
+                        <h3>Error Loading Backlog</h3>
+                        <p>Failed to load backlog. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function viewSprintPlans() {
+            const modal = document.getElementById('sprintModal');
+            const content = document.getElementById('sprintContent');
+
+            modal.style.display = 'block';
+            content.innerHTML = '<div class="loading">Loading sprint plans...</div>';
+
+            try {
+                const response = await fetch('/api/sprints');
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch sprint plans');
+                }
+
+                const result = await response.json();
+                const plans = result?.data?.plans ?? [];
+
+                if (!result.success || plans.length === 0) {
+                    content.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #666;">
+                            <h3>No Sprint Plans Found</h3>
+                            <p>Start a Sprint Planning meeting with Mike to create your first sprint plan.</p>
+                            <p style="font-style: italic;">Try saying: "start sprint planning"</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const rollbackOptions = (plan) => {
+                    const planBackups = Array.isArray(plan.backups) ? plan.backups : [];
+                    if (planBackups.length === 0) {
+                        return `
+                            <div style="margin-top: 12px; padding: 12px; background: #fff7ed; border: 1px solid #fdba74; border-radius: 6px; color: #c2410c; font-size: 12px;">
+                                ⚠️ No backups captured yet. Execute the sprint to create the first snapshot.
+                            </div>
+                        `;
+                    }
+
+                    const options = planBackups
+                        .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
+                        .map(b => {
+                            const ts = b.created_at ? new Date(b.created_at).toLocaleString() : b.backup_id;
+                            return `<option value="${b.backup_id}">${ts}</option>`;
+                        }).join('');
+
+                    return `
+                        <div style="margin-top: 12px; padding: 12px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px;">
+                            <label style="display: block; font-size: 12px; color: #1e3a8a; margin-bottom: 6px;">
+                                🔁 Rollback Sprint to Snapshot
+                            </label>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <select data-sprint-id="${plan.sprint_id}" class="rollback-select" style="flex: 1; padding: 6px 8px; border-radius: 4px; border: 1px solid #94a3b8; font-size: 12px;">
+                                    ${options}
+                                </select>
+                                <button class="rollback-button" data-sprint-id="${plan.sprint_id}" style="padding: 6px 10px; background: #2563eb; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">Rollback</button>
+                            </div>
+                            <div class="rollback-status" data-sprint-id="${plan.sprint_id}" style="margin-top: 6px; font-size: 11px; color: #475569;"></div>
+                        </div>
+                    `;
+                };
+
+                const cards = plans.map(plan => {
+                    const stories = (plan.stories || []).map(story => `<li>${story}</li>`).join('');
+                    const savedAt = plan.saved_at ? new Date(plan.saved_at).toLocaleString() : 'N/A';
+                    const executionLog = plan.execution_log
+                        ? `<div><a href="${plan.execution_log}" target="_blank" style="color: #2563eb; text-decoration: underline;">Execution Log</a></div>`
+                        : '';
+                    
+                    const rollbackBlock = rollbackOptions(plan);
+                    
+                    // Generate Sprint Report section for completed sprints
+                    let sprintReport = '';
+                    if (plan.status === 'completed' && plan.completed_at) {
+                        const completedAt = new Date(plan.completed_at).toLocaleString();
+                        const projectPath = plan.project_name ? `execution-sandbox/client-projects/${plan.project_name}` : 'N/A';
+                        const summary = plan.execution_summary || {};
+                        
+                        const storiesCompleted = summary.stories_completed || plan.stories?.length || 0;
+                        const tasksCompleted = summary.tasks_completed || 0;
+                        const testsPassed = summary.tests_passed || 0;
+                        const testsFailed = summary.tests_failed || 0;
+                        
+                        sprintReport = `
+                            <details style="margin-bottom: 8px;">
+                                <summary style="cursor: pointer; color: #22c55e; font-weight: 600; font-size: 13px; padding: 4px 0;">📊 Sprint Report</summary>
+                                <div style="padding: 10px; margin-top: 8px; background: #f0fdf4; border-radius: 6px; font-size: 13px; line-height: 1.8;">
+                                    <div style="margin-bottom: 12px;">
+                                        <strong style="color: #16a34a;">✅ Execution Summary</strong>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                                        <div><strong>Stories:</strong> ${storiesCompleted} completed</div>
+                                        <div><strong>Tasks:</strong> ${tasksCompleted} completed</div>
+                                        <div><strong>Tests Passed:</strong> ${testsPassed}</div>
+                                        <div><strong>Tests Failed:</strong> ${testsFailed}</div>
+                                    </div>
+                                    <div style="margin-bottom: 8px;"><strong>Completed:</strong> ${completedAt}</div>
+                                    <div style="margin-bottom: 12px;"><strong>Generated App:</strong> <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 3px; font-size: 11px;">${projectPath}</code></div>
+                                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #bbf7d0;">
+                                        <strong>🚀 Test the Generated App:</strong><br>
+                                        <span style="font-size: 12px; color: #6c757d;">Run <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 3px;">./test-generated-app.command</code> from the development directory</span>
+                                    </div>
+                                </div>
+                            </details>
+                        `;
+                    }
+
+                    return `
+                        <div style="border: 2px solid #e9ecef; border-radius: 8px; padding: 16px; margin-bottom: 16px; background: white;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div>
+                                    <h3 style="margin: 0 0 4px 0; color: #2c3e50; font-size: 16px;">
+                                        <span style="background: #2563eb; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 8px;">${plan.sprint_id}</span>
+                                        ${plan.project_name}
+                                    </h3>
+                                    <p style="margin: 0; color: #6c757d; font-size: 12px;">Tech Stack: ${plan.tech_stack}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span style="display: inline-block; background: ${plan.status === 'completed' ? '#22c55e' : '#0ea5e9'}; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-bottom: 8px;">${plan.status || 'planned'}</span>
+                                    <p style="margin: 0; color: #6c757d; font-size: 12px;">Saved: ${savedAt}</p>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 12px;">
+                                <strong style="color: #495057; font-size: 12px;">Sprint Stories</strong>
+                                <ul style="margin: 8px 0 0 16px; color: #212529; font-size: 13px; line-height: 1.6;">
+                                    ${stories}
+                                </ul>
+                            </div>
+
+                            <details style="margin-bottom: 8px;">
+                                <summary style="cursor: pointer; color: #2563eb; font-weight: 600; font-size: 13px; padding: 4px 0;">🧠 Rationale</summary>
+                                <div style="padding: 10px; margin-top: 8px; background: #f8f9fa; border-radius: 6px; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">${plan.rationale}</div>
+                            </details>
+
+                            ${sprintReport}
+
+                            ${rollbackBlock}
+
+                            <div style="display: flex; gap: 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e9ecef; font-size: 12px; color: #6c757d;">
+                                <div><strong>Estimated Minutes:</strong> ${plan.estimated_minutes}</div>
+                                ${executionLog}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                content.innerHTML = `<div style="padding: 10px;">${cards}</div>`;
+                attachRollbackHandlers();
+
+            } catch (error) {
+                console.error('Error loading sprint plans:', error);
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #dc3545;">
+                        <h3>Error Loading Sprint Plans</h3>
+                        <p>Failed to load sprint plans. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function handleRollback(sprintId, backupId) {
+            const statusEl = document.querySelector(`.rollback-status[data-sprint-id="${sprintId}"]`);
+            if (statusEl) {
+                statusEl.style.color = '#475569';
+                statusEl.textContent = 'Rolling back...';
+            }
+
+            try {
+                const response = await fetch(`/api/sprints/${encodeURIComponent(sprintId)}/rollback`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ backup_id: backupId })
+                });
+
+                if (!response.ok) {
+                    const errorBody = await response.json().catch(() => ({}));
+                    const message = errorBody?.message || `HTTP ${response.status}`;
+                    throw new Error(message);
+                }
+
+                await viewSprintPlans();
+
+                if (statusEl) {
+                    statusEl.style.color = '#16a34a';
+                    statusEl.textContent = `✅ Restored from backup ${backupId}`;
+                }
+            } catch (error) {
+                console.error('Rollback failed:', error);
+                if (statusEl) {
+                    statusEl.style.color = '#dc2626';
+                    statusEl.textContent = `⚠️ Rollback failed: ${error.message}`;
+                }
+            }
+        }
+
+        function attachRollbackHandlers() {
+            document.querySelectorAll('.rollback-button').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const sprintId = button.getAttribute('data-sprint-id');
+                    const select = document.querySelector(`.rollback-select[data-sprint-id="${sprintId}"]`);
+                    if (!sprintId || !select || !select.value) {
+                        const statusEl = document.querySelector(`.rollback-status[data-sprint-id="${sprintId}"]`);
+                        if (statusEl) {
+                            statusEl.style.color = '#dc2626';
+                            statusEl.textContent = '⚠️ Select a backup before rolling back.';
+                        }
+                        return;
+                    }
+                    await handleRollback(sprintId, select.value);
+                });
+            });
+        }
+
+        // Scribe Modal Functions
+        function showScribeModal() {
+            const modal = document.getElementById('scribeModal');
+            if (!modal) {
+                console.error('Scribe modal not found');
+                return;
+            }
+            
+            const content = modal.querySelector('.scribe-content');
+            if (!content) {
+                console.error('Scribe content area not found');
+                return;
+            }
+            
+            // Show modal and load current session data
+            modal.style.display = 'block';
+            loadScribeData(content);
+        }
+
+        // Wireframe Modal Function
+        function openWireframeModal(slug) {
+            const modal = document.getElementById('wireframeModal');
+            const iframe = document.getElementById('wireframeFrame');
+            
+            // Set iframe source to wireframe endpoint
+            iframe.src = `/api/backlog/wireframe/${slug}`;
+            
+            // Show modal
+            modal.style.display = 'block';
+        }
+
+        async function loadScribeData(content) {
+            content.innerHTML = '<div style="text-align: center; padding: 20px;">Loading scribe data...</div>';
+            
+            try {
+                const response = await fetch('/api/scribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'overview'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                displayScribeData(content, data);
+                
+            } catch (error) {
+                console.error('Error loading scribe data:', error);
+                content.innerHTML = `
+                    <div style="background: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffeaa7;">
+                        <h3 style="color: #856404; margin-top: 0;">⚠️ Unable to Load Scribe Data</h3>
+                        <p style="color: #856404; margin: 0;">Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function displayScribeData(content, data) {
+            const escapeHtml = (s) => (s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+            
+            const t = data.totals || {notes: 0, decisions: 0, agreements: 0};
+            const recent = data.recent || [];
+            
+            let html = `
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+                    <h3>📋 Project Memory Overview</h3>
+                    <p style="margin: 15px 0;">
+                        📝 ${t.notes} meeting notes recorded<br>
+                        ✅ ${t.decisions} decisions logged<br>
+                        🤝 ${t.agreements} client agreements tracked
+                    </p>
+                    <h4>Recent Activity (Last ${recent.length} meetings):</h4>
+                    <ul style="list-style: none; padding: 0;">
+            `;
+            
+            for (const r of recent) {
+                html += `<li style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px;">`;
+                html += `<strong>${escapeHtml(r.title)}</strong><br>`;
+                
+                if (r.summary) {
+                    html += `📝 ${escapeHtml(r.summary)}<br>`;
+                }
+                
+                if (Array.isArray(r.actions) && r.actions.length) {
+                    const acts = r.actions.map(a => {
+                        const owner = a.owner ? `${escapeHtml(a.owner)}: ` : '';
+                        const task = escapeHtml(a.task || '');
+                        return owner + task;
+                    });
+                    html += `📋 Actions: ${acts.join('; ')}<br>`;
+                }
+                
+                if (Array.isArray(r.decisions) && r.decisions.length) {
+                    const decs = r.decisions.map(d => escapeHtml(d.title || ''));
+                    html += `🔑 Decisions: ${decs.join('; ')}<br>`;
+                }
+                
+                if (Array.isArray(r.sign_offs) && r.sign_offs.length) {
+                    const sigs = r.sign_offs.map(s => {
+                        const who = escapeHtml(s.who || '?');
+                        const what = escapeHtml(s.what || '');
+                        return `${who}: ${what}`;
+                    });
+                    html += `🤝 Agreements: ${sigs.join('; ')}<br>`;
+                }
+                
+                html += `</li>`;
+            }
+            
+            html += `
+                    </ul>
+                    <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #dee2e6;">
+                        <small style="color: #6c757d;">Generated: ${escapeHtml(data.generated || '')} | Displaying: ALL ${t.notes} notes, ${t.decisions} decisions, ${t.agreements} agreements</small>
+                    </div>
+                </div>
+            `;
+            
+            content.innerHTML = html;
+        }
+
+        // Close modals
+        document.addEventListener('DOMContentLoaded', function() {
+            const closeVisionModal = document.getElementById('closeVisionModal');
+            const visionModal = document.getElementById('visionModal');
+            const closeBacklogModal = document.getElementById('closeBacklogModal');
+            const backlogModal = document.getElementById('backlogModal');
+            const closeSprintModal = document.getElementById('closeSprintModal');
+            const sprintModal = document.getElementById('sprintModal');
+            const closeScribeModal = document.getElementById('closeScribeModal');
+            const scribeModal = document.getElementById('scribeModal');
+            
+            if (closeVisionModal) {
+                closeVisionModal.addEventListener('click', function() {
+                    visionModal.style.display = 'none';
+                });
+            }
+            
+            if (closeBacklogModal) {
+                closeBacklogModal.addEventListener('click', function() {
+                    backlogModal.style.display = 'none';
+                });
+            }
+
+            if (closeSprintModal) {
+                closeSprintModal.addEventListener('click', function() {
+                    sprintModal.style.display = 'none';
+                });
+            }
+            
+            if (closeScribeModal) {
+                closeScribeModal.addEventListener('click', function() {
+                    scribeModal.style.display = 'none';
+                });
+            }
+            
+            const closeWireframeModal = document.getElementById('closeWireframeModal');
+            const wireframeModal = document.getElementById('wireframeModal');
+            
+            if (closeWireframeModal) {
+                closeWireframeModal.addEventListener('click', function() {
+                    wireframeModal.style.display = 'none';
+                });
+            }
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === visionModal) {
+                    visionModal.style.display = 'none';
+                }
+                if (event.target === backlogModal) {
+                    backlogModal.style.display = 'none';
+                }
+                if (event.target === sprintModal) {
+                    sprintModal.style.display = 'none';
+                }
+                if (event.target === scribeModal) {
+                    scribeModal.style.display = 'none';
+                }
+                if (event.target === wireframeModal) {
+                    wireframeModal.style.display = 'none';
+                }
+            });
+
+            // Close modal when pressing ESC key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    if (visionModal && visionModal.style.display === 'block') {
+                        visionModal.style.display = 'none';
+                    }
+                    if (backlogModal && backlogModal.style.display === 'block') {
+                        backlogModal.style.display = 'none';
+                    }
+                    if (sprintModal && sprintModal.style.display === 'block') {
+                        sprintModal.style.display = 'none';
+                    }
+                    if (scribeModal && scribeModal.style.display === 'block') {
+                        scribeModal.style.display = 'none';
+                    }
+                    if (wireframeModal && wireframeModal.style.display === 'block') {
+                        wireframeModal.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        // Meeting detection and management
+        function detectAndHandleMeeting(content) {
+            // CHECK FOR SPRINT ID FIRST - detect "[SPRINT:SP-XXX]"
+            const sprintStartMatch = content.match(/\[SPRINT:(SP-\d+)\]/i);
+            if (sprintStartMatch) {
+                const sprintId = sprintStartMatch[1];
+                console.log(`🔗 Detected sprint: ${sprintId}, opening SSE stream...`);
+                // Open SSE stream immediately to catch the sprint_execution_started event
+                startSprintActivityFeed();
+                if (!currentMeeting || currentMeeting.persona !== 'SPRINT_EXECUTION_PM') {
+                    startMeeting('SPRINT_EXECUTION_PM', `Sprint ${sprintId}`, 'Sprint Execution Meeting');
+                }
+                return;
+            }
+            
+            // Extract meeting name from Sarah/Mike announcements (support both old and new formats)
+            const visionMatch = content.match(/(?:🎯 Starting Vision Meeting:|✅ Vision Meeting started for:)\s*(.+)/);
+            const requirementsMatch = content.match(/(?:🎯 Starting Requirements Meeting:|✅ Requirements Meeting started for:)\s*(.+)/);
+            const executionMatch = content.match(/(?:🎯 Starting Sprint Execution Meeting:)\s*(.+)/);
+            const reviewMatch = content.match(/(?:🎉 Starting Sprint Review Meeting:)\s*(.+)/);
+
+            // If a structured meeting_started event already set currentMeeting,
+            // do not run any text-based start toggles again (prevents unchecking Alex/others)
+            if (currentMeeting && (visionMatch || requirementsMatch || executionMatch || reviewMatch)) {
+                return;
+            }
+
+            if (reviewMatch) {
+                const meetingName = reviewMatch[1].trim().split('\n')[0];
+                startMeeting('SPRINT_REVIEW_PM', meetingName, 'Sprint Review Meeting');
+                return;
+            }
+
+            if (executionMatch) {
+                const meetingName = executionMatch[1].trim().split('\n')[0]; // Get first line only
+                startMeeting('SPRINT_EXECUTION_PM', meetingName, 'Sprint Execution Meeting');
+                startSystemMessagePolling(); // Start polling for orchestrator messages
+                return;
+            }
+
+            if (requirementsMatch) {
+                const meetingName = requirementsMatch[1].trim().split('\n')[0]; // Get first line only
+                startMeeting('REQUIREMENTS_PM', meetingName, 'Requirements Meeting');
+                startRequirementsMeeting(meetingName);
+                disableOtherPersonas();
+                return;
+            }
+
+            // Sprint Planning meeting is handled by meeting_started event (has project_name)
+            // Legacy text detection removed - use structured event instead
+            
+            if (content.includes('📝 Meeting ended: Sprint Planning')) {
+                endSprintPlanningMeeting();
+            }
+
+            if (executionMatch) {
+                const meetingName = executionMatch[1].trim().split('\n')[0];
+                startSprintExecutionMeeting(meetingName);
+                disableOtherPersonas();
+                return;
+            }
+
+            if (content.includes('📝 Meeting ended: Sprint Execution')) {
+                endSprintExecutionMeeting();
+            }
+
+            if (content.includes('📝 Meeting ended: Sprint Review')) {
+                endMeetingByPersona('SPRINT_REVIEW_PM');
+            }
+        }
+
+        // ========================================
+        // GENERIC MEETING FUNCTIONS (Config-Driven)
+        // ========================================
+        
+        // Derive base persona from meeting persona name pattern (follows config convention)
+        // Sarah personas (PM-based): VISION_PM, REQUIREMENTS_PM, SPRINT_EXECUTION_PM
+        // Mike personas (ARCHITECT-based): SPRINT_PLANNING_ARCHITECT
+        function getBasePersona(meetingPersona) {
+            if (meetingPersona.includes('ARCHITECT')) {
+                return 'ARCHITECT';
+            }
+            return 'PM';  // Default for Sarah-based meeting personas
+        }
+
+        // Meeting Control Button Configuration
+        const MEETING_CONFIG = {
+            vision: {
+                trigger: 'start vision meeting',
+                persona: 'VISION_PM',
+                displayName: 'Vision Meeting'
+            },
+            backlog: {
+                trigger: 'start requirements meeting',
+                persona: 'REQUIREMENTS_PM',
+                displayName: 'Requirements Meeting'
+            },
+            plan: {
+                trigger: 'start sprint planning',
+                persona: 'SPRINT_PLANNING_ARCHITECT',
+                displayName: 'Sprint Planning'
+            },
+            execute: {
+                trigger: 'start sprint execution meeting',
+                persona: 'SPRINT_EXECUTION_PM',
+                displayName: 'Sprint Execution'
+            },
+            review: {
+                trigger: 'start sprint review',
+                persona: 'SPRINT_REVIEW_PM',
+                displayName: 'Sprint Review'
+            }
+        };
+
+        function getMeetingDisplayName(persona) {
+            for (const [key, config] of Object.entries(MEETING_CONFIG)) {
+                if (config.persona === persona) {
+                    return config.displayName;
+                }
+            }
+            return 'Meeting';
+        }
+
+        function getCurrentMeetingDisplayName(persona) {
+            const displayName = getMeetingDisplayName(persona);
+            return displayName;
+        }
+
+        function addSystemMessageToChat(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system';
+            messageDiv.style.background = '#fef3c7';
+            messageDiv.style.borderLeft = '4px solid #f59e0b';
+            messageDiv.style.padding = '12px';
+            messageDiv.style.marginBottom = '10px';
+            messageDiv.style.borderRadius = '4px';
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function simulateMeetingStart(config) {
+            const selectedPersonas = getSelectedPersonas();
+            streamChat(config.trigger, selectedPersonas);
+        }
+
+        // Meeting Button Handlers
+        function initializeMeetingButtons() {
+            // Add click handlers to meeting buttons
+            Object.entries(MEETING_CONFIG).forEach(([key, config]) => {
+                const button = document.getElementById(`${key}Btn`);
+                if (button) {
+                    button.addEventListener('click', () => handleMeetingButtonClick(key, config));
+                }
+            });
+
+            // Add handler for End Meeting button
+            const endMeetingBtn = document.getElementById('endMeetingBtn');
+            if (endMeetingBtn) {
+                endMeetingBtn.addEventListener('click', handleEndMeetingClick);
+            }
+
+            // Initial button state update
+            updateMeetingButtonStates();
+        }
+
+        function handleMeetingButtonClick(meetingKey, config) {
+            const button = document.getElementById(`${meetingKey}Btn`);
+
+            // If button is disabled, check why and show message
+            if (button.disabled) {
+                checkAndShowDisabledReason(meetingKey);
+                return;
+            }
+
+            // If no meeting active, start directly
+            if (!currentMeeting) {
+                simulateMeetingStart(config);
+                return;
+            }
+
+            // If same meeting, ignore
+            if (currentMeeting === config.persona) {
+                return;
+            }
+
+            // Different meeting is active - need confirmation
+            const fromName = getCurrentMeetingDisplayName(currentMeeting);
+            const toName = config.displayName;
+
+            // Store pending transition
+            pendingMeetingTransition = {
+                from: currentMeeting,
+                to: config.persona,
+                fromName: fromName,
+                toName: toName,
+                toConfig: config
+            };
+
+            // Check if switching from active sprint execution
+            if (currentMeeting === 'SPRINT_EXECUTION_PM' && isSprintExecuting) {
+                addSystemMessageToChat(
+                    `⚠️ End ${fromName} and start ${toName}?\n` +
+                    `This will stop the running sprint.\n\n` +
+                    `Reply "yes" to switch or "no" to continue this meeting`
+                );
+            } else {
+                addSystemMessageToChat(
+                    `🔄 End ${fromName} and start ${toName}?\n\n` +
+                    `Reply "yes" to switch or "no" to continue this meeting`
+                );
+            }
+
+            // Focus on input for user response
+            messageInput.focus();
+        }
+
+        function handleEndMeetingClick() {
+            if (currentMeeting) {
+                endMeetingByPersona(currentMeeting);
+            }
+        }
+
+        async function checkAndShowDisabledReason(meetingKey) {
+            let reason = '';
+
+            switch(meetingKey) {
+                case 'backlog':
+                    reason = 'Create a vision first';
+                    break;
+                case 'plan':
+                    reason = 'Create backlog first';
+                    break;
+                case 'execute':
+                    reason = 'Need a sprint plan first';
+                    break;
+                case 'review':
+                    reason = 'Need a completed sprint first';
+                    break;
+            }
+
+            if (reason) {
+                addSystemMessageToChat(reason);
+            }
+        }
+
+        async function updateMeetingButtonStates() {
+            console.log('🔄 Updating meeting button states...');
+
+            // Check artifacts to enable/disable buttons (use POST with action=list)
+            const hasVision = await checkArtifactExists('/api/vision');
+            const hasBacklog = await checkArtifactExists('/api/backlog');
+            const hasPlannedSprint = await checkSprintExists('planned');
+            const hasCompletedSprint = await checkSprintExists('completed');
+
+            console.log('Artifact checks:', {
+                hasVision,
+                hasBacklog,
+                hasPlannedSprint,
+                hasCompletedSprint
+            });
+
+            // Update button states
+            const backlogBtn = document.getElementById('backlogBtn');
+            const planBtn = document.getElementById('planBtn');
+            const executeBtn = document.getElementById('executeBtn');
+            const reviewBtn = document.getElementById('reviewBtn');
+            const endMeetingBtn = document.getElementById('endMeetingBtn');
+
+            if (backlogBtn) {
+                backlogBtn.disabled = !hasVision;
+                console.log('Backlog button disabled:', backlogBtn.disabled);
+            }
+            if (planBtn) {
+                planBtn.disabled = !hasBacklog;
+                console.log('Plan button disabled:', planBtn.disabled);
+            }
+            if (executeBtn) {
+                executeBtn.disabled = !hasPlannedSprint;
+                console.log('Execute button disabled:', executeBtn.disabled);
+            }
+            if (reviewBtn) {
+                reviewBtn.disabled = !hasCompletedSprint;
+                console.log('Review button disabled:', reviewBtn.disabled);
+            }
+
+            // Update active state based on current meeting
+            Object.entries(MEETING_CONFIG).forEach(([key, config]) => {
+                const button = document.getElementById(`${key}Btn`);
+                if (button) {
+                    if (currentMeeting === config.persona) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                }
+            });
+
+            // Show/hide End Meeting button
+            if (endMeetingBtn) {
+                endMeetingBtn.style.display = currentMeeting ? 'block' : 'none';
+            }
+        }
+
+        async function checkArtifactExists(endpoint) {
+            try {
+                // Use POST with action=list (the API pattern for this system)
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action: 'list' })
+                });
+
+                if (!response.ok) {
+                    console.log(`Artifact check ${endpoint}: response not ok`);
+                    return false;
+                }
+                const data = await response.json();
+                console.log(`Artifact check ${endpoint}:`, data);
+
+                // Check if artifacts exist in the response
+                if (data.success && data.data) {
+                    // Check for visions, backlogs arrays
+                    if (data.data.visions && Array.isArray(data.data.visions) && data.data.visions.length > 0) {
+                        return true;
+                    }
+                    if (data.data.backlogs && Array.isArray(data.data.backlogs) && data.data.backlogs.length > 0) {
+                        return true;
+                    }
+                }
+                return false;
+            } catch (error) {
+                console.error(`Error checking artifact at ${endpoint}:`, error);
+                return false;
+            }
+        }
+
+        async function checkSprintExists(status) {
+            try {
+                const response = await fetch('/api/sprints');
+                if (!response.ok) {
+                    console.log(`Sprint check: response not ok`);
+                    return false;
+                }
+                const data = await response.json();
+                console.log(`Sprint check for status '${status}':`, data);
+
+                if (!data.success || !data.data) return false;
+
+                // Handle different response structures
+                let sprints = [];
+                if (Array.isArray(data.data)) {
+                    sprints = data.data;
+                } else if (data.data.sprints && Array.isArray(data.data.sprints)) {
+                    sprints = data.data.sprints;
+                } else if (data.data.items && Array.isArray(data.data.items)) {
+                    sprints = data.data.items;
+                }
+
+                console.log(`Found ${sprints.length} sprints, checking for status '${status}'`);
+                const found = sprints.some(sprint => sprint.status === status);
+                console.log(`Sprint with status '${status}' found:`, found);
+                return found;
+            } catch (error) {
+                console.error(`Error checking sprint status ${status}:`, error);
+                return false;
+            }
+        }
+
+        function startMeeting(meetingPersona, projectName, meetingDisplayName) {
+            const basePersona = getBasePersona(meetingPersona);
+            const meetingType = meetingDisplayName || 'Meeting';
+
+            // Auto-end any previous meeting (if different from new meeting)
+            if (currentMeeting && currentMeeting !== meetingPersona) {
+                console.log(`Auto-ending previous meeting: ${currentMeeting}`);
+                endMeetingByPersona(currentMeeting);
+            }
+
+            // Mark meeting as active for scoped persona mapping
+            currentMeeting = meetingPersona;
+            
+            // Get DOM elements
+            const baseItem = document.querySelector(`[data-persona="${basePersona}"]`);
+            const meetingItem = document.querySelector(`[data-persona="${meetingPersona}"]`);
+            
+            if (!baseItem || !meetingItem) {
+                console.warn('Persona elements not found:', basePersona, meetingPersona);
+                return;
+            }
+            
+            // Save base persona state if needed (for ARCHITECT)
+            if (basePersona === 'ARCHITECT') {
+                const baseCheckbox = baseItem.querySelector('.persona-checkbox');
+                if (baseCheckbox) {
+                    savedPersonaStates[basePersona] = baseCheckbox.checked;
+                }
+            }
+            
+            // Switch personas
+            const baseCheckbox = baseItem.querySelector('.persona-checkbox');
+            const meetingCheckbox = meetingItem.querySelector('.persona-checkbox');
+            
+            if (baseCheckbox && meetingCheckbox) {
+                // Transfer selection if base was checked
+                if (baseCheckbox.checked) {
+                    baseCheckbox.checked = false;
+                    meetingCheckbox.checked = true;
+                    meetingItem.classList.add('selected');
+                }
+                baseItem.classList.remove('selected');
+            }
+            
+            // Hide base, show meeting
+            baseItem.style.display = 'none';
+            meetingItem.style.display = 'block';
+            
+            // Disable other personas (all meetings have solo_mode: true)
+            disableOtherPersonas();
+            
+            // Update meeting status
+            const displayName = projectName || meetingType.replace(' Meeting', '');
+            updateMeetingStatus(displayName, meetingType);
+
+            // Update meeting button states
+            updateMeetingButtonStates();
+        }
+
+        function endMeetingByPersona(meetingPersona) {
+            const basePersona = getBasePersona(meetingPersona);
+            
+            // Get DOM elements
+            const baseItem = document.querySelector(`[data-persona="${basePersona}"]`);
+            const meetingItem = document.querySelector(`[data-persona="${meetingPersona}"]`);
+            
+            if (baseItem && meetingItem) {
+                const baseCheckbox = baseItem.querySelector('.persona-checkbox');
+                const meetingCheckbox = meetingItem.querySelector('.persona-checkbox');
+                
+                if (baseCheckbox && meetingCheckbox) {
+                    // Switch back
+                    meetingCheckbox.checked = false;
+                    meetingItem.classList.remove('selected');
+                    
+                    // Restore base persona state
+                    if (basePersona === 'ARCHITECT' && savedPersonaStates.hasOwnProperty(basePersona)) {
+                        baseCheckbox.checked = savedPersonaStates[basePersona] ?? true;
+                        delete savedPersonaStates[basePersona];
+                    } else {
+                        baseCheckbox.checked = true;
+                    }
+                    baseItem.classList.toggle('selected', baseCheckbox.checked);
+                }
+                
+                // Show base, hide meeting
+                meetingItem.style.display = 'none';
+                baseItem.style.display = 'block';
+            }
+            
+            // Restore other personas
+            restorePersonaStates();
+
+            // Clear meeting status
+            endMeetingGeneric();
+
+            // Re-enable regulars
+            enableRegulars();
+
+            // Update meeting button states
+            updateMeetingButtonStates();
+        }
+        
+        // Legacy wrapper functions for backward compatibility
+        function startVisionMeeting(meetingName) {
+            startMeeting('VISION_PM', meetingName, 'Vision Meeting');
+        }
+        
+        function startRequirementsMeeting(meetingName) {
+            startMeeting('REQUIREMENTS_PM', meetingName, 'Requirements Meeting');
+        }
+        
+        function startSprintPlanningMeeting() {
+            startMeeting('SPRINT_PLANNING_ARCHITECT', 'Sprint Planning', 'Sprint Planning Meeting');
+        }
+        
+        function startSprintExecutionMeeting(meetingName) {
+            startMeeting('SPRINT_EXECUTION_PM', meetingName, 'Sprint Execution Meeting');
+        }
+        
+        function endSprintPlanningMeeting() {
+            endMeetingByPersona('SPRINT_PLANNING_ARCHITECT');
+        }
+        
+        function endSprintExecutionMeeting() {
+            endMeetingByPersona('SPRINT_EXECUTION_PM');
+            stopSystemMessagePolling(); // Stop polling when execution ends
+            
+            // Prompt user to start Sprint Review
+            setTimeout(() => {
+                const reviewPrompt = document.createElement('div');
+                reviewPrompt.className = 'response-block system-message';
+                reviewPrompt.innerHTML = `
+                    <div class="response-header" style="color: #22c55e;">✅ Sprint Execution Complete</div>
+                    <div class="response-content" style="font-style: italic; color: #94a3b8;">
+                        Sprint execution has finished! Ready to review the results?<br><br>
+                        💡 Say: <strong>"start sprint review meeting"</strong> to demo the completed work.
+                    </div>
+                `;
+                chatMessages.appendChild(reviewPrompt);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        }
+
+        function sendAutomaticMessage(message) {
+            const selectedPersonas = getSelectedPersonas();
+            if (selectedPersonas.length === 0) {
+                return;
+            }
+
+            // Add user message to chat
+            addUserMessage(message);
+            
+            // Add to chat history
+            addToChatHistory("user", message);
+            
+            // Send to API directly
+            streamChat(message, selectedPersonas);
+        }
+
+        function updateMeetingStatus(meetingName, meetingType) {
+            const meetingStatus = document.getElementById('meetingStatus');
+            const meetingNameEl = document.getElementById('meetingName');
+            const meetingTypeEl = document.getElementById('meetingType');
+            
+            if (meetingStatus && meetingNameEl && meetingTypeEl) {
+                meetingStatus.classList.add('active');
+                meetingNameEl.textContent = meetingName;
+                meetingTypeEl.textContent = meetingType;
+            }
+        }
+
+        function disableOtherPersonas() {
+            // Save current states before disabling (PM handled specially for vision/requirements meetings)
+            ['PM', 'DEVELOPER', 'ARCHITECT', 'QA'].forEach(persona => {
+                const personaItem = document.querySelector(`[data-persona="${persona}"]`);
+                if (personaItem) {
+                    const checkbox = personaItem.querySelector('.persona-checkbox');
+                    if (checkbox) {
+                        if (persona !== 'PM') {  // Don't save PM state
+                            savedPersonaStates[persona] = checkbox.checked;
+                        }
+                        checkbox.checked = false;
+                        personaItem.classList.remove('selected');
+                    }
+                }
+            });
+        }
+        
+        function restorePersonaStates() {
+            // Restore previous states (exclude PM since it's handled specially)
+            ['DEVELOPER', 'ARCHITECT', 'QA'].forEach(persona => {
+                const personaItem = document.querySelector(`[data-persona="${persona}"]`);
+                if (personaItem && savedPersonaStates.hasOwnProperty(persona)) {
+                    const checkbox = personaItem.querySelector('.persona-checkbox');
+                    if (checkbox) {
+                        checkbox.checked = savedPersonaStates[persona];
+                        personaItem.classList.toggle('selected', checkbox.checked);
+                    }
+                }
+            });
+            savedPersonaStates = {};
+        }
+
+        function enableRegulars() {
+            // Ensure core team personas are enabled and visible after a meeting ends
+            ['PM', 'ARCHITECT', 'DEVELOPER', 'QA'].forEach(persona => {
+                const personaItem = document.querySelector(`[data-persona="${persona}"]`);
+                if (personaItem) {
+                    const checkbox = personaItem.querySelector('.persona-checkbox');
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        personaItem.classList.add('selected');
+                    }
+                    // Make sure items are visible
+                    personaItem.style.display = 'block';
+                }
+            });
+            savedPersonaStates = {};
+        }
+
+        function endMeetingGeneric() {
+            currentMeeting = null;
+            uiPersonaMap = null; // Clear mapping at end of meeting
+            
+            // Switch back to regular PM from either VISION_PM or REQUIREMENTS_PM
+            const pmItem = document.querySelector('[data-persona="PM"]');
+            const visionPmItem = document.querySelector('[data-persona="VISION_PM"]');
+            const requirementsPmItem = document.querySelector('[data-persona="REQUIREMENTS_PM"]');
+            const sprintArchitectItem = document.querySelector('[data-persona="SPRINT_PLANNING_ARCHITECT"]');
+            const architectItem = document.querySelector('[data-persona="ARCHITECT"]');
+            
+            if (pmItem) {
+                const pmCheckbox = pmItem.querySelector('.persona-checkbox');
+                
+                // Handle VISION_PM
+                if (visionPmItem) {
+                    const visionPmCheckbox = visionPmItem.querySelector('.persona-checkbox');
+                    if (pmCheckbox && visionPmCheckbox) {
+                        visionPmCheckbox.checked = false;
+                        pmCheckbox.checked = true;
+                        pmItem.classList.add('selected');
+                        visionPmItem.classList.remove('selected');
+                    }
+                    visionPmItem.style.display = 'none';
+                }
+                
+                // Handle REQUIREMENTS_PM
+                if (requirementsPmItem) {
+                    const requirementsPmCheckbox = requirementsPmItem.querySelector('.persona-checkbox');
+                    if (pmCheckbox && requirementsPmCheckbox) {
+                        requirementsPmCheckbox.checked = false;
+                        pmCheckbox.checked = true;
+                        pmItem.classList.add('selected');
+                        requirementsPmItem.classList.remove('selected');
+                    }
+                    requirementsPmItem.style.display = 'none';
+                }
+                
+                if (sprintArchitectItem && architectItem) {
+                    const sprintCheckbox = sprintArchitectItem.querySelector('.persona-checkbox');
+                    const architectCheckbox = architectItem.querySelector('.persona-checkbox');
+
+                    if (sprintCheckbox && architectCheckbox) {
+                        sprintCheckbox.checked = false;
+                        sprintArchitectItem.classList.remove('selected');
+                        architectCheckbox.checked = true;
+                        architectItem.classList.add('selected');
+                    }
+
+                    sprintArchitectItem.style.display = 'none';
+                    architectItem.style.display = 'block';
+                }
+                
+                // Show PM
+                pmItem.style.display = 'block';
+            }
+            
+            // Update meeting status display
+            const meetingStatus = document.getElementById('meetingStatus');
+            const meetingNameEl = document.getElementById('meetingName');
+            const meetingTypeEl = document.getElementById('meetingType');
+            
+            if (meetingStatus && meetingNameEl && meetingTypeEl) {
+                meetingStatus.classList.remove('active');
+                meetingNameEl.textContent = 'No Active Meeting';
+                meetingTypeEl.textContent = 'Ready for collaboration';
+            }
+        }
+
+        // App control state
+        let appRunning = false;
+
+        async function toggleApp() {
+            const btn = document.getElementById('appControlBtn');
+            
+            try {
+                if (appRunning) {
+                    // Stop the app
+                    btn.disabled = true;
+                    btn.textContent = 'Stopping...';
+                    
+                    const response = await fetch('/api/control-app', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'stop' })
+                    });
+                    
+                    if (response.ok) {
+                        appRunning = false;
+                        btn.textContent = 'Run App';
+                    } else {
+                        throw new Error('Failed to stop app');
+                    }
+                } else {
+                    // Start the app
+                    btn.disabled = true;
+                    btn.textContent = 'Starting...';
+                    
+                    const response = await fetch('/api/control-app', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'start' })
+                    });
+                    
+                    if (response.ok) {
+                        appRunning = true;
+                        btn.textContent = 'Stop App';
+                    } else {
+                        throw new Error('Failed to start app');
+                    }
+                }
+            } catch (error) {
+                console.error('Error controlling app:', error);
+                alert('Failed to control app: ' + error.message);
+                btn.textContent = appRunning ? 'Stop App' : 'Run App';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

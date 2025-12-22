@@ -69,8 +69,8 @@ execution-sandbox/
 progress.log
 *.log
 
-# Generated documentation and scribe data
-development/src/static/
+# Generated documentation and scribe data (but allow static UI files)
+development/src/static/appdocs/
 **/static/appdocs/scribe/
 **/static/appdocs/visions/
 stable/src/static/appdocs/scribe/
@@ -86,7 +86,7 @@ system_prompts copy*
 system_prompts copy 2*
 
 # Static runtime data only (not the code)
-static/
+static/appdocs/
 **/static/appdocs/scribe/
 **/static/appdocs/visions/
 **/static/img/

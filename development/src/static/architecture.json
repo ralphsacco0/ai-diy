@@ -1,0 +1,129 @@
+{
+  "project_name": "BrightHR_Lite_Vision",
+  "architecture_locked": true,
+  "locked_at_sprint": "SP-001",
+  "conventions": {
+    "module_system": "commonjs",
+    "database": {
+      "entry_point": "src/db.js",
+      "factory_function": "createDb",
+      "init_function": "initDb",
+      "test_mode": ":memory:",
+      "prod_db_path": "./data.sqlite",
+      "access_pattern": "Wrap sqlite3 callbacks in Promises for async/await, e.g., new Promise((resolve, reject) => { db.run(sql, params, (err) => { if (err) reject(err); else resolve(); }); })",
+      "seeding": "Run initDb on server start if database is empty; seed exactly 1 admin user (email: admin@test.com, password: Password123! hashed with bcrypt) and 5 sample employees (per AC: '1 admin user ... 5 sample employee records')"
+    },
+    "auth": {
+      "method": "express-session",
+      "session_secret": "process.env.SESSION_SECRET || 'dev-secret'",
+      "password_field": "password_hash",
+      "hash_method": "bcrypt.hashSync(plaintext, 10)",
+      "compare_method": "bcrypt.compare(input, hash)",
+      "timeout": "30 minutes inactivity (per US-009 AC: 'Session timeout after 30min inactivity')",
+      "logout": "req.session.destroy() to clear session (per US-009 AC: 'Logout clears session')"
+    },
+    "exports": {
+      "pattern": "commonjs",
+      "example": "module.exports = { createDb, initDb };"
+    },
+    "api_patterns": {
+      "error_handling": "try/catch blocks in all async operations",
+      "async_pattern": "async/await for all async operations including database calls",
+      "response_format": "res.status(code).json({ success: boolean, data: object, error: string }) for API endpoints; res.redirect() for static frontend navigation",
+      "middleware_order": "express.json(), session middleware, serve-static('/public'), routes, error handler"
+    },
+    "server": {
+      "export_app": "Export the Express app object from src/server.js for testability",
+      "conditional_start": "if (require.main === module) { app.listen(port, () => console.log(`Server on port ${port}`)); } to start only when run directly",
+      "static_serve": "app.use(express.static('public')) to serve HTML/CSS/JS from /public"
+    },
+    "environment": {
+      "config": "Use dotenv to load .env; PORT=3000 fallback; DB_PATH=./data.sqlite for prod, :memory: if NODE_ENV=test",
+      "npm_scripts": "'start': 'node src/server.js', 'test': 'NODE_ENV=test node --test'"
+    },
+    "file_structure": {
+      "root": "package.json, .env, README.md, .gitignore (include .env, data.sqlite)",
+      "src": "src/db.js (database), src/server.js (Express app)",
+      "public": "public/index.html (initial login or home page)"
+    }
+  },
+  "current_schema": {
+    "users": {
+      "fields": [
+        {
+          "name": "id",
+          "type": "INTEGER PRIMARY KEY AUTOINCREMENT"
+        },
+        {
+          "name": "email",
+          "type": "TEXT UNIQUE NOT NULL"
+        },
+        {
+          "name": "password_hash",
+          "type": "TEXT NOT NULL"
+        },
+        {
+          "name": "role",
+          "type": "TEXT NOT NULL DEFAULT 'employee' CHECK (role IN ('employee', 'hr'))"
+        },
+        {
+          "name": "created_at",
+          "type": "TEXT DEFAULT (datetime('now'))"
+        }
+      ],
+      "added_in": "NFR-001"
+    }
+  },
+  "current_endpoints": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "request": "none",
+      "response": "{ success: true, data: { status: 'ok' } }",
+      "added_in": "NFR-001"
+    },
+    {
+      "method": "POST",
+      "path": "/api/login",
+      "request": "{email: string, password: string}",
+      "response": "{success: boolean, data: {user: {id, email, role}}, error: string} or redirect to role-based dashboard on success",
+      "added_in": "US-009"
+    },
+    {
+      "method": "POST",
+      "path": "/api/logout",
+      "request": "{}",
+      "response": "redirect to /login after clearing session",
+      "added_in": "US-009"
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard",
+      "request": "none (requires session)",
+      "response": "redirect to /hr-dashboard if role 'hr' or /employee-dashboard if 'employee'; 401 if no session",
+      "added_in": "US-009"
+    },
+    {
+      "method": "GET",
+      "path": "/hr-dashboard",
+      "request": "none (requires session with role 'hr')",
+      "response": "serve public/hr-dashboard.html or 403 if not authorized",
+      "added_in": "US-009"
+    },
+    {
+      "method": "GET",
+      "path": "/employee-dashboard",
+      "request": "none (requires session with role 'employee')",
+      "response": "serve public/employee-dashboard.html or 403 if not authorized",
+      "added_in": "US-009"
+    }
+  ],
+  "last_updated": "2025-11-24T15:17:51.017388",
+  "tech_stack": {
+    "backend": "nodejs_express",
+    "frontend": "plain_html_css_js",
+    "database": "sqlite",
+    "backend_port": "3000",
+    "frontend_port": "3000"
+  }
+}

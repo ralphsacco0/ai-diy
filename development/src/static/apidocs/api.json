@@ -1,0 +1,223 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AI-DIY Scrum App",
+    "description": "AI-First Virtual Scrum Team API",
+    "version": "3.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Serve Index",
+        "description": "Serve the main UI",
+        "responses": {
+          "200": {
+            "description": "HTML page"
+          }
+        }
+      }
+    },
+    "/api/stream-chat": {
+      "post": {
+        "summary": "Stream Chat",
+        "description": "AI-First streaming chat endpoint",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {"type": "string"},
+                  "selected_personas": {"type": "array", "items": {"type": "string"}},
+                  "model": {"type": "string"},
+                  "chat_room": {"type": "string"},
+                  "chat_history": {"type": "array"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Streaming response"
+          }
+        }
+      }
+    },
+    "/api/chat": {
+      "post": {
+        "summary": "Send Chat Message",
+        "description": "Send a chat message and get persona responses",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {"type": "string"},
+                  "room": {"type": "string"},
+                  "personas": {"type": "array", "items": {"type": "string"}}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chat responses"
+          }
+        }
+      }
+    },
+    "/api/change-requests/": {
+      "post": {
+        "summary": "Submit Change Request",
+        "description": "Submit a code change request",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {"type": "string"},
+                  "files": {"type": "array", "items": {"type": "string"}},
+                  "executor": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Change request result"
+          }
+        }
+      }
+    },
+    "/api/testing/run-tests": {
+      "post": {
+        "summary": "Run Tests",
+        "description": "Execute test cases",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "test_cases": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"},
+                        "test_type": {"type": "string"},
+                        "target": {"type": "string"},
+                        "inputs": {"type": "array"},
+                        "expected": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Test results"
+          }
+        }
+      }
+    },
+    "/api/vision": {
+      "get": {
+        "summary": "List Visions",
+        "description": "Get all project visions",
+        "responses": {
+          "200": {
+            "description": "List of visions"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Vision",
+        "description": "Create a new project vision",
+        "responses": {
+          "200": {
+            "description": "Vision created"
+          }
+        }
+      }
+    },
+    "/api/scribe/meeting-notes": {
+      "get": {
+        "summary": "Get Meeting Notes",
+        "description": "Retrieve meeting notes and summaries",
+        "responses": {
+          "200": {
+            "description": "Meeting notes"
+          }
+        }
+      }
+    },
+    "/api/models/config": {
+      "get": {
+        "summary": "Get Models Config",
+        "description": "Get AI model configuration",
+        "responses": {
+          "200": {
+            "description": "Model configuration"
+          }
+        }
+      },
+      "post": {
+        "summary": "Save Models Config",
+        "description": "Save AI model configuration",
+        "responses": {
+          "200": {
+            "description": "Configuration saved"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "description": "Health check endpoint",
+        "responses": {
+          "200": {
+            "description": "Service health status"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChatRequest": {
+        "type": "object",
+        "properties": {
+          "message": {"type": "string"},
+          "room": {"type": "string"},
+          "personas": {"type": "array", "items": {"type": "string"}}
+        }
+      },
+      "TestCase": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "test_type": {"type": "string"},
+          "target": {"type": "string"},
+          "inputs": {"type": "array"},
+          "expected": {"type": "string"}
+        }
+      }
+    }
+  }
+}
