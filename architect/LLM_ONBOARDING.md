@@ -305,6 +305,36 @@ Use the Railway CLI (`railway logs`, `railway status`, `railway shell`) or Railw
 - **Railway**: HTTP Basic Auth required (PRODUCTION=true)
 - Same codebase, different behavior based on environment variables
 
+### CRITICAL: Accessing Railway Data (Not Local Mac)
+
+When debugging Railway issues, you MUST access data FROM Railway, not local Mac files:
+
+**Sprint Execution Logs:**
+```bash
+# WRONG - reads local Mac file
+cat /Users/ralph/AI-DIY/ai-diy/development/src/static/appdocs/sprints/execution_log_SP-001.jsonl
+
+# RIGHT - reads from Railway via authenticated API
+curl -s -u "Ralph:!password321!" "https://ai-diy-dev-production.up.railway.app/static/appdocs/sprints/execution_log_SP-001.jsonl"
+```
+
+**Railway CLI Commands:**
+- `railway run <cmd>` - Runs command LOCALLY with Railway env vars (NOT on Railway server)
+- `railway ssh` - Requires TTY, doesn't work in Claude Code
+- Use authenticated curl to Railway API endpoints instead
+
+**File Paths on Railway:**
+- Railway container root: `/app/`
+- Sprint logs: `/app/development/src/static/appdocs/sprints/`
+- Client projects: `/app/development/src/static/appdocs/execution-sandbox/client-projects/`
+
+**API Endpoints for Railway Data:**
+- `GET /api/sprints` - List all sprints with execution summaries
+- `GET /static/appdocs/sprints/execution_log_SP-XXX.jsonl` - Raw execution log
+- `GET /api/sandbox/status` - Sandbox configuration
+
+**Common Mistake:** Reading local files when Railway is the target environment. Local Mac has different sprint history than Railway. Always verify which environment you're debugging.
+
 ---
 
 ## Section 6: How to Use This Document
