@@ -260,17 +260,16 @@ async def stream_chat(request: dict):
                             # Path is relative to src/ directory where this file runs
                             vision_dir = Path(__file__).parent / "static" / "appdocs" / "visions"
                             if vision_dir.exists():
-                                # Find latest approved vision (not draft)
+                                # Find latest vision (draft or approved)
                                 vision_files = sorted(vision_dir.glob("*.json"), reverse=True)
                                 for vf in vision_files:
                                     with open(vf, 'r') as f:
                                         vision_data = json.load(f)
-                                        if vision_data.get("client_approval"):
-                                            # Extract project name from vision
-                                            project_name = vision_data.get("title", "Unknown Project")
-                                            context_parts.append(f"=== LATEST APPROVED VISION ===\nPROJECT: {project_name}\n\n{vision_data.get('content', '')}\n")
-                                            logger.info(f"Injected vision context for {pk}: {vf.name}")
-                                            break
+                                        # Extract project name from vision
+                                        project_name = vision_data.get("title", "Unknown Project")
+                                        context_parts.append(f"=== LATEST APPROVED VISION ===\nPROJECT: {project_name}\n\n{vision_data.get('content', '')}\n")
+                                        logger.info(f"Injected vision context for {pk}: {vf.name}")
+                                        break
                             else:
                                 logger.warning(f"Vision directory not found at: {vision_dir}")
                         except Exception as e:
