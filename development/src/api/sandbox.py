@@ -291,13 +291,15 @@ async def execute_command(request: ExecuteCommandRequest):
         logger.info(f"Executing command in sandbox: {' '.join(full_command)} (cwd: {working_dir})")
         
         # Execute command with timeout
+        # FUDGE TEST: Force PORT=3000 for generated apps so they don't conflict with AI-DIY on 8000
+        cmd_env = {**os.environ, "PYTHONUNBUFFERED": "1", "PORT": "3000"}
         result = subprocess.run(
             full_command,
             cwd=str(working_dir),
             capture_output=True,
             text=True,
             timeout=request.timeout,
-            env={**os.environ, "PYTHONUNBUFFERED": "1"}
+            env=cmd_env
         )
         
         logger.info(f"Command completed with exit code: {result.returncode}")
