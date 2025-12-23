@@ -167,8 +167,47 @@ def restore_snapshot(
                 shutil.copytree(item, dest)
             else:
                 shutil.copy2(item, dest)
-        
+
         logger.info(f"✅ Snapshot restored: {snapshot_id}")
+
+        # Reinstall dependencies (node_modules excluded from snapshot)
+        package_json = project_path / "package.json"
+        if package_json.exists():
+            logger.info("🔄 Reinstalling dependencies after snapshot restore...")
+            import subprocess
+            try:
+                result = subprocess.run(
+                    ["npm", "ci", "--prefer-offline"],
+                    cwd=str(project_path),
+                    capture_output=True,
+                    text=True,
+                    timeout=300  # 5 minutes
+                )
+
+                if result.returncode != 0:
+                    # Fallback to npm install if ci fails
+                    logger.info("npm ci failed, trying npm install...")
+                    result = subprocess.run(
+                        ["npm", "install", "--prefer-offline"],
+                        cwd=str(project_path),
+                        capture_output=True,
+                        text=True,
+                        timeout=300
+                    )
+
+                if result.returncode == 0:
+                    logger.info("✅ Dependencies reinstalled successfully")
+                else:
+                    logger.warning(f"⚠️ npm install failed: {result.stderr}")
+                    logger.warning("Snapshot restored but dependencies missing - manually run 'npm install'")
+
+            except subprocess.TimeoutExpired:
+                logger.error("❌ npm install timed out during snapshot restore")
+            except FileNotFoundError:
+                logger.error("❌ npm not found - cannot reinstall dependencies")
+            except Exception as e:
+                logger.error(f"Failed to reinstall dependencies: {e}")
+
         return True
         
     except Exception as e:

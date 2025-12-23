@@ -4226,11 +4226,27 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
                 metadata["items"].append("wireframes")
 
             # Capture current project sandbox (even if empty)
+            # Exclude node_modules - will be reinstalled on restore
             project_root = EXECUTION_SANDBOX / project_name
             project_backup_dir = backup_root / "project"
             metadata["items"].append("project")
             if project_root.exists():
-                shutil.copytree(project_root, project_backup_dir)
+                shutil.copytree(
+                    project_root,
+                    project_backup_dir,
+                    ignore=shutil.ignore_patterns(
+                        'node_modules',      # Reinstalled on restore
+                        'venv',              # Python venv (if Flask projects added later)
+                        '.venv',
+                        '__pycache__',
+                        '*.pyc',
+                        '.pytest_cache',
+                        '*.log',
+                        '.DS_Store',
+                        '.git'
+                        # Keep: database.sqlite, *.db (user data must be preserved)
+                    )
+                )
             else:
                 project_backup_dir.mkdir(parents=True, exist_ok=True)
 
@@ -4337,6 +4353,43 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
             if project_root.exists():
                 shutil.rmtree(project_root)
             shutil.copytree(project_backup, project_root)
+
+            # Reinstall dependencies (node_modules excluded from backup)
+            package_json = project_root / "package.json"
+            if package_json.exists():
+                logger.info(f"🔄 Reinstalling dependencies for {project_name} after rollback...")
+                try:
+                    result = subprocess.run(
+                        ["npm", "ci", "--prefer-offline"],
+                        cwd=str(project_root),
+                        capture_output=True,
+                        text=True,
+                        timeout=300  # 5 minutes
+                    )
+
+                    if result.returncode != 0:
+                        # Fallback to npm install if ci fails
+                        logger.info("npm ci failed, trying npm install...")
+                        result = subprocess.run(
+                            ["npm", "install", "--prefer-offline"],
+                            cwd=str(project_root),
+                            capture_output=True,
+                            text=True,
+                            timeout=300
+                        )
+
+                    if result.returncode == 0:
+                        logger.info("✅ Dependencies reinstalled successfully")
+                    else:
+                        logger.warning(f"⚠️ npm install failed: {result.stderr}")
+                        logger.warning("Project files restored but dependencies missing - manually run 'npm install'")
+
+                except subprocess.TimeoutExpired:
+                    logger.error("❌ npm install timed out during rollback")
+                except FileNotFoundError:
+                    logger.error("❌ npm not found - cannot reinstall dependencies")
+                except Exception as e:
+                    logger.error(f"Failed to reinstall dependencies: {e}")
         else:
             if project_root.exists():
                 shutil.rmtree(project_root)
