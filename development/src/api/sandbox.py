@@ -20,8 +20,8 @@ router = APIRouter(prefix="/api/sandbox", tags=["sandbox"])
 # Sandbox root directory - matches sprint_orchestrator.py pattern
 # Use absolute path to avoid issues when API runs from different directories
 # This file is at: development/src/api/sandbox.py
-# SANDBOX_ROOT should be: development/src/execution-sandbox/client-projects
-SANDBOX_ROOT = Path(__file__).parent.parent / "execution-sandbox" / "client-projects"
+# SANDBOX_ROOT should be: development/src/static/appdocs/execution-sandbox/client-projects
+SANDBOX_ROOT = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
 
 # Security: Allowlist of commands that can be executed
 ALLOWED_COMMANDS = [

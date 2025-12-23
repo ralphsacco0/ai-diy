@@ -713,7 +713,7 @@ async def call_openrouter_api(messages: List[Dict], model: str, persona_name: st
                                                 from services.project_context import extract_file_structure, extract_api_endpoints
 
                                                 # Base sandbox path should be under development/src, not one level higher
-                                                execution_sandbox = Path(__file__).parent.parent / "execution-sandbox" / "client-projects"
+                                                execution_sandbox = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
                                                 project_path = execution_sandbox / project_name
                                                 logger.info(f"Project path: {project_path}, exists: {project_path.exists()}", character=persona_key)
 
@@ -1561,7 +1561,7 @@ async def run_sprint_review_alex_execution_mode(
                                 from datetime import datetime
                                 
                                 # Determine project path
-                                execution_sandbox = Path(__file__).parent.parent / "execution-sandbox" / "client-projects"
+                                execution_sandbox = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
                                 project_path = execution_sandbox / project_name
                                 
                                 if project_path.exists():
@@ -1966,7 +1966,7 @@ async def execute_function_calls(tool_calls: List[Dict], existing_content: str, 
                     raise ValueError("Missing required argument: project_name")
                 
                 # Determine project path
-                execution_sandbox = Path(__file__).parent.parent / "execution-sandbox" / "client-projects"
+                execution_sandbox = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
                 project_path = execution_sandbox / project_name
                 
                 if not project_path.exists():
@@ -2010,7 +2010,7 @@ async def execute_function_calls(tool_calls: List[Dict], existing_content: str, 
                     raise ValueError("Missing required arguments: project_name and snapshot_id")
                 
                 # Determine project path
-                execution_sandbox = Path(__file__).parent.parent / "execution-sandbox" / "client-projects"
+                execution_sandbox = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
                 project_path = execution_sandbox / project_name
                 
                 if not project_path.exists():

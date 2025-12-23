@@ -65,7 +65,7 @@ async def create_change_request(request: ChangeRequest):
             # Create EnhancedWindsurfIntegration instance
             logger.debug(f"[TRACE] Creating EnhancedWindsurfIntegration...")
             # Point to execution-sandbox/client-projects where the actual files are
-            execution_sandbox = PROJECT_ROOT.parent.parent / "execution-sandbox" / "client-projects"
+            execution_sandbox = PROJECT_ROOT.parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
             windsurf = EnhancedWindsurfIntegration(
                 project_root=str(PROJECT_ROOT),
                 target_workspace=str(execution_sandbox)
@@ -244,7 +244,7 @@ async def create_change_request(request: ChangeRequest):
                         return ""
             
             # Point to execution-sandbox/client-projects where the actual files are
-            execution_sandbox = PROJECT_ROOT.parent.parent / "execution-sandbox" / "client-projects"
+            execution_sandbox = PROJECT_ROOT.parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
             windsurf = LocalBuilderHandler(execution_sandbox)
             
             logger.debug(f"[TRACE] Local builder handler created")

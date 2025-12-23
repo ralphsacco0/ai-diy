@@ -266,7 +266,48 @@ Mike MUST output these sections before tasks:
 
 ---
 
-## Section 5: How to Use This Document
+## Section 5: Production Deployment (Railway)
+
+### Overview
+
+The AI-DIY application is deployed to Railway at **https://ai-diy-dev-production.up.railway.app**. The deployment uses Docker containerization for consistency and portability.
+
+### Authentication
+
+The production site is protected with HTTP Basic Authentication to prevent unauthorized access and unexpected API charges. Access is controlled via the `BASIC_AUTH_USERS` environment variable in Railway (format: `username1:password1,username2:password2`). Current authorized users are documented separately.
+
+### Key Railway Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `Dockerfile` | Container build instructions |
+| `railway.json` | Railway deployment settings (uses Dockerfile builder) |
+| `development/src/auth_middleware.py` | HTTP Basic Auth implementation |
+
+### Environment Variables
+
+**Required in Railway:**
+- `PRODUCTION=true` - Enables production mode and authentication
+- `OPENROUTER_API_KEY` - API key for AI model access
+- `BASIC_AUTH_USERS` - Comma-separated username:password pairs
+
+**Optional (have sensible defaults):**
+- `LOG_LEVEL` - Logging verbosity (default: INFO)
+- `DATA_ROOT` - Data storage location (default: static/appdocs)
+- `PORT` - Server port (Railway sets this automatically)
+
+### Management
+
+Use the Railway CLI (`railway logs`, `railway status`, `railway shell`) or Railway MCP integration for deployment management. The Claude Code environment has Railway MCP configured for direct project access.
+
+**Local vs Railway Behavior:**
+- **Local Mac**: No authentication required (PRODUCTION not set)
+- **Railway**: HTTP Basic Auth required (PRODUCTION=true)
+- Same codebase, different behavior based on environment variables
+
+---
+
+## Section 6: How to Use This Document
 
 ### Every Session Start
 1. Read this document completely

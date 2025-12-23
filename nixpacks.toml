@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["python311", "python311Packages.pip"]
+
+[phases.install]
+cmds = ["python -m pip install --upgrade pip", "python -m pip install -r requirements.txt"]
+
+[variables]
+PYTHONPATH = "/app/development/src"
+
+[start]
+cmd = "cd development/src && python -m uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"

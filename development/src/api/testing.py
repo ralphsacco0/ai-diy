@@ -39,7 +39,7 @@ class TestResponse(BaseModel):
     results: List[TestResult]
     summary: Dict[str, int]  # {"passed": 2, "failed": 1, "errors": 0}
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent / "execution-sandbox" / "client-projects"
+PROJECT_ROOT = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
 
 @router.post("/run-tests", response_model=TestResponse)
 async def run_tests(test_request: TestRequest):

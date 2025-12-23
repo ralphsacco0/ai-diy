@@ -209,7 +209,7 @@ class BuilderExecutor:
         
         try:
             # Change to execution-sandbox/client-projects where the files are
-            sandbox_dir = self.project_root / "execution-sandbox" / "client-projects"
+            sandbox_dir = self.project_root / "development" / "src" / "static" / "appdocs" / "execution-sandbox" / "client-projects"
             os.chdir(sandbox_dir)
             
             # Apply patch using patch command instead of git apply
@@ -248,7 +248,7 @@ class BuilderExecutor:
         
         try:
             # Change to execution-sandbox/client-projects where the files are
-            sandbox_dir = self.project_root / "execution-sandbox" / "client-projects"
+            sandbox_dir = self.project_root / "development" / "src" / "static" / "appdocs" / "execution-sandbox" / "client-projects"
             os.chdir(sandbox_dir)
             
             # Create temporary patch file
@@ -293,7 +293,7 @@ class BuilderExecutor:
         
         try:
             # Change to execution-sandbox/client-projects where the files are
-            sandbox_dir = self.project_root / "execution-sandbox" / "client-projects"
+            sandbox_dir = self.project_root / "development" / "src" / "static" / "appdocs" / "execution-sandbox" / "client-projects"
             os.chdir(sandbox_dir)
             
             # Run pytest -q with virtual environment

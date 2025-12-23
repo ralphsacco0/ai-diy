@@ -46,7 +46,7 @@ except ImportError:
         data_root = os.environ.get("DATA_ROOT", "static")
         host = "0.0.0.0"
         port = 8000
-        is_production = os.environ.get("APP_ENV", "DEV") == "STABLE"
+        is_production = os.environ.get("PRODUCTION", "false").lower() == "true" or os.environ.get("APP_ENV", "DEV") == "STABLE"
     
     class ModelsConfig:
         favorites = []
@@ -114,6 +114,12 @@ app = FastAPI(
     description="AI-First Virtual Scrum Team with Enhanced Features",
     version="1.0.0"
 )
+
+# Add HTTP Basic Authentication (always enabled in production)
+from auth_middleware import BasicAuthMiddleware
+if app_config.is_production or os.environ.get("ENABLE_BASIC_AUTH") == "true":
+    app.add_middleware(BasicAuthMiddleware)
+    logger.info("🔒 HTTP Basic Auth enabled")
 
 # Add CORS middleware
 if not app_config.is_production:
