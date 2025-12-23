@@ -38,6 +38,9 @@ import ast
 import os
 import shutil
 import subprocess
+from dotenv import load_dotenv
+
+load_dotenv()
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
