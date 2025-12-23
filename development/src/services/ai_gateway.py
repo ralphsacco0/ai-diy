@@ -1757,10 +1757,24 @@ async def execute_function_calls(tool_calls: List[Dict], existing_content: str, 
                     raise ValueError("Missing required argument: 'url'")
                 if "payload" not in arguments:
                     raise ValueError("Missing required argument: 'payload'. The LLM must provide arguments in format: {\"url\": \"...\", \"payload\": {...}}")
-                
+
                 url = arguments["url"]
                 payload = arguments["payload"]
                 headers = arguments.get("headers", {"Content-Type": "application/json"})
+
+                # Add Basic Auth for internal API calls (when calling own API from within container)
+                api_base_url = os.environ.get("API_BASE_URL", "http://localhost:8000")
+                if url.startswith(api_base_url):
+                    # Extract first user credentials from BASIC_AUTH_USERS env var
+                    auth_users = os.environ.get("BASIC_AUTH_USERS", "")
+                    if auth_users and ":" in auth_users:
+                        # Get first user:pass pair
+                        first_user = auth_users.split(",")[0].strip()
+                        if ":" in first_user:
+                            import base64
+                            encoded_creds = base64.b64encode(first_user.encode()).decode()
+                            headers["Authorization"] = f"Basic {encoded_creds}"
+                            logger.debug(f"Added Basic Auth for internal API call to {url}")
                 
                 async with aiohttp.ClientSession() as session:
                     async with session.post(url, json=payload, headers=headers) as response:
