@@ -69,6 +69,7 @@ BACKLOG_CSV_PATH = Path("static/appdocs/backlog/Backlog.csv")
 VISION_DIR = Path("static/appdocs/visions")
 WIREFRAME_DIR = Path("static/appdocs/backlog/wireframes")
 EXECUTION_SANDBOX = Path("static/appdocs/execution-sandbox/client-projects")
+EXECUTION_SANDBOX.mkdir(parents=True, exist_ok=True)
 BACKUP_BASE_DIR = SPRINT_DIR / "backups"
 BACKUP_BASE_DIR.mkdir(parents=True, exist_ok=True)
 
