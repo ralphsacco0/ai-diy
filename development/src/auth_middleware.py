@@ -59,8 +59,8 @@ class BasicAuthMiddleware(BaseHTTPMiddleware):
     EXCLUDED_PATHS = ["/health", "/api/env"]  # Paths that don't require auth
 
     async def dispatch(self, request: Request, call_next):
-        # Skip auth for excluded paths
-        if request.url.path in self.EXCLUDED_PATHS:
+        # Skip auth for excluded paths and wireframe endpoints
+        if request.url.path in self.EXCLUDED_PATHS or request.url.path.startswith("/api/backlog/wireframe/"):
             return await call_next(request)
 
         # Check for Authorization header
