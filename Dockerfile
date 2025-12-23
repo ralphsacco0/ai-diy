@@ -4,6 +4,19 @@ FROM python:3.11-slim
 # Set working directory
 WORKDIR /app
 
+# Install Node.js 20.x for sprint execution (npm install, node --test)
+# Required for executing Node.js/Express sprints on Railway
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Verify Node.js and npm are installed
+RUN node --version && npm --version
+
 # Copy requirements first for better caching
 COPY requirements.txt .
 

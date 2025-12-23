@@ -1512,11 +1512,13 @@ This pattern prevents "SQLITE_MISUSE: Database is closed" errors.
                 "success": False
             }
         except FileNotFoundError:
-            logger.warning("pytest not found, skipping test execution")
+            # Provide accurate error message based on which test command failed
+            failed_cmd = test_cmd[0] if test_cmd else "test runner"
+            logger.warning(f"{failed_cmd} not found, skipping test execution")
             return {
                 "passed": 0,
                 "failed": 0,
-                "output": "pytest not installed",
+                "output": f"{failed_cmd} not installed - ensure Node.js or Python test tools are available",
                 "success": False
             }
         except Exception as e:
@@ -2104,6 +2106,12 @@ CREATE TABLE users (
 
                     # Best-effort Node/Express/SQLite contract validation (warnings only)
                     if any("package.json" in f for f in story_files_written):
+                        # Install npm dependencies before running tests
+                        logger.info(f"📦 package.json detected, installing npm dependencies...")
+                        if self._install_dependencies(project_root):
+                            await self._post_to_chat("System", "✅ npm dependencies installed successfully")
+                        else:
+                            await self._post_to_chat("System", "⚠️ npm install failed - tests may not run correctly")
                         self._validate_node_contracts(project_root, story_id, task_breakdown)
 
                     # Call Jordan to generate tests
