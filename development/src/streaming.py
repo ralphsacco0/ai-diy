@@ -260,18 +260,17 @@ async def stream_chat(request: dict):
                             # Path is relative to src/ directory where this file runs
                             vision_dir = Path(__file__).parent / "static" / "appdocs" / "visions"
                             if vision_dir.exists():
-                                # Find latest vision (draft or approved) - sort by modification time
-                                vision_files = sorted(vision_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
-                                if vision_files:
-                                    vf = vision_files[0]  # Get most recent vision file
+                                # Find latest approved vision (not draft)
+                                vision_files = sorted(vision_dir.glob("*.json"), reverse=True)
+                                for vf in vision_files:
                                     with open(vf, 'r') as f:
                                         vision_data = json.load(f)
-                                        # Extract project name and approval status
-                                        project_name = vision_data.get("title", "Unknown Project")
-                                        is_approved = vision_data.get("client_approval", False)
-                                        status = "APPROVED" if is_approved else "DRAFT"
-                                        context_parts.append(f"=== LATEST VISION ({status}) ===\nPROJECT: {project_name}\n\n{vision_data.get('content', '')}\n")
-                                        logger.info(f"Injected vision context for {pk}: {vf.name} ({status})")
+                                        if vision_data.get("client_approval"):
+                                            # Extract project name from vision
+                                            project_name = vision_data.get("title", "Unknown Project")
+                                            context_parts.append(f"=== LATEST APPROVED VISION ===\nPROJECT: {project_name}\n\n{vision_data.get('content', '')}\n")
+                                            logger.info(f"Injected vision context for {pk}: {vf.name}")
+                                            break
                             else:
                                 logger.warning(f"Vision directory not found at: {vision_dir}")
                         except Exception as e:
