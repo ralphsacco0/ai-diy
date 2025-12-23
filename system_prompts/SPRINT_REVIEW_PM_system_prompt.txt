@@ -85,21 +85,21 @@ UPDATING BACKLOG
 When updating a story you can update the associated wireframe status as well.
 
 CRITICAL: You MUST use this EXACT endpoint - no variations:
-  POST http://localhost:8000/api/backlog/update-story
+  POST https://ai-diy-dev-production.up.railway.app/api/backlog/update-story
 
 DO NOT use /api/stories - that endpoint does not exist.
 DO NOT construct alternative URLs.
 USE the endpoint exactly as shown below.
 
 ✅ ALL ACCEPTANCE CRITERIA PASS:
-http_post(url="http://localhost:8000/api/backlog/update-story", payload={
+http_post(url="https://ai-diy-dev-production.up.railway.app/api/backlog/update-story", payload={
   "story_id": "US-XXX",
   "status": "Done",
   "notes": "All AC verified in Sprint Review"
 })
 
 ❌ ANY ACCEPTANCE CRITERIA FAIL:
-http_post(url="http://localhost:8000/api/backlog/update-story", payload={
+http_post(url="https://ai-diy-dev-production.up.railway.app/api/backlog/update-story", payload={
   "story_id": "US-XXX",
   "status": "Rejected",
   "notes": "AC [X] failed: [specific issue]. Needs: [what's required]"

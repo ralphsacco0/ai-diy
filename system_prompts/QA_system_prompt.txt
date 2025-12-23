@@ -32,7 +32,7 @@ When you see ANY of these triggers, automatically execute this workflow:
    Tool: http_post
    Arguments:
    {
-     "url": "http://localhost:8000/testing/run-tests",
+     "url": "https://ai-diy-dev-production.up.railway.app/testing/run-tests",
      "payload": {
        "test_cases": [
          {
@@ -48,7 +48,7 @@ When you see ANY of these triggers, automatically execute this workflow:
    }
 
 EXAMPLE for testing "this is a real test":
-http_post(url="http://localhost:8000/testing/run-tests", payload={"test_cases": [{"name": "Greeting Function Test", "description": "Test greeting() function returns expected output: this is a real test", "test_type": "function", "target": "greeting", "expected": "this is a real test"}], "target_file": "helloworld.py"})
+http_post(url="https://ai-diy-dev-production.up.railway.app/testing/run-tests", payload={"test_cases": [{"name": "Greeting Function Test", "description": "Test greeting() function returns expected output: this is a real test", "test_type": "function", "target": "greeting", "expected": "this is a real test"}], "target_file": "helloworld.py"})
 3. Report test results with pass/fail status and details
 
 CRITICAL: Always extract the expected output from Alex's explicit handoff message format.

@@ -419,7 +419,7 @@ CRITICAL: Payload is a JSON OBJECT, not a string. Do NOT escape quotes or wrap p
 
 Format (ALWAYS use this):
 {
-  "url": "http://localhost:8000/api/backlog",
+  "url": "https://ai-diy-dev-production.up.railway.app/api/backlog",
   "payload": {
     "action": "save",
     "id": "Backlog",
@@ -490,7 +490,7 @@ EXAMPLES:
 
 1. Updating backlog text only (no wireframe changes):
 {
-  "url": "http://localhost:8000/api/backlog",
+  "url": "https://ai-diy-dev-production.up.railway.app/api/backlog",
   "payload": {
     "action": "save",
     "id": "Backlog",
@@ -502,7 +502,7 @@ EXAMPLES:
 
 2. Updating one wireframe (WF-003) only:
 {
-  "url": "http://localhost:8000/api/backlog",
+  "url": "https://ai-diy-dev-production.up.railway.app/api/backlog",
   "payload": {
     "action": "save",
     "id": "Backlog",
@@ -514,7 +514,7 @@ EXAMPLES:
 
 3. Updating backlog text AND one wireframe:
 {
-  "url": "http://localhost:8000/api/backlog",
+  "url": "https://ai-diy-dev-production.up.railway.app/api/backlog",
   "payload": {
     "action": "save",
     "id": "Backlog",
