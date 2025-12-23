@@ -174,66 +174,124 @@ logger.info("✅ All API routers loaded successfully")
 from pydantic import BaseModel as PydanticBaseModel
 import subprocess
 import asyncio
+import signal
+from core.project_metadata import get_project_name_safe
+
+# Module-level variable to track the running generated app process
+_generated_app_process = None
 
 class AppControlRequest(PydanticBaseModel):
     action: str  # "start" or "stop"
 
 @app.post("/api/control-app")
 async def control_app(request: AppControlRequest):
-    """Start or stop the generated application"""
+    """Start or stop the generated application.
+
+    Works on both Mac and Railway (Linux) by using Python subprocess directly
+    instead of shell scripts. Uses get_project_name_safe() to find the project.
+    """
+    global _generated_app_process
+
     try:
-        # Get the project root (two levels up from src/)
-        project_root = Path(__file__).parent.parent.parent
-        
+        # Get project name dynamically
+        project_name = get_project_name_safe()
+        if not project_name or project_name in ("Unknown", "default_project"):
+            raise HTTPException(status_code=400, detail="No approved project found. Complete a sprint first.")
+
+        # Project is in execution sandbox
+        sandbox_base = Path(__file__).parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
+        project_dir = sandbox_base / project_name
+
+        if not project_dir.exists():
+            raise HTTPException(status_code=404, detail=f"Project directory not found: {project_name}")
+
+        # Check for package.json to verify it's a valid Node project
+        if not (project_dir / "package.json").exists():
+            raise HTTPException(status_code=400, detail=f"No package.json found in {project_name}. Sprint may not have completed.")
+
         if request.action == "start":
-            script_path = project_root / "start-brighthR.command"
-            if not script_path.exists():
-                raise HTTPException(status_code=404, detail="start-brighthR.command not found")
-            
-            # Run the start script in background
-            process = subprocess.Popen(
-                ["/bin/bash", str(script_path)],
-                cwd=str(project_root),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                start_new_session=True
+            # Kill any existing process first
+            if _generated_app_process is not None:
+                if _generated_app_process.poll() is None:  # Still running
+                    logger.info(f"Stopping existing app process (PID {_generated_app_process.pid})")
+                    _generated_app_process.terminate()
+                    try:
+                        _generated_app_process.wait(timeout=5)
+                    except subprocess.TimeoutExpired:
+                        _generated_app_process.kill()
+                        _generated_app_process.wait()
+                _generated_app_process = None
+
+            # Run npm start in project directory
+            # stdout=None, stderr=None means inherit parent's terminal (logs appear in AI-DIY console)
+            env = {**os.environ, "PORT": "3000"}
+            _generated_app_process = subprocess.Popen(
+                ["npm", "start"],
+                cwd=str(project_dir),
+                env=env,
+                stdout=None,  # Inherit parent stdout - logs go to AI-DIY terminal
+                stderr=None,  # Inherit parent stderr
             )
-            
-            logger.info(f"Started BrightHR app with PID {process.pid}")
-            return {"success": True, "message": "App started", "pid": process.pid}
-            
+
+            logger.info(f"Started {project_name} app with PID {_generated_app_process.pid} on port 3000")
+            return {
+                "success": True,
+                "message": f"Started {project_name}",
+                "pid": _generated_app_process.pid,
+                "project_name": project_name,
+                "url": "/yourapp/"
+            }
+
         elif request.action == "stop":
-            script_path = project_root / "stop-brighthR.command"
-            if not script_path.exists():
-                raise HTTPException(status_code=404, detail="stop-brighthR.command not found")
-            
-            # Run the stop script
-            result = subprocess.run(
-                ["/bin/bash", str(script_path)],
-                cwd=str(project_root),
-                capture_output=True,
-                text=True,
-                timeout=10
-            )
-            
-            logger.info(f"Stopped BrightHR app: {result.stdout}")
-            return {"success": True, "message": "App stopped", "output": result.stdout}
-            
+            if _generated_app_process is None or _generated_app_process.poll() is not None:
+                return {"success": True, "message": "App was not running"}
+
+            pid = _generated_app_process.pid
+            _generated_app_process.terminate()
+            try:
+                _generated_app_process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                logger.warning(f"App did not terminate gracefully, killing PID {pid}")
+                _generated_app_process.kill()
+                _generated_app_process.wait()
+
+            _generated_app_process = None
+            logger.info(f"Stopped {project_name} app (PID {pid})")
+            return {"success": True, "message": f"Stopped {project_name}", "pid": pid}
+
+        elif request.action == "status":
+            if _generated_app_process is None:
+                return {"success": True, "running": False, "message": "No app started"}
+            elif _generated_app_process.poll() is None:
+                return {
+                    "success": True,
+                    "running": True,
+                    "pid": _generated_app_process.pid,
+                    "project_name": project_name,
+                    "url": "/yourapp/"
+                }
+            else:
+                return {"success": True, "running": False, "message": "App has exited", "exit_code": _generated_app_process.returncode}
+
         else:
-            raise HTTPException(status_code=400, detail="Invalid action. Use 'start' or 'stop'")
-            
-    except subprocess.TimeoutExpired:
-        raise HTTPException(status_code=500, detail="Stop command timed out")
+            raise HTTPException(status_code=400, detail="Invalid action. Use 'start', 'stop', or 'status'")
+
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error controlling app: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# FUDGE TEST: Simple reverse proxy to generated app on port 3000
+# Reverse proxy to generated app on port 3000
+# Access your generated app at /yourapp/ (e.g., /yourapp/login, /yourapp/api/users)
 import httpx
 
-@app.api_route("/brighthr/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-async def proxy_to_brighthr(path: str, request: Request):
-    """Proxy requests to the generated BrightHR app running on port 3000"""
+@app.api_route("/yourapp/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"])
+async def proxy_to_generated_app(path: str, request: Request):
+    """Proxy requests to the generated app running on port 3000.
+
+    Works on both Mac and Railway. The generated app is started via /api/control-app.
+    """
     try:
         async with httpx.AsyncClient() as client:
             # Forward the request to localhost:3000
@@ -242,7 +300,7 @@ async def proxy_to_brighthr(path: str, request: Request):
             # Get request body if present
             body = await request.body()
 
-            # Forward headers (except host)
+            # Forward headers (except host and authorization which are for AI-DIY)
             headers = {k: v for k, v in request.headers.items() if k.lower() not in ['host', 'authorization']}
 
             response = await client.request(
@@ -257,11 +315,11 @@ async def proxy_to_brighthr(path: str, request: Request):
             # Return the response, handling redirects
             from starlette.responses import Response
             resp_headers = dict(response.headers)
-            # Rewrite Location header for redirects
+            # Rewrite Location header for redirects to go through proxy
             if 'location' in resp_headers:
                 loc = resp_headers['location']
                 if loc.startswith('/'):
-                    resp_headers['location'] = f"/brighthr{loc}"
+                    resp_headers['location'] = f"/yourapp{loc}"
 
             return Response(
                 content=response.content,
@@ -269,10 +327,17 @@ async def proxy_to_brighthr(path: str, request: Request):
                 headers=resp_headers
             )
     except httpx.ConnectError:
-        raise HTTPException(status_code=503, detail="BrightHR app not running. Start it first via /api/control-app")
+        raise HTTPException(status_code=503, detail="Generated app not running. Start it first via POST /api/control-app with {\"action\": \"start\"}")
     except Exception as e:
         logger.error(f"Proxy error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# Also handle root path for /yourapp (without trailing path)
+@app.api_route("/yourapp", methods=["GET"])
+async def proxy_to_generated_app_root(request: Request):
+    """Redirect /yourapp to /yourapp/ for cleaner URLs"""
+    from starlette.responses import RedirectResponse
+    return RedirectResponse(url="/yourapp/", status_code=307)
 
 # Ensure required directory structure exists
 static_dir = Path(__file__).parent / "static"
