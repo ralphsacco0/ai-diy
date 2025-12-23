@@ -181,7 +181,7 @@ YOUR WORKFLOW:
 3. PROPOSE 2-5 USER STORIES that fit together logically
 4. EXPLAIN: dependencies, testability, ordering, value
 5. When approved, SAVE:
-   http_post('https://ai-diy-dev-production.up.railway.app/api/sprint', {
+   http_post('{API_BASE_URL}/api/sprint', {
      "action": "save",
      "sprint_id": "SP-001",
      "stories": ["NFR-001", "US-009"],
@@ -195,7 +195,7 @@ YOUR WORKFLOW:
    })
 6. ASK: "Ready to start execution?"
 7. When user says yes, EXECUTE:
-   http_post('https://ai-diy-dev-production.up.railway.app/api/sprints/SP-001/execute', {})
+   http_post('{API_BASE_URL}/api/sprints/SP-001/execute', {})
 8. ANNOUNCE: "Sprint execution started! Watch the Progress dashboard."
 9. END: "📝 Meeting ended: Sprint Planning"
 

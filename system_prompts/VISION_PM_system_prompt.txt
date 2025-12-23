@@ -191,7 +191,7 @@ DRAFT SAVE (use this most of the time):
 Tool: http_post
 Arguments:
 {
-  "url": "https://ai-diy-dev-production.up.railway.app/api/vision",
+  "url": "{API_BASE_URL}/api/vision",
   "payload": {
     "action": "save",
     "title": "PROJECT_NAME Vision (Draft)",
@@ -206,7 +206,7 @@ APPROVED SAVE (only after user explicitly approves):
 Tool: http_post
 Arguments:
 {
-  "url": "https://ai-diy-dev-production.up.railway.app/api/vision",
+  "url": "{API_BASE_URL}/api/vision",
   "payload": {
     "action": "save",
     "title": "PROJECT_NAME Vision",
@@ -235,7 +235,7 @@ DELETING VISION:
 Tool: http_post
 Arguments:
 {
-  "url": "https://ai-diy-dev-production.up.railway.app/api/vision",
+  "url": "{API_BASE_URL}/api/vision",
   "payload": {
     "action": "delete",
     "id": "EXACT_VISION_ID"

@@ -350,8 +350,15 @@ def _load_personas_from_disk() -> Dict[str, Dict[str, Any]]:
                 prompt_file_path = project_root / persona_data["system_prompt_file"]
                 try:
                     with open(prompt_file_path, "r", encoding="utf-8") as pf:
-                        persona_copy["system_prompt"] = pf.read()
-                    logger.debug(f"Loaded system_prompt from {prompt_file_path}")
+                        prompt_content = pf.read()
+
+                    # Replace {API_BASE_URL} placeholder with environment variable
+                    # Defaults to http://localhost:8000 for local development
+                    api_base_url = os.environ.get("API_BASE_URL", "http://localhost:8000")
+                    prompt_content = prompt_content.replace("{API_BASE_URL}", api_base_url)
+
+                    persona_copy["system_prompt"] = prompt_content
+                    logger.debug(f"Loaded system_prompt from {prompt_file_path} (API_BASE_URL={api_base_url})")
                 except FileNotFoundError:
                     logger.error(f"System prompt file not found: {prompt_file_path}")
                     raise RuntimeError(f"System prompt file not found for {role_key}: {prompt_file_path}")
