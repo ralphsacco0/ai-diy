@@ -228,6 +228,52 @@ async def control_app(request: AppControlRequest):
         logger.error(f"Error controlling app: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# FUDGE TEST: Simple reverse proxy to generated app on port 3000
+import httpx
+
+@app.api_route("/brighthr/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+async def proxy_to_brighthr(path: str, request: Request):
+    """Proxy requests to the generated BrightHR app running on port 3000"""
+    try:
+        async with httpx.AsyncClient() as client:
+            # Forward the request to localhost:3000
+            url = f"http://localhost:3000/{path}"
+
+            # Get request body if present
+            body = await request.body()
+
+            # Forward headers (except host)
+            headers = {k: v for k, v in request.headers.items() if k.lower() not in ['host', 'authorization']}
+
+            response = await client.request(
+                method=request.method,
+                url=url,
+                headers=headers,
+                content=body,
+                timeout=30.0,
+                follow_redirects=False
+            )
+
+            # Return the response, handling redirects
+            from starlette.responses import Response
+            resp_headers = dict(response.headers)
+            # Rewrite Location header for redirects
+            if 'location' in resp_headers:
+                loc = resp_headers['location']
+                if loc.startswith('/'):
+                    resp_headers['location'] = f"/brighthr{loc}"
+
+            return Response(
+                content=response.content,
+                status_code=response.status_code,
+                headers=resp_headers
+            )
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="BrightHR app not running. Start it first via /api/control-app")
+    except Exception as e:
+        logger.error(f"Proxy error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Ensure required directory structure exists
 static_dir = Path(__file__).parent / "static"
 static_dir.mkdir(parents=True, exist_ok=True)
