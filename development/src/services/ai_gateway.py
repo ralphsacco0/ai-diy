@@ -795,8 +795,9 @@ CRITICAL: Use the exact file paths shown in CURRENT FILE STRUCTURE."""
                                     
                                     # Bounded loop - execute up to max_passes
                                     while current_pass <= max_passes and has_more_tool_calls:
-                                        # Re-inject CURRENT FILE STRUCTURE on each pass so Alex always has it
-                                        # Include in both investigation AND execution modes
+                                        # Re-inject CURRENT FILE STRUCTURE on each pass so Alex always has it visible
+                                        # Each API call is stateless - the LLM only sees what's in the messages
+                                        # Without re-injection, the structure gets buried under tool results
                                         if project_context:
                                             bounded_messages.append({
                                                 "role": "user",
@@ -833,7 +834,7 @@ CRITICAL: Use the exact file paths shown in CURRENT FILE STRUCTURE."""
                                             "tools": build_tools_array(persona_tools)
                                         }
 
-                                        # DIAGNOSTIC: Save Alex's payload to file for debugging
+                                        # DEBUG PAYLOAD CAPTURE - Re-enabled to verify fixes
                                         if persona_key == "SPRINT_REVIEW_ALEX":
                                             try:
                                                 from datetime import datetime
@@ -1853,17 +1854,23 @@ async def execute_function_calls(tool_calls: List[Dict], existing_content: str, 
                         if response.status == 200:
                             data = json.loads(response_text)
                             entries = data.get("entries", [])
-                            result_lines = [f"📁 Directory: {data.get('path', path)}"]
+                            base_path = data.get('path', path)
+                            result_lines = [f"📁 Directory: {base_path}"]
                             result_lines.append(f"Found {len(entries)} entries:\n")
-                            
+
                             for entry in entries[:50]:  # Limit to 50 entries
                                 icon = "📁" if entry["type"] == "directory" else "📄"
                                 size = f" ({entry['size']} bytes)" if entry.get("size") else ""
-                                result_lines.append(f"{icon} {entry['name']}{size}")
-                            
+                                # Show relative path from the base directory for clarity
+                                # entry['path'] is relative to sandbox root, we want relative to queried path
+                                display_path = entry.get('path', entry['name'])
+                                if display_path.startswith(base_path + '/'):
+                                    display_path = display_path[len(base_path) + 1:]
+                                result_lines.append(f"{icon} {display_path}{size}")
+
                             if len(entries) > 50:
                                 result_lines.append(f"\n... and {len(entries) - 50} more entries")
-                            
+
                             results.append("\n".join(result_lines))
                         else:
                             results.append(f"❌ list_directory failed ({response.status}): {response_text}")

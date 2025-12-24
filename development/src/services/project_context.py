@@ -26,13 +26,19 @@ def extract_exports_from_file(file_path: Path) -> List[str]:
     """
     Extract exported functions/constants from a JavaScript file.
 
-    Handles:
+    Handles ES6 exports:
     - export function name(...)
     - export async function name(...)
     - export class name
     - export const/let/var name = ...
     - export { name1, name2 }
     - export default
+
+    Handles CommonJS exports:
+    - module.exports = { name1, name2 }
+    - module.exports = name
+    - module.exports.name = ...
+    - exports.name = ...
 
     Args:
         file_path: Path to JavaScript file
@@ -49,6 +55,8 @@ def extract_exports_from_file(file_path: Path) -> List[str]:
         content = re.sub(r'//.*?$', '', content, flags=re.MULTILINE)
         # Remove multi-line comments
         content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+
+        # === ES6 EXPORTS ===
 
         # Match: export function name(...) or export async function name(...)
         exports.extend(re.findall(r'export\s+(?:async\s+)?function\s+(\w+)', content))
@@ -68,6 +76,36 @@ def extract_exports_from_file(file_path: Path) -> List[str]:
         # Match: export default (note as 'default')
         if re.search(r'export\s+default', content):
             exports.append('default')
+
+        # === COMMONJS EXPORTS ===
+
+        # Match: module.exports = { name1, name2, ... }
+        cjs_object_exports = re.findall(r'module\.exports\s*=\s*\{([^}]+)\}', content)
+        for block in cjs_object_exports:
+            # Handle both "name" and "name: value" patterns
+            for item in block.split(','):
+                item = item.strip()
+                if ':' in item:
+                    # name: value - take the key
+                    name = item.split(':')[0].strip()
+                else:
+                    # Just name (shorthand)
+                    name = item.strip()
+                if name and re.match(r'^\w+$', name):
+                    exports.append(name)
+
+        # Match: module.exports = singleName (single export, e.g., module.exports = router)
+        cjs_single_export = re.search(r'module\.exports\s*=\s*(\w+)\s*[;\n]', content)
+        if cjs_single_export:
+            exports.append(cjs_single_export.group(1))
+
+        # Match: module.exports.name = ... (named exports)
+        cjs_named_exports = re.findall(r'module\.exports\.(\w+)\s*=', content)
+        exports.extend(cjs_named_exports)
+
+        # Match: exports.name = ... (shorthand named exports)
+        cjs_shorthand_exports = re.findall(r'(?<!module\.)exports\.(\w+)\s*=', content)
+        exports.extend(cjs_shorthand_exports)
 
         return sorted(set(exports))  # Remove duplicates and sort
     except Exception as e:
