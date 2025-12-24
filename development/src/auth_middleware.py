@@ -58,9 +58,22 @@ class BasicAuthMiddleware(BaseHTTPMiddleware):
 
     EXCLUDED_PATHS = ["/health", "/api/env"]  # Paths that don't require auth
 
+    # Paths that internal/localhost requests can access without auth
+    # This allows Sprint Review Alex to read/write sandbox files
+    INTERNAL_ALLOWED_PATHS = ["/api/sandbox/"]
+
     async def dispatch(self, request: Request, call_next):
         # Skip auth for excluded paths and wireframe endpoints
         if request.url.path in self.EXCLUDED_PATHS or request.url.path.startswith("/api/backlog/wireframe/"):
+            return await call_next(request)
+
+        # Allow internal/localhost requests to access sandbox API without auth
+        # This is needed for Sprint Review Alex to read/write files
+        client_host = request.client.host if request.client else None
+        is_internal = client_host in ("127.0.0.1", "localhost", "::1")
+        is_sandbox_path = any(request.url.path.startswith(p) for p in self.INTERNAL_ALLOWED_PATHS)
+
+        if is_internal and is_sandbox_path:
             return await call_next(request)
 
         # Check for Authorization header
