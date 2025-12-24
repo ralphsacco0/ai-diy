@@ -828,10 +828,30 @@ CRITICAL: Use the exact file paths shown in CURRENT FILE STRUCTURE."""
                                             "model": model,
                                             "messages": bounded_messages,
                                             "temperature": 0.7,
-                                            "max_tokens": 1500,
+                                            "max_tokens": 12000,  # Match main API call limit for proper diagnosis
                                             "stream": False,
                                             "tools": build_tools_array(persona_tools)
                                         }
+
+                                        # DIAGNOSTIC: Save Alex's payload to file for debugging
+                                        if persona_key == "SPRINT_REVIEW_ALEX":
+                                            try:
+                                                from datetime import datetime
+                                                debug_dir = Path(__file__).parent.parent / "static" / "appdocs" / "debug_payloads"
+                                                debug_dir.mkdir(parents=True, exist_ok=True)
+                                                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                                                debug_file = debug_dir / f"alex_payload_{timestamp}_pass{current_pass}.json"
+                                                with open(debug_file, 'w') as f:
+                                                    json.dump({
+                                                        "timestamp": timestamp,
+                                                        "pass": current_pass,
+                                                        "model": model,
+                                                        "messages": bounded_messages,
+                                                        "tools": [t["function"]["name"] for t in follow_up_payload.get("tools", [])]
+                                                    }, f, indent=2, default=str)
+                                                logger.info(f"📁 Alex debug payload saved to: {debug_file}")
+                                            except Exception as e:
+                                                logger.warning(f"Could not save Alex debug payload: {e}")
                                         
                                         try:
                                             async with aiohttp.ClientSession() as session2:
