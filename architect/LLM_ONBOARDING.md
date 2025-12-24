@@ -268,6 +268,26 @@ Mike MUST output these sections before tasks:
 
 ## Section 5: Production Deployment (Railway)
 
+### Current State: Mac to Railway Migration
+
+AI-DIY was originally built to run locally on Mac. It is now being migrated to also run on Railway while maintaining Mac compatibility. This means:
+
+**What works on both:**
+- The main AI-DIY application (FastAPI backend, frontend)
+- All meeting types and personas
+- Sprint planning, execution, and review
+
+**Key differences:**
+- **Generated app execution**: On Mac, used shell scripts. On Railway, uses Python subprocess with cross-platform paths.
+- **Volume persistence**: Railway uses a mounted volume at `/app/development/src/static/appdocs` - this is separate from local Mac files.
+- **Authentication**: Railway requires HTTP Basic Auth; local Mac does not.
+
+**When making changes:**
+- Avoid Mac-specific paths or shell scripts
+- Use `Path()` for cross-platform file paths
+- Test that changes work in both environments
+- Remember: Railway volume data and local Mac data can diverge
+
 ### Overview
 
 The AI-DIY application is deployed to Railway at **https://ai-diy-dev-production.up.railway.app**. The deployment uses Docker containerization for consistency and portability.
@@ -298,7 +318,15 @@ The production site is protected with HTTP Basic Authentication to prevent unaut
 
 ### Management
 
-Use the Railway CLI (`railway logs`, `railway status`, `railway shell`) or Railway MCP integration for deployment management. The Claude Code environment has Railway MCP configured for direct project access.
+Use Railway MCP tools for deployment management. The Claude Code environment has Railway MCP configured for direct project access.
+
+**Railway MCP Tools (Use These):**
+- `mcp__Railway__get-logs` - View deployment logs with optional `filter` parameter
+- `mcp__Railway__list-deployments` - Check deployment status and history
+- `mcp__Railway__deploy` - Trigger manual deployment when auto-deploy fails
+- `mcp__Railway__list-services` - List services in the linked project
+
+**Do NOT use:** `railway ssh` (requires TTY, doesn't work in Claude Code)
 
 **Local vs Railway Behavior:**
 - **Local Mac**: No authentication required (PRODUCTION not set)
@@ -318,10 +346,11 @@ cat /Users/ralph/AI-DIY/ai-diy/development/src/static/appdocs/sprints/execution_
 curl -s -u "Ralph:!password321!" "https://ai-diy-dev-production.up.railway.app/static/appdocs/sprints/execution_log_SP-001.jsonl"
 ```
 
-**Railway CLI Commands:**
-- `railway run <cmd>` - Runs command LOCALLY with Railway env vars (NOT on Railway server)
-- `railway ssh` - Requires TTY, doesn't work in Claude Code
-- Use authenticated curl to Railway API endpoints instead
+**Fetching Files from Railway:**
+Once you know a filename (from logs), use authenticated curl:
+```bash
+curl -s -u "Ralph:!password321!" "https://ai-diy-dev-production.up.railway.app/static/appdocs/path/to/file.json"
+```
 
 **File Paths on Railway:**
 - Railway container root: `/app/`
