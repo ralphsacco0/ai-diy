@@ -303,41 +303,21 @@ async def control_app(request: AppControlRequest):
             }
 
         elif request.action == "stop":
-            # Kill any process using port 3000, not just the Python-managed one
-            # This handles cases where manual processes or orphaned processes are running
-            logger.info("Stopping app - killing any process on port 3000")
+            # Kill the entire process group to ensure all child processes are terminated
+            logger.info("Stopping app - killing process group")
             
-            # Use shell script to kill processes on port 3000
-            script_path = Path(__file__).parent / "scripts" / "install-deps.sh"
-            script_dir = script_path.parent
-            stop_script = script_dir / "stop-app.sh"
-            
-            # Create stop script if it doesn't exist
-            if not stop_script.exists():
-                stop_script.write_text("""#!/bin/bash
-# Kill any process using port 3000
-PID=$(lsof -ti:3000 2>/dev/null)
-if [ ! -z "$PID" ]; then
-  kill -9 $PID
-  echo "Killed process $PID on port 3000"
-else
-  echo "No process found on port 3000"
-fi
-""")
-                stop_script.chmod(0o755)
-            
-            # Run the stop script
-            result = os.system(f"bash {stop_script}")
-            
-            # Also stop the Python-managed process if it exists
+            # Kill Python-managed process and its entire process group if it exists
             if _generated_app_process is not None and _generated_app_process.poll() is None:
                 pid = _generated_app_process.pid
-                _generated_app_process.terminate()
+                logger.info(f"Stopping process group for PID {pid}")
                 try:
-                    _generated_app_process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
+                    # Kill the entire process group (parent and all children)
+                    os.killpg(os.getpgid(pid), signal.SIGKILL)
+                    logger.info(f"Killed process group for PID {pid}")
+                except Exception as e:
+                    logger.warning(f"Error killing process group: {e}, trying direct kill")
                     _generated_app_process.kill()
-                    _generated_app_process.wait()
+                _generated_app_process.wait()
                 logger.info(f"Stopped Python-managed process (PID {pid})")
 
             _generated_app_process = None
