@@ -226,19 +226,29 @@ async def control_app(request: AppControlRequest):
             node_modules_dir = project_dir / "node_modules"
             if not node_modules_dir.exists():
                 logger.info(f"Installing npm dependencies for {project_name}...")
-                install_process = subprocess.run(
-                    ["npm", "install"],
-                    cwd=str(project_dir),
-                    capture_output=True,
-                    text=True
-                )
-                logger.info(f"npm install stdout: {install_process.stdout}")
-                logger.info(f"npm install stderr: {install_process.stderr}")
-                logger.info(f"npm install return code: {install_process.returncode}")
-                if install_process.returncode != 0:
-                    logger.error(f"npm install failed: {install_process.stderr}")
-                    raise HTTPException(status_code=500, detail=f"Failed to install dependencies: {install_process.stderr}")
-                logger.info("Dependencies installed successfully")
+                try:
+                    install_process = subprocess.Popen(
+                        ["npm", "install"],
+                        cwd=str(project_dir),
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True
+                    )
+                    stdout, stderr = install_process.communicate(timeout=120)  # 2 minute timeout
+                    logger.info(f"npm install stdout: {stdout}")
+                    logger.info(f"npm install stderr: {stderr}")
+                    logger.info(f"npm install return code: {install_process.returncode}")
+                    if install_process.returncode != 0:
+                        error_msg = f"npm install failed with code {install_process.returncode}: {stderr}"
+                        logger.error(error_msg)
+                        raise HTTPException(status_code=500, detail=error_msg)
+                    logger.info("Dependencies installed successfully")
+                except subprocess.TimeoutExpired:
+                    install_process.kill()
+                    raise HTTPException(status_code=500, detail="npm install timed out after 2 minutes")
+                except Exception as e:
+                    logger.error(f"npm install error: {str(e)}")
+                    raise HTTPException(status_code=500, detail=f"npm install failed: {str(e)}")
 
             # Run npm start in project directory
             # stdout=None, stderr=None means inherit parent's terminal (logs appear in AI-DIY console)
