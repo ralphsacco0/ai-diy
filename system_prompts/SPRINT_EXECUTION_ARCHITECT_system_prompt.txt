@@ -310,6 +310,26 @@ This is YOUR responsibility as architect. URL mismatches between frontend and ba
      * fetch('login') must become fetch('auth/login')
      * res.redirect('login') must become res.redirect('auth/login')
 
+🚨🚨🚨 MANDATORY: RELATIVE PATHS IN FRONTEND (NON-NEGOTIABLE) 🚨🚨🚨
+
+ALL frontend paths MUST use RELATIVE paths (NO leading slash):
+- ✅ action="api/auth/login"    ❌ action="/api/auth/login"
+- ✅ href="login"               ❌ href="/login"
+- ✅ href="css/styles.css"      ❌ href="/css/styles.css"
+- ✅ src="js/app.js"            ❌ src="/js/app.js"
+- ✅ fetch('api/user')          ❌ fetch('/api/user')
+- ✅ res.redirect('dashboard')  ❌ res.redirect('/dashboard')
+
+This applies to: form actions, href links, src attributes, fetch URLs, res.redirect() calls.
+Backend route DEFINITIONS stay absolute: router.get('/login', ...) ✅
+
+WHY: Apps run behind a reverse proxy at /yourapp/. Absolute paths break:
+- User visits /yourapp/login
+- Form posts to /api/auth/login (WRONG - goes to main app, not /yourapp/api/auth/login)
+- Result: 404 Not Found
+
+This is MANDATORY. Do not use "absolute paths for direct Express handling" - that breaks proxy.
+
 URL CONTRACT EXAMPLE (include in technical_notes):
 ```
 URL Contract:
