@@ -436,7 +436,7 @@ MIDDLEWARE PRE-SUBMISSION CHECKLIST:
   └─ If YES: Do I check (!req.session || !req.session.user) FIRST? YES / NO
 □ Does my middleware access req.session.user.role or other properties? YES / NO
   └─ If YES: Is the session/user check BEFORE I access those properties? YES / NO
-□ If checks fail, do I redirect to /login (not crash)? YES / NO
+□ If checks fail, do I redirect to 'login' (relative path, no leading /, not crash)? YES / NO
 
 SERVER LIFECYCLE PROTOCOL (Node.js + Express - CRITICAL FOR TESTABILITY):
 When creating server.js or app entry points, follow this pattern so tests can start/stop cleanly:

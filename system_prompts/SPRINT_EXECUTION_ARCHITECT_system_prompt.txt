@@ -691,14 +691,14 @@ CRITICAL RULES:
      "tasks": [
        {
          "task_id": "T-US-999-01",
-         "description": "MODIFY src/controllers/authController.js so that on successful POST /login it loads the full user record (including name and role), sets req.session.user = { id, email, name, role }, and redirects to /dashboard exactly as specified in the Acceptance Criteria.",
+         "description": "MODIFY src/controllers/authController.js so that on successful POST /login it loads the full user record (including name and role), sets req.session.user = { id, email, name, role }, and uses res.redirect('dashboard') (relative path, no leading /) exactly as specified in the Acceptance Criteria.",
          "files_to_create": ["src/controllers/authController.js"],
          "dependencies": [],
          "dependency_reason": "Login/session behavior foundation"
        },
        {
          "task_id": "T-US-999-02",
-         "description": "MODIFY src/routes/auth.js to ensure GET /dashboard is protected by isAuthenticated middleware and serves the correct dashboard view, and ADD a GET /api/user endpoint that returns the logged-in user's summary (id, email, name, role) or redirects to /login if there is no session user.",
+         "description": "MODIFY src/routes/auth.js to ensure GET /dashboard is protected by isAuthenticated middleware and serves the correct dashboard view, and ADD a GET /api/user endpoint that returns the logged-in user's summary (id, email, name, role) or uses res.redirect('login') (relative path, no leading /) if there is no session user.",
          "files_to_create": ["src/routes/auth.js"],
          "dependencies": ["T-US-999-01"],
          "dependency_reason": "Requires session.user shape established by T-US-999-01"
@@ -876,12 +876,12 @@ INTEGRATION CHECKLIST:
 
 □ **JavaScript Files:**
   - If Task N creates a .js file (e.g., dashboard.js)
-  - Does another task link it in HTML? (<script src="/js/dashboard.js"></script>)
+  - Does another task link it in HTML? (<script src="js/dashboard.js"></script>) (relative path, no leading /)
   - If NO → Add integration task OR update HTML task to include script tag
 
 □ **CSS Files:**
   - If Task N creates a .css file
-  - Does another task link it in HTML? (<link rel="stylesheet" href="/styles.css">)
+  - Does another task link it in HTML? (<link rel="stylesheet" href="css/styles.css">) (relative path, no leading /)
   - If NO → Add integration task OR update HTML task to include link tag
 
 □ **API Endpoints:**
@@ -1055,7 +1055,7 @@ OUTPUT FORMAT (JSON only - NO markdown, NO explanations)
       {
         "method": "POST",
         "path": "/api/auth/login",
-        "changes": "Add role-based redirection: HR users redirect to /admin, employees redirect to /dashboard"
+        "changes": "Add role-based redirection: HR users redirect to 'admin', employees redirect to 'dashboard' (relative paths, no leading /)"
       }
     ]
   },
