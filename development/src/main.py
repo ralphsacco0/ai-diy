@@ -225,43 +225,22 @@ async def control_app(request: AppControlRequest):
             # Install npm dependencies if node_modules doesn't exist
             node_modules_dir = project_dir / "node_modules"
             if not node_modules_dir.exists():
-                logger.info(f"Installing npm dependencies for {project_name}...")
+                logger.info(f"Installing npm dependencies using shell script for {project_name}...")
                 
-                # Try os.system approach instead of subprocess
+                # Get script path (relative to main.py)
+                script_path = Path(__file__).parent.parent.parent / "install-deps.sh"
+                
+                if not script_path.exists():
+                    raise HTTPException(status_code=500, detail=f"Install script not found: {script_path}")
+                
+                # Run the shell script
                 import os
-                import shlex
+                result = os.system(f"bash {script_path}")
                 
-                try:
-                    # Change to project directory and run npm install
-                    original_cwd = os.getcwd()
-                    os.chdir(str(project_dir))
-                    
-                    logger.info(f"Changed to directory: {os.getcwd()}")
-                    
-                    # Test npm availability first
-                    npm_result = os.system("npm --version")
-                    logger.info(f"npm --version result: {npm_result}")
-                    
-                    if npm_result != 0:
-                        raise Exception("npm not available")
-                    
-                    # Run npm install
-                    install_result = os.system("npm install")
-                    logger.info(f"npm install result: {install_result}")
-                    
-                    # Change back to original directory
-                    os.chdir(original_cwd)
-                    
-                    if install_result != 0:
-                        raise Exception(f"npm install failed with code {install_result}")
-                    
-                    logger.info("Dependencies installed successfully")
-                    
-                except Exception as e:
-                    # Make sure we change back even if there's an error
-                    os.chdir(original_cwd)
-                    logger.error(f"npm install error: {str(e)}")
-                    raise HTTPException(status_code=500, detail=f"npm install failed: {str(e)}")
+                if result != 0:
+                    raise HTTPException(status_code=500, detail=f"npm install script failed with exit code {result}")
+                
+                logger.info("Dependencies installed successfully via shell script")
 
             # Run npm start in project directory
             # stdout=None, stderr=None means inherit parent's terminal (logs appear in AI-DIY console)
