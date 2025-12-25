@@ -13,6 +13,7 @@ Falls back to basic functionality if dependencies are missing.
 
 import os
 import sys
+import signal
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -213,11 +214,17 @@ async def control_app(request: AppControlRequest):
             # Ruthlessly kill ANY process on port 3000 first (manual, orphaned, or managed)
             logger.info("Ruthlessly clearing port 3000 before starting app")
             
-            # Kill Python-managed process if it exists
+            # Kill Python-managed process and its entire process group if it exists
             if _generated_app_process is not None:
                 if _generated_app_process.poll() is None:  # Still running
-                    logger.info(f"Force killing Python-managed process (PID {_generated_app_process.pid})")
-                    _generated_app_process.kill()  # SIGKILL for immediate termination
+                    pid = _generated_app_process.pid
+                    logger.info(f"Force killing process group for PID {pid}")
+                    try:
+                        # Kill the entire process group (parent and all children)
+                        os.killpg(os.getpgid(pid), signal.SIGKILL)
+                    except Exception as e:
+                        logger.warning(f"Error killing process group: {e}, trying direct kill")
+                        _generated_app_process.kill()
                     _generated_app_process.wait()
                 _generated_app_process = None
             
@@ -257,14 +264,15 @@ async def control_app(request: AppControlRequest):
             # Capture output to log any startup errors
             env = {**os.environ, "PORT": "3000"}
             
-            # Start the process with output capture
+            # Start the process with output capture in a new process group
             _generated_app_process = subprocess.Popen(
                 ["npm", "start"],
                 cwd=str(project_dir),
                 env=env,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True
+                text=True,
+                preexec_fn=os.setsid  # Start in new process group
             )
             
             # Wait briefly to check for immediate failures
