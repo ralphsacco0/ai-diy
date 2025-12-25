@@ -227,43 +227,39 @@ async def control_app(request: AppControlRequest):
             if not node_modules_dir.exists():
                 logger.info(f"Installing npm dependencies for {project_name}...")
                 
-                # First test if npm is available
-                try:
-                    npm_test = subprocess.run(
-                        ["npm", "--version"],
-                        capture_output=True,
-                        text=True,
-                        timeout=10
-                    )
-                    logger.info(f"npm version: {npm_test.stdout.strip()}")
-                    if npm_test.returncode != 0:
-                        raise Exception(f"npm not available: {npm_test.stderr}")
-                except Exception as e:
-                    logger.error(f"npm availability test failed: {str(e)}")
-                    raise HTTPException(status_code=500, detail=f"npm not available in environment: {str(e)}")
+                # Try os.system approach instead of subprocess
+                import os
+                import shlex
                 
-                # Now try npm install
                 try:
-                    install_process = subprocess.Popen(
-                        ["npm", "install"],
-                        cwd=str(project_dir),
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        text=True
-                    )
-                    stdout, stderr = install_process.communicate(timeout=120)  # 2 minute timeout
-                    logger.info(f"npm install stdout: {stdout}")
-                    logger.info(f"npm install stderr: {stderr}")
-                    logger.info(f"npm install return code: {install_process.returncode}")
-                    if install_process.returncode != 0:
-                        error_msg = f"npm install failed with code {install_process.returncode}: {stderr}"
-                        logger.error(error_msg)
-                        raise HTTPException(status_code=500, detail=error_msg)
+                    # Change to project directory and run npm install
+                    original_cwd = os.getcwd()
+                    os.chdir(str(project_dir))
+                    
+                    logger.info(f"Changed to directory: {os.getcwd()}")
+                    
+                    # Test npm availability first
+                    npm_result = os.system("npm --version")
+                    logger.info(f"npm --version result: {npm_result}")
+                    
+                    if npm_result != 0:
+                        raise Exception("npm not available")
+                    
+                    # Run npm install
+                    install_result = os.system("npm install")
+                    logger.info(f"npm install result: {install_result}")
+                    
+                    # Change back to original directory
+                    os.chdir(original_cwd)
+                    
+                    if install_result != 0:
+                        raise Exception(f"npm install failed with code {install_result}")
+                    
                     logger.info("Dependencies installed successfully")
-                except subprocess.TimeoutExpired:
-                    install_process.kill()
-                    raise HTTPException(status_code=500, detail="npm install timed out after 2 minutes")
+                    
                 except Exception as e:
+                    # Make sure we change back even if there's an error
+                    os.chdir(original_cwd)
                     logger.error(f"npm install error: {str(e)}")
                     raise HTTPException(status_code=500, detail=f"npm install failed: {str(e)}")
 
