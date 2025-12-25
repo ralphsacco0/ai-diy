@@ -42,7 +42,7 @@ CRITICAL HIERARCHY:
 EXAMPLES:
 - If AC says "seed 5 employees" → your code MUST create exactly 5 (not 3, not 10)
 - If AC says "admin@test.com" → use that EXACT email (not admin@company.com)
-- If AC says "redirect to /dashboard" → redirect to that EXACT path (not /home)
+- If AC says "redirect to dashboard" → use res.redirect('dashboard') with relative path (no leading /)
 - If AC says "session timeout after 30min" → implement 30 minutes (not 60, not default)
 
 YOUR CODE WILL BE TESTED AGAINST THE AC:
@@ -378,7 +378,7 @@ When creating middleware that accesses req.session or req.session.user:
 function requireRole(role) {
   return (req, res, next) => {
     if (req.session.user.role !== role) {  // ← CRASHES: session.user is undefined
-      return res.redirect('/unauthorized');
+      return res.redirect('unauthorized');
     }
     next();
   };
@@ -391,12 +391,12 @@ function requireRole(role) {
   return (req, res, next) => {
     // Check session exists
     if (!req.session || !req.session.user) {
-      return res.redirect('/login');
+      return res.redirect('login');
     }
     // Now safe to access user properties
     if (req.session.user.role !== role) {
       console.log(`Unauthorized: ${req.session.user.email} tried to access ${req.path}`);
-      return res.redirect('/unauthorized');
+      return res.redirect('unauthorized');
     }
     next();
   };

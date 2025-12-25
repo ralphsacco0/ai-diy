@@ -306,23 +306,24 @@ This is YOUR responsibility as architect. URL mismatches between frontend and ba
    - You MUST list ALL files that reference those routes
    - You MUST include tasks to update ALL form actions, fetch URLs, redirects, and links
    - Example: If changing app.use(authRoutes) → app.use('/auth', authRoutes):
-     * Form action="/login" must become action="/auth/login"
-     * fetch('/login') must become fetch('/auth/login')
-     * res.redirect('/login') must become res.redirect('/auth/login')
+     * Form action="login" must become action="auth/login"
+     * fetch('login') must become fetch('auth/login')
+     * res.redirect('login') must become res.redirect('auth/login')
 
 URL CONTRACT EXAMPLE (include in technical_notes):
 ```
 URL Contract:
 - Backend provides: POST /login, GET /logout, GET /dashboard, GET /api/user
-- Frontend consumes: form action="/login", fetch('/api/user'), href="/logout"
+- Frontend consumes: form action="login", fetch('api/user'), href="logout" (relative paths - no leading /)
 - Route mounting: app.use(authRoutes) [FLAT - no prefix]
+- Path format: Frontend uses RELATIVE paths (no leading /) for proxy compatibility
 - Consistency check: ✓ All URLs match
 ```
 
 WHY THIS MATTERS:
-- Story A creates login form with action="/login"
+- Story A creates login form with action="login"
 - Story B changes route mounting to /auth prefix
-- Result: "Cannot POST /login" because handler is now at /auth/login
+- Result: "Cannot POST /login" because form posts to wrong path
 - This is YOUR job to prevent by tracking URL contracts across stories.
 
 🚨 REQUEST BODY PARSING CONTRACT (CRITICAL FOR FORM/API HANDLING):
@@ -356,7 +357,7 @@ If your story includes ANY of these, you MUST include express.urlencoded():
 "app.use(express.json()); app.use(session({...})); app.use('/', routes)"
 
 WHY THIS MATTERS:
-- Task A creates login.html with <form action="/login" method="POST">
+- Task A creates login.html with <form action="login" method="POST">
 - Task B creates authController.js reading req.body.email, req.body.password
 - Task C creates server.js with only express.json() middleware
 - Result: Form POST sends urlencoded data, but server can't parse it → req.body is {} → "Missing credentials"

@@ -353,7 +353,7 @@ The production site is protected with HTTP Basic Authentication to prevent unaut
 
 ### Management
 
-Use Railway MCP tools for deployment management. The Claude Code environment has Railway MCP configured for direct project access.
+Use Railway MCP tools AND CLI for deployment management. The Claude Code environment has Railway MCP configured for direct project access.
 
 **Railway MCP Tools (Use These):**
 - `mcp__Railway__get-logs` - View deployment logs with optional `filter` parameter
@@ -361,7 +361,9 @@ Use Railway MCP tools for deployment management. The Claude Code environment has
 - `mcp__Railway__deploy` - Trigger manual deployment when auto-deploy fails
 - `mcp__Railway__list-services` - List services in the linked project
 
-**Do NOT use:** `railway ssh` (requires TTY, doesn't work in Claude Code)
+**Railway CLI for File Access (PREFERRED for volume operations):**
+- ✅ `railway ssh <command>` - Run non-interactive commands on Railway container
+- ❌ `railway ssh` (no args) - Interactive mode, requires TTY, doesn't work in Claude Code
 
 **Local vs Railway Behavior:**
 - **Local Mac**: No authentication required (PRODUCTION not set)
@@ -370,19 +372,27 @@ Use Railway MCP tools for deployment management. The Claude Code environment has
 
 ### CRITICAL: Accessing Railway Data (Not Local Mac)
 
-When debugging Railway issues, you MUST access data FROM Railway, not local Mac files:
+When debugging Railway issues, you MUST access data FROM Railway, not local Mac files.
 
-**Sprint Execution Logs:**
+**PREFERRED: Use `railway ssh` with commands (non-interactive):**
 ```bash
-# WRONG - reads local Mac file
-cat /Users/ralph/AI-DIY/ai-diy/development/src/static/appdocs/sprints/execution_log_SP-001.jsonl
+# List files on Railway volume
+railway ssh ls -la /app/development/src/static/appdocs/
 
-# RIGHT - reads from Railway via authenticated API
-curl -s -u "Ralph:!password321!" "https://ai-diy-dev-production.up.railway.app/static/appdocs/sprints/execution_log_SP-001.jsonl"
+# Read a file from Railway
+railway ssh cat /app/development/src/static/appdocs/sprints/execution_log_SP-001.jsonl
+
+# Write/edit files on Railway
+railway ssh "echo 'content' > /app/path/to/file.txt"
+
+# Run scripts on Railway
+railway ssh python /app/development/src/some_script.py
+
+# Check running processes
+railway ssh ps aux
 ```
 
-**Fetching Files from Railway:**
-Once you know a filename (from logs), use authenticated curl:
+**Alternative: Authenticated curl (for files served by the app):**
 ```bash
 curl -s -u "Ralph:!password321!" "https://ai-diy-dev-production.up.railway.app/static/appdocs/path/to/file.json"
 ```
@@ -391,6 +401,8 @@ curl -s -u "Ralph:!password321!" "https://ai-diy-dev-production.up.railway.app/s
 - Railway container root: `/app/`
 - Sprint logs: `/app/development/src/static/appdocs/sprints/`
 - Client projects: `/app/development/src/static/appdocs/execution-sandbox/client-projects/`
+- Backlog: `/app/development/src/static/appdocs/backlog/Backlog.csv`
+- Visions: `/app/development/src/static/appdocs/visions/`
 
 **API Endpoints for Railway Data:**
 - `GET /api/sprints` - List all sprints with execution summaries

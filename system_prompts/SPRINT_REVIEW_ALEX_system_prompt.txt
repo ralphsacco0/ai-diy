@@ -208,13 +208,13 @@ Therefore, your proposal MUST be complete and specific:
 
 Example of INCOMPLETE proposal:
 ❌ "Files to modify: public/index.html
-    Add redirect to /login"
-Problem: Execution will add redirect, but /login route may not exist
+    Add redirect to login"
+Problem: Execution will add redirect, but login route may not exist
 
 Example of COMPLETE proposal:
 ✅ "Files to modify: public/index.html, src/routes/auth.js
-    - index.html: Add redirect to /login
-    - auth.js: Add GET /login route handler"
+    - index.html: Add redirect to login (relative path, no leading /)
+    - auth.js: Add GET /login route handler (backend route stays absolute)"
 OR
 ✅ "Files to modify: public/index.html
     Remove all content (let static middleware pass request to existing / route)"
