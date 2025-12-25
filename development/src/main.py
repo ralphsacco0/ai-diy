@@ -213,24 +213,7 @@ async def control_app(request: AppControlRequest):
             # Ruthlessly kill ANY process on port 3000 first (manual, orphaned, or managed)
             logger.info("Ruthlessly clearing port 3000 before starting app")
             
-            # Kill any process on port 3000 directly from Python
-            try:
-                result = subprocess.run(
-                    ["lsof", "-ti:3000"],
-                    capture_output=True,
-                    text=True,
-                    timeout=5
-                )
-                if result.stdout.strip():
-                    pid = result.stdout.strip()
-                    logger.info(f"Found process {pid} on port 3000, killing it")
-                    subprocess.run(["kill", "-9", pid], timeout=5)
-                else:
-                    logger.info("No process found on port 3000")
-            except Exception as e:
-                logger.warning(f"Error checking/killing port 3000: {e}")
-            
-            # Also terminate Python-managed process if it exists
+            # Kill Python-managed process if it exists
             if _generated_app_process is not None:
                 if _generated_app_process.poll() is None:  # Still running
                     logger.info(f"Force killing Python-managed process (PID {_generated_app_process.pid})")
@@ -238,9 +221,16 @@ async def control_app(request: AppControlRequest):
                     _generated_app_process.wait()
                 _generated_app_process = None
             
+            # Kill ALL node processes (including child processes)
+            try:
+                logger.info("Killing all node processes")
+                subprocess.run(["pkill", "-9", "node"], timeout=5)
+            except Exception as e:
+                logger.warning(f"Error killing node processes: {e}")
+            
             # Wait for OS to fully release port 3000
             import time
-            time.sleep(5)  # Increased to 5 seconds to ensure port is fully released
+            time.sleep(5)
             
             logger.info("Port 3000 cleared, ready to start app")
 
