@@ -226,6 +226,23 @@ async def control_app(request: AppControlRequest):
             node_modules_dir = project_dir / "node_modules"
             if not node_modules_dir.exists():
                 logger.info(f"Installing npm dependencies for {project_name}...")
+                
+                # First test if npm is available
+                try:
+                    npm_test = subprocess.run(
+                        ["npm", "--version"],
+                        capture_output=True,
+                        text=True,
+                        timeout=10
+                    )
+                    logger.info(f"npm version: {npm_test.stdout.strip()}")
+                    if npm_test.returncode != 0:
+                        raise Exception(f"npm not available: {npm_test.stderr}")
+                except Exception as e:
+                    logger.error(f"npm availability test failed: {str(e)}")
+                    raise HTTPException(status_code=500, detail=f"npm not available in environment: {str(e)}")
+                
+                # Now try npm install
                 try:
                     install_process = subprocess.Popen(
                         ["npm", "install"],
