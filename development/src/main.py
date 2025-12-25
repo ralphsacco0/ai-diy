@@ -262,21 +262,40 @@ async def control_app(request: AppControlRequest):
             }
 
         elif request.action == "stop":
-            if _generated_app_process is None or _generated_app_process.poll() is not None:
-                return {"success": True, "message": "App was not running"}
-
-            pid = _generated_app_process.pid
-            _generated_app_process.terminate()
-            try:
-                _generated_app_process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                logger.warning(f"App did not terminate gracefully, killing PID {pid}")
-                _generated_app_process.kill()
-                _generated_app_process.wait()
+            # Kill any process using port 3000, not just the Python-managed one
+            # This handles cases where manual processes or orphaned processes are running
+            logger.info("Stopping app - killing any process on port 3000")
+            
+            # Use shell script to kill processes on port 3000
+            script_path = Path(__file__).parent / "scripts" / "install-deps.sh"
+            script_dir = script_path.parent
+            stop_script = script_dir / "stop-app.sh"
+            
+            # Create stop script if it doesn't exist
+            if not stop_script.exists():
+                stop_script.write_text("""#!/bin/bash
+# Kill any process using port 3000
+fuser -k 3000/tcp 2>/dev/null || pkill -f "node.*3000" || pkill -f "npm start" || echo "No process found on port 3000"
+""")
+                stop_script.chmod(0o755)
+            
+            # Run the stop script
+            result = os.system(f"bash {stop_script}")
+            
+            # Also stop the Python-managed process if it exists
+            if _generated_app_process is not None and _generated_app_process.poll() is None:
+                pid = _generated_app_process.pid
+                _generated_app_process.terminate()
+                try:
+                    _generated_app_process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    _generated_app_process.kill()
+                    _generated_app_process.wait()
+                logger.info(f"Stopped Python-managed process (PID {pid})")
 
             _generated_app_process = None
-            logger.info(f"Stopped {project_name} app (PID {pid})")
-            return {"success": True, "message": f"Stopped {project_name}", "pid": pid}
+            logger.info(f"Stopped all processes on port 3000")
+            return {"success": True, "message": f"Stopped {project_name} and cleared port 3000"}
 
         elif request.action == "status":
             if _generated_app_process is None:
