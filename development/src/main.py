@@ -240,7 +240,7 @@ async def control_app(request: AppControlRequest):
             
             # Wait for OS to fully release port 3000
             import time
-            time.sleep(2)  # Increased to 2 seconds
+            time.sleep(5)  # Increased to 5 seconds to ensure port is fully released
             
             logger.info("Port 3000 cleared, ready to start app")
 
