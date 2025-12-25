@@ -242,15 +242,35 @@ async def control_app(request: AppControlRequest):
                 logger.info("Dependencies installed successfully via shell script")
 
             # Run npm start in project directory
-            # stdout=None, stderr=None means inherit parent's terminal (logs appear in AI-DIY console)
+            # Capture output to log any startup errors
             env = {**os.environ, "PORT": "3000"}
+            
+            # Start the process with output capture
             _generated_app_process = subprocess.Popen(
                 ["npm", "start"],
                 cwd=str(project_dir),
                 env=env,
-                stdout=None,  # Inherit parent stdout - logs go to AI-DIY terminal
-                stderr=None,  # Inherit parent stderr
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
             )
+            
+            # Wait briefly to check for immediate failures
+            import time
+            time.sleep(2)
+            
+            # Check if process is still running
+            if _generated_app_process.poll() is not None:
+                # Process already exited - capture output
+                stdout, stderr = _generated_app_process.communicate()
+                logger.error(f"App failed to start. Exit code: {_generated_app_process.returncode}")
+                logger.error(f"STDOUT: {stdout}")
+                logger.error(f"STDERR: {stderr}")
+                _generated_app_process = None
+                raise HTTPException(
+                    status_code=500, 
+                    detail=f"App failed to start. Exit code: {_generated_app_process.returncode}. Check logs for details."
+                )
 
             logger.info(f"Started {project_name} app with PID {_generated_app_process.pid} on port 3000")
             return {
