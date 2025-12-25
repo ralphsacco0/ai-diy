@@ -244,6 +244,10 @@ fi
                         _generated_app_process.wait()
                 _generated_app_process = None
             
+            # Wait for OS to fully release port 3000
+            import time
+            time.sleep(1)
+            
             logger.info("Port 3000 cleared, ready to start app")
 
             # Install npm dependencies if node_modules doesn't exist
