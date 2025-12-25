@@ -235,13 +235,9 @@ fi
             # Also terminate Python-managed process if it exists
             if _generated_app_process is not None:
                 if _generated_app_process.poll() is None:  # Still running
-                    logger.info(f"Stopping Python-managed process (PID {_generated_app_process.pid})")
-                    _generated_app_process.terminate()
-                    try:
-                        _generated_app_process.wait(timeout=5)
-                    except subprocess.TimeoutExpired:
-                        _generated_app_process.kill()
-                        _generated_app_process.wait()
+                    logger.info(f"Force killing Python-managed process (PID {_generated_app_process.pid})")
+                    _generated_app_process.kill()  # SIGKILL for immediate termination
+                    _generated_app_process.wait()
                 _generated_app_process = None
             
             # Wait for OS to fully release port 3000
