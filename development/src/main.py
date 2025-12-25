@@ -210,10 +210,26 @@ async def control_app(request: AppControlRequest):
             raise HTTPException(status_code=400, detail=f"No package.json found in {project_name}. Sprint may not have completed.")
 
         if request.action == "start":
-            # Kill any existing process first
+            # Ruthlessly kill ANY process on port 3000 first (manual, orphaned, or managed)
+            logger.info("Ruthlessly clearing port 3000 before starting app")
+            script_dir = Path(__file__).parent / "scripts"
+            stop_script = script_dir / "stop-app.sh"
+            
+            # Create stop script if it doesn't exist
+            if not stop_script.exists():
+                stop_script.write_text("""#!/bin/bash
+# Kill any process using port 3000
+fuser -k 3000/tcp 2>/dev/null || pkill -f "node.*3000" || pkill -f "npm start" || echo "No process found on port 3000"
+""")
+                stop_script.chmod(0o755)
+            
+            # Run the stop script to clear port 3000
+            os.system(f"bash {stop_script}")
+            
+            # Also terminate Python-managed process if it exists
             if _generated_app_process is not None:
                 if _generated_app_process.poll() is None:  # Still running
-                    logger.info(f"Stopping existing app process (PID {_generated_app_process.pid})")
+                    logger.info(f"Stopping Python-managed process (PID {_generated_app_process.pid})")
                     _generated_app_process.terminate()
                     try:
                         _generated_app_process.wait(timeout=5)
@@ -221,6 +237,8 @@ async def control_app(request: AppControlRequest):
                         _generated_app_process.kill()
                         _generated_app_process.wait()
                 _generated_app_process = None
+            
+            logger.info("Port 3000 cleared, ready to start app")
 
             # Install npm dependencies if node_modules doesn't exist
             node_modules_dir = project_dir / "node_modules"
