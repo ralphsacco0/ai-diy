@@ -263,13 +263,14 @@ async def control_app(request: AppControlRequest):
             if _generated_app_process.poll() is not None:
                 # Process already exited - capture output
                 stdout, stderr = _generated_app_process.communicate()
-                logger.error(f"App failed to start. Exit code: {_generated_app_process.returncode}")
+                exit_code = _generated_app_process.returncode
+                logger.error(f"App failed to start. Exit code: {exit_code}")
                 logger.error(f"STDOUT: {stdout}")
                 logger.error(f"STDERR: {stderr}")
                 _generated_app_process = None
                 raise HTTPException(
                     status_code=500, 
-                    detail=f"App failed to start. Exit code: {_generated_app_process.returncode}. Check logs for details."
+                    detail=f"App failed to start. Exit code: {exit_code}. Check logs for details."
                 )
 
             logger.info(f"Started {project_name} app with PID {_generated_app_process.pid} on port 3000")
