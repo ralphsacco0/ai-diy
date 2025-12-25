@@ -219,7 +219,13 @@ async def control_app(request: AppControlRequest):
             if not stop_script.exists():
                 stop_script.write_text("""#!/bin/bash
 # Kill any process using port 3000
-fuser -k 3000/tcp 2>/dev/null || pkill -f "node.*3000" || pkill -f "npm start" || echo "No process found on port 3000"
+PID=$(lsof -ti:3000 2>/dev/null)
+if [ ! -z "$PID" ]; then
+  kill -9 $PID
+  echo "Killed process $PID on port 3000"
+else
+  echo "No process found on port 3000"
+fi
 """)
                 stop_script.chmod(0o755)
             
@@ -314,7 +320,13 @@ fuser -k 3000/tcp 2>/dev/null || pkill -f "node.*3000" || pkill -f "npm start" |
             if not stop_script.exists():
                 stop_script.write_text("""#!/bin/bash
 # Kill any process using port 3000
-fuser -k 3000/tcp 2>/dev/null || pkill -f "node.*3000" || pkill -f "npm start" || echo "No process found on port 3000"
+PID=$(lsof -ti:3000 2>/dev/null)
+if [ ! -z "$PID" ]; then
+  kill -9 $PID
+  echo "Killed process $PID on port 3000"
+else
+  echo "No process found on port 3000"
+fi
 """)
                 stop_script.chmod(0o755)
             
