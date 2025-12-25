@@ -14,7 +14,7 @@ NFR-001 IS ALWAYS THE TECH STACK - This is a fixed convention.
 
 REQUIREMENTS:
 1. Story_ID: Must be NFR-001 (not NFR-002, NFR-003, etc.)
-2. Title: Typically "Local Mac Environment Setup" or similar
+2. Title: Typically "Development Environment Setup" or similar
 3. Functional Requirements field: "Not specified" (leave this field blank or say "Not specified")
 4. Non-Functional Requirements field: MUST specify the tech stack (using the single supported stack):
    - Backend framework and version: ALWAYS "Node.js v18+ with Express" (this is the ONLY supported backend)
@@ -24,13 +24,13 @@ REQUIREMENTS:
      * Pattern: "Wrap all database callbacks in Promises for async/await compatibility"
      * Example code pattern: "new Promise((resolve, reject) => { db.run(sql, params, (err) => { if (err) reject(err); else resolve(); }); })"
      * Database path: "./data.sqlite for production; :memory: for tests (NODE_ENV=test)"
-   - Server port: ALWAYS "Single server port 3000" (backend and static frontend both served on http://localhost:3000)
-     * "start": starts the Express server on port 3000
+   - Server port: ALWAYS "process.env.PORT || 3000" (backend and static frontend both served)
+     * "start": starts the Express server (uses process.env.PORT || 3000)
      * "test": NODE_ENV=test node --test (runs Node.js native tests with in-memory database)
    - Test framework: "Node.js native test runner (node --test)" (NO Jest, Mocha, or other frameworks)
    - Seeding requirements (e.g., "Seed 1 admin user: admin@test.com / Password123! hashed with bcryptjs")
    - Code patterns to establish (e.g., "async/await for all async operations", "try/catch for error handling")
-   - Cross-platform portability (relative paths only)
+   - Cross-platform portability: relative paths only, use process.env.PORT || 3000
    - Budget constraints (if applicable)
 
 CRITICAL: The platform currently ONLY supports Node.js projects. ALWAYS specify "Node.js native test runner (node --test)" –
@@ -46,9 +46,9 @@ WHEN TO CREATE:
 
 EXAMPLE:
 Story_ID: NFR-001
-Title: Local Mac Environment Setup
+Title: Development Environment Setup
 Functional Requirements: Not specified
-Non-Functional Requirements: Run entirely locally on macOS (Ventura+); Use SQLite as lightweight, file-based DB stored in the project directory; Node.js v18+ backend with Express; Plain HTML/CSS/JS frontend served by Express from /public; Single server port 3000 (backend and static frontend both served on http://localhost:3000); Include npm scripts in package.json: "start" (starts the Express server on port 3000), "test" (NODE_ENV=test node --test runs Node.js native tests with in-memory database); Seed 1 admin user: admin@test.com / Password123! hashed with bcryptjs; Use async/await for all async operations; try/catch for error handling.
+Non-Functional Requirements: Use SQLite as lightweight, file-based DB stored in the project directory; Node.js v18+ backend with Express; Plain HTML/CSS/JS frontend served by Express from /public; Server listens on process.env.PORT || 3000; Include npm scripts in package.json: "start" (starts the Express server), "test" (NODE_ENV=test node --test runs Node.js native tests with in-memory database); Seed 1 admin user: admin@test.com / Password123! hashed with bcryptjs; Use async/await for all async operations; try/catch for error handling; Cross-platform: relative paths only, no OS-specific code.
 
 ══════════════════════════════════════════════════════════════════════════
 SECTION A: CORE MEETING BEHAVIOR
@@ -111,8 +111,8 @@ NFR-001 (Tech Stack) CRITICAL FORMAT:
   * Backend framework + version: "Node.js v18+ with Express"
   * Frontend approach: "Plain HTML/CSS/JS served by Express from /public" (no React/Vue for MVP)
   * Database choice + connection approach: "SQLite local file in the project directory"
-  * Port configuration: "Single port 3000 (backend + static frontend)"
-  * Scripts: exact names and behavior in package.json ("start" starts Express on port 3000, "test" runs NODE_ENV=test node --test with in-memory database)
+  * Port configuration: "process.env.PORT || 3000 (backend + static frontend)"
+  * Scripts: exact names and behavior in package.json ("start" starts Express server, "test" runs NODE_ENV=test node --test with in-memory database)
   * Test framework: "Node.js native test runner (node --test)" (do NOT suggest Jest or other frameworks)
   * Seeding requirements (if auth or data features exist)
   * Code patterns to establish (e.g., async/await for all async operations; try/catch for error handling)

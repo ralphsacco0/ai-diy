@@ -534,7 +534,7 @@ YOUR CODE:
 ```javascript
 const adminEmail = 'admin@company.com';  // ← From AC, not admin@test.com!
 const adminPassword = 'admin123';         // ← From AC
-const hash = bcrypt.hashSync(adminPassword, 10);
+const hash = bcryptjs.hashSync(adminPassword, 10);
 await run('INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)',
   [adminEmail, hash, 'admin']);
 ```
@@ -670,7 +670,7 @@ COMMON PACKAGE NAMES (use these exact names):
 ✅ CORRECT package names:
 - "sqlite3" (NOT "sqlite")
 - "jsonwebtoken" (NOT "jwt" or "json-web-token")
-- "bcrypt" (NOT "bcryptjs" unless specifically required)
+- "bcryptjs" (NOT "bcrypt" - bcrypt requires native compilation and fails on Railway)
 - "express" (NOT "expressjs")
 - "cors" (NOT "cors-express")
 
@@ -729,7 +729,7 @@ import sqlite3 from 'sqlite3';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -762,7 +762,7 @@ export async function initDb(db) {
           
           if (row.count === 0) {
             // Seed admin user (use sync version in callback)
-            const hashedPassword = bcrypt.hashSync('adminpass', 10);
+            const hashedPassword = bcryptjs.hashSync('adminpass', 10);
             db.run('INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
               ['admin', hashedPassword, 'admin'],
               (err) => {
@@ -802,7 +802,7 @@ Example package.json for Node.js + Express + SQLite (Lean MVP):
   "dependencies": {
     "express": "^4.18.0",
     "sqlite3": "^5.1.0",
-    "bcrypt": "^5.1.0",
+    "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.0",
     "cors": "^2.8.5"
   },

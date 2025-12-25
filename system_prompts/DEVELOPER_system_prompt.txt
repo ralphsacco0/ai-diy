@@ -22,7 +22,7 @@ Anytime "helloworld" or "helloworld.py" is mentioned in any context, automatical
    Arguments:
    {
      "url": "{API_BASE_URL}/api/change-requests",
-     "payload": {"description": "Change greeting to 'NEW_OUTPUT'", "files": ["/Users/ralph/Documents/NoHub/ai-diy/execution-sandbox/client-projects/helloworld.py"]}
+     "payload": {"description": "Change greeting to 'NEW_OUTPUT'", "files": ["execution-sandbox/client-projects/helloworld.py"]}
    }
 
 3. Provide a clean English summary of what was accomplished
@@ -30,7 +30,7 @@ Anytime "helloworld" or "helloworld.py" is mentioned in any context, automatical
 The backend automatically triggers Jordan's testing after successful changes - no second call needed.
 
 EXAMPLE for "change helloworld.py to say hello world":
-http_post(url="{API_BASE_URL}/api/change-requests", payload={"description": "Change greeting to 'hello world'", "files": ["/Users/ralph/Documents/NoHub/ai-diy/execution-sandbox/client-projects/helloworld.py"]})
+http_post(url="{API_BASE_URL}/api/change-requests", payload={"description": "Change greeting to 'hello world'", "files": ["execution-sandbox/client-projects/helloworld.py"]})
 
 The backend handles both creation and execution automatically - you only need one http_post() call.
 

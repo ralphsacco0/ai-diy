@@ -3,7 +3,7 @@
 **Status**: Canonical - MUST READ before any work session  
 **Audience**: LLMs working on AI-DIY platform  
 **Purpose**: Prevent "2 steps forward, 1 step back" by ensuring deep understanding  
-**Last Updated**: 2025-12-08
+**Last Updated**: 2025-12-24
 
 ---
 
@@ -281,6 +281,41 @@ AI-DIY was originally built to run locally on Mac. It is now being migrated to a
 - **Generated app execution**: On Mac, used shell scripts. On Railway, uses Python subprocess with cross-platform paths.
 - **Volume persistence**: Railway uses a mounted volume at `/app/development/src/static/appdocs` - this is separate from local Mac files.
 - **Authentication**: Railway requires HTTP Basic Auth; local Mac does not.
+
+### Generated App Output Path
+
+Generated apps are written to the **execution sandbox** at the same relative path on both platforms:
+
+| Environment | Generated app location |
+|-------------|------------------------|
+| Railway | `/app/development/src/static/appdocs/execution-sandbox/client-projects/{project_name}/` (mounted volume) |
+| Mac | `development/src/static/appdocs/execution-sandbox/client-projects/{project_name}/` (local filesystem) |
+
+**Other key data paths (same structure on both platforms):**
+
+| Data Type | Relative Path |
+|-----------|---------------|
+| Visions | `static/appdocs/visions/` |
+| Backlog | `static/appdocs/backlog/Backlog.csv` |
+| Wireframes | `static/appdocs/backlog/wireframes/` |
+| Sprint plans | `static/appdocs/sprints/` |
+| Sprint backups | `static/appdocs/sprints/backups/` |
+| Execution logs | `static/appdocs/sprints/execution_log_{sprint_id}.jsonl` |
+| Scribe notes | `static/appdocs/scribe/` |
+| Sessions | `static/appdocs/sessions/` |
+
+**How generated apps are accessed:**
+1. Start the app via `POST /api/control-app` with `{"action": "start"}`
+2. Access the running app at `{BASE_URL}/yourapp/` (e.g., `/yourapp/login`, `/yourapp/api/users`)
+3. AI-DIY proxies requests from `/yourapp/*` to the generated app running on port 3000
+
+**Cross-platform requirements for generated code:**
+- Use `process.env.PORT || 3000` (not hardcoded port)
+- Use relative paths only (no `/Users/...` or OS-specific paths)
+- Use `bcryptjs` (not `bcrypt` which requires native compilation)
+- No shell scripts or OS-specific commands
+
+> ⚠️ **NOTE**: The six core architecture documents (`architecture.md`, `system-flow.md`, `PATTERNS_AND_METHODS.md`, `summary.md`, `api_docs.md`, `PERSONAS.md`) have NOT been updated with these path changes. They may still reference outdated locations. This onboarding doc is the source of truth for paths until those docs are updated.
 
 **When making changes:**
 - Avoid Mac-specific paths or shell scripts

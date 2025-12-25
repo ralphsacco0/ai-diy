@@ -271,10 +271,11 @@ For each story, you must design:
      * "install [package-name]"
      * "npm install [package-name]"
      Then that package MUST be included in your dependencies section below
-   - Include version numbers (e.g., "jsonwebtoken@^9.0.0", "bcrypt@^5.1.1")
+   - Include version numbers (e.g., "jsonwebtoken@^9.0.0", "bcryptjs@^2.4.3")
    - Specify if regular dependency or devDependency
    - NO test framework dependencies needed - Node.js 18+ has built-in test runner
-   - Example: "dependencies: {express: ^4.18.2, jsonwebtoken: ^9.0.0, bcrypt: ^5.1.1}"
+   - CRITICAL: Use bcryptjs (NOT bcrypt) - bcrypt requires native compilation and fails on Railway
+   - Example: "dependencies: {express: ^4.18.2, jsonwebtoken: ^9.0.0, bcryptjs: ^2.4.3}"
    - Example: "devDependencies: {nodemon: ^3.0.1}"
    - CRITICAL: Developer will use this to update package.json - be complete and accurate
    - If your tasks reference a package but it's missing here, Developer will be blocked by contract violation
@@ -408,14 +409,14 @@ When breaking down a story into tasks:
 
 Example (WRONG - causes npm install to miss dependencies):
 - Task 1: "Create package.json with express, sqlite3"
-- Task 3: "Use bcrypt.hashSync() for password hashing"  ← bcrypt NOT in Task 1!
-- Task 4: "Use jsonwebtoken.sign() for JWT tokens"      ← jsonwebtoken NOT in Task 1!
-Result: npm install runs after Task 1, but bcrypt/jwt aren't installed yet → tests fail
+- Task 3: "Use bcryptjs.hashSync() for password hashing"  ← bcryptjs NOT in Task 1!
+- Task 4: "Use jsonwebtoken.sign() for JWT tokens"        ← jsonwebtoken NOT in Task 1!
+Result: npm install runs after Task 1, but bcryptjs/jwt aren't installed yet → tests fail
 
 Example (CORRECT - all dependencies installed upfront):
-- Task 1: "Create package.json with express, sqlite3, bcrypt, jsonwebtoken"
-- Task 3: "Use bcrypt.hashSync() for password hashing"  ← Already in Task 1 ✓
-- Task 4: "Use jsonwebtoken.sign() for JWT tokens"      ← Already in Task 1 ✓
+- Task 1: "Create package.json with express, sqlite3, bcryptjs, jsonwebtoken"
+- Task 3: "Use bcryptjs.hashSync() for password hashing"  ← Already in Task 1 ✓
+- Task 4: "Use jsonwebtoken.sign() for JWT tokens"        ← Already in Task 1 ✓
 Result: npm install runs after Task 1 with complete list → all dependencies available → tests pass
 
 WORKFLOW:
@@ -424,7 +425,7 @@ WORKFLOW:
 3. List them ALL in Task 1's package.json/requirements.txt
 4. Then output the final task breakdown
 
-This prevents "Cannot find module 'bcrypt'" errors during testing.
+This prevents "Cannot find module 'bcryptjs'" errors during testing.
 
 ═══════════════════════════════════════════════════════════════════════════════
 ARCHITECTURAL DECISIONS AND CONSISTENCY
@@ -985,8 +986,8 @@ OUTPUT FORMAT (JSON only - NO markdown, NO explanations)
     "auth": {
       "method": "express-session",
       "password_field": "password_hash",
-      "hash_method": "bcrypt.hashSync(plaintext, 10)",
-      "compare_method": "bcrypt.compare(input, hash)"
+      "hash_method": "bcryptjs.hashSync(plaintext, 10)",
+      "compare_method": "bcryptjs.compare(input, hash)"
     },
     "exports": {
       "pattern": "named",
@@ -1047,7 +1048,7 @@ OUTPUT FORMAT (JSON only - NO markdown, NO explanations)
     "dependencies": {
       "express": "^4.18.2",
       "jsonwebtoken": "^9.1.2",
-      "bcrypt": "^5.1.1",
+      "bcryptjs": "^2.4.3",
       "sqlite3": "^5.1.6"
     },
     "devDependencies": {
