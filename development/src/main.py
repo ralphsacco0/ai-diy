@@ -212,25 +212,23 @@ async def control_app(request: AppControlRequest):
         if request.action == "start":
             # Ruthlessly kill ANY process on port 3000 first (manual, orphaned, or managed)
             logger.info("Ruthlessly clearing port 3000 before starting app")
-            script_dir = Path(__file__).parent / "scripts"
-            stop_script = script_dir / "stop-app.sh"
             
-            # Create stop script if it doesn't exist
-            if not stop_script.exists():
-                stop_script.write_text("""#!/bin/bash
-# Kill any process using port 3000
-PID=$(lsof -ti:3000 2>/dev/null)
-if [ ! -z "$PID" ]; then
-  kill -9 $PID
-  echo "Killed process $PID on port 3000"
-else
-  echo "No process found on port 3000"
-fi
-""")
-                stop_script.chmod(0o755)
-            
-            # Run the stop script to clear port 3000
-            os.system(f"bash {stop_script}")
+            # Kill any process on port 3000 directly from Python
+            try:
+                result = subprocess.run(
+                    ["lsof", "-ti:3000"],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                if result.stdout.strip():
+                    pid = result.stdout.strip()
+                    logger.info(f"Found process {pid} on port 3000, killing it")
+                    subprocess.run(["kill", "-9", pid], timeout=5)
+                else:
+                    logger.info("No process found on port 3000")
+            except Exception as e:
+                logger.warning(f"Error checking/killing port 3000: {e}")
             
             # Also terminate Python-managed process if it exists
             if _generated_app_process is not None:
@@ -242,7 +240,7 @@ fi
             
             # Wait for OS to fully release port 3000
             import time
-            time.sleep(1)
+            time.sleep(2)  # Increased to 2 seconds
             
             logger.info("Port 3000 cleared, ready to start app")
 
