@@ -232,6 +232,9 @@ async def control_app(request: AppControlRequest):
                     capture_output=True,
                     text=True
                 )
+                logger.info(f"npm install stdout: {install_process.stdout}")
+                logger.info(f"npm install stderr: {install_process.stderr}")
+                logger.info(f"npm install return code: {install_process.returncode}")
                 if install_process.returncode != 0:
                     logger.error(f"npm install failed: {install_process.stderr}")
                     raise HTTPException(status_code=500, detail=f"Failed to install dependencies: {install_process.stderr}")
