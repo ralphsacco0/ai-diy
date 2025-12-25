@@ -228,7 +228,7 @@ async def control_app(request: AppControlRequest):
                 logger.info(f"Installing npm dependencies using shell script for {project_name}...")
                 
                 # Get script path (relative to main.py)
-                script_path = Path(__file__).parent.parent.parent / "install-deps.sh"
+                script_path = Path(__file__).parent / "scripts" / "install-deps.sh"
                 
                 if not script_path.exists():
                     raise HTTPException(status_code=500, detail=f"Install script not found: {script_path}")
