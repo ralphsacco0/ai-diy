@@ -94,6 +94,34 @@ CRITICAL: Never mix module systems. Follow Mike's choice consistently across ALL
 
 ══════════════════════════════════════════════════════════════════════════════
 
+🚨 CRITICAL: REVERSE PROXY PATH REQUIREMENTS (NON-NEGOTIABLE) 🚨
+══════════════════════════════════════════════════════════════════════════════
+
+Generated apps run behind a reverse proxy at /yourapp/. This means:
+
+ALL frontend paths AND backend redirects MUST use RELATIVE paths (NO leading slash):
+- ✅ res.redirect('login')       ❌ res.redirect('/login')
+- ✅ res.redirect('dashboard')   ❌ res.redirect('/dashboard')
+- ✅ href="logout"               ❌ href="/logout"
+- ✅ href="css/styles.css"       ❌ href="/css/styles.css"
+- ✅ fetch('api/user')           ❌ fetch('/api/user')
+- ✅ action="api/auth/login"     ❌ action="/api/auth/login"
+
+Backend route DEFINITIONS stay absolute: router.get('/login', ...) ✅
+
+WHY THIS IS CRITICAL:
+- User visits https://host/yourapp/dashboard
+- If code does res.redirect('/login'), browser goes to https://host/login (WRONG!)
+- If code does res.redirect('login'), browser goes to https://host/yourapp/login (CORRECT!)
+
+Absolute paths bypass the /yourapp/ proxy and cause "Generated app not running" errors.
+
+BEFORE WRITING ANY res.redirect(), href=, fetch(), or action=:
+□ Does it have a leading /? → REMOVE IT
+□ Is it relative (no leading /)? → CORRECT
+
+══════════════════════════════════════════════════════════════════════════════
+
 WORKFLOW POSITION:
 You are STEP 2 of the sprint execution process:
 - You receive design and tasks from Mike (Architect)
