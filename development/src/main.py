@@ -228,13 +228,12 @@ async def control_app(request: AppControlRequest):
                 logger.info(f"Installing npm dependencies using shell script for {project_name}...")
                 
                 # Get script path (relative to main.py)
-                script_path = Path(__file__).parent.parent.parent / "install-deps.sh"
+                script_path = Path(__file__).parent / "scripts" / "install-deps.sh"
                 
                 if not script_path.exists():
                     raise HTTPException(status_code=500, detail=f"Install script not found: {script_path}")
                 
                 # Run the shell script
-                import os
                 result = os.system(f"bash {script_path}")
                 
                 if result != 0:
@@ -249,25 +248,9 @@ async def control_app(request: AppControlRequest):
                 ["npm", "start"],
                 cwd=str(project_dir),
                 env=env,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                stdout=None,  # Inherit parent stdout - logs go to AI-DIY terminal
+                stderr=None,  # Inherit parent stderr
             )
-
-            # Log stdout and stderr in real-time
-            # This is a simplified approach; for production, a non-blocking thread would be better
-            # We will check the output after a short delay
-            try:
-                stdout, stderr = _generated_app_process.communicate(timeout=15) # Check output after 15s
-                if stdout:
-                    logger.info(f"npm start stdout:\n{stdout}")
-                if stderr:
-                    logger.error(f"npm start stderr:\n{stderr}")
-            except subprocess.TimeoutExpired:
-                # The process is still running, which is good.
-                logger.info("npm start process is running.")
-                pass # It's expected to run long
-
 
             logger.info(f"Started {project_name} app with PID {_generated_app_process.pid} on port 3000")
             return {
