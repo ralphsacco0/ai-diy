@@ -309,6 +309,39 @@ Generated apps are written to the **execution sandbox** at the same relative pat
 2. Access the running app at `{BASE_URL}/yourapp/` (e.g., `/yourapp/login`, `/yourapp/api/users`)
 3. AI-DIY proxies requests from `/yourapp/*` to the generated app running on port 3000
 
+### 🚨 CRITICAL: Reverse Proxy Path Requirements
+
+Generated apps run behind a reverse proxy at `/yourapp/`. This has **critical implications** for how frontend code references URLs:
+
+**The Problem:**
+- User visits `https://ai-diy-dev.../yourapp/login`
+- Login form has `action="/api/auth/login"` (absolute path with leading `/`)
+- Browser posts to `https://ai-diy-dev.../api/auth/login` (WRONG - bypasses `/yourapp/` prefix)
+- Result: `404 Not Found` because the main AI-DIY app doesn't have that route
+
+**The Solution - RELATIVE PATHS (no leading slash):**
+
+| Context | ✅ Correct | ❌ Wrong |
+|---------|-----------|---------|
+| Form action | `action="api/auth/login"` | `action="/api/auth/login"` |
+| Links | `href="login"` | `href="/login"` |
+| CSS/JS | `href="css/styles.css"` | `href="/css/styles.css"` |
+| Fetch calls | `fetch('api/user')` | `fetch('/api/user')` |
+| Redirects | `res.redirect('dashboard')` | `res.redirect('/dashboard')` |
+
+**Backend route definitions stay absolute:** `router.get('/login', ...)` ✅
+
+**Why this works:**
+- User at `/yourapp/login` clicks form with `action="api/auth/login"`
+- Browser resolves relative path: `/yourapp/` + `api/auth/login` = `/yourapp/api/auth/login`
+- Proxy routes `/yourapp/*` to the generated app on port 3000
+- Generated app receives request at `/api/auth/login` ✅
+
+**Where this is enforced:**
+- Mike's prompt (`SPRINT_EXECUTION_ARCHITECT_system_prompt.txt`) has a MANDATORY section requiring relative paths
+- Alex's prompt (`SPRINT_EXECUTION_DEVELOPER_system_prompt.txt`) reinforces this in redirect examples
+- The orchestrator validates generated code follows these patterns
+
 **Cross-platform requirements for generated code:**
 - Use `process.env.PORT || 3000` (not hardcoded port)
 - Use relative paths only (no `/Users/...` or OS-specific paths)
