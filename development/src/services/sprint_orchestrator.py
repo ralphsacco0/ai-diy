@@ -2599,6 +2599,7 @@ Wireframe:
                 logger.info(f"Mike returned {len(result['tasks'])} tasks")
                 if result['tasks']:
                     logger.info(f"First task keys: {list(result['tasks'][0].keys())}")
+                    logger.debug(f"Mike full breakdown (first 8000 chars): {json.dumps(result, indent=2)[:8000]}")
             
             # PHASE 1: Validate task breakdown
             if not self._validate_task_breakdown(result, story.get('Story_ID', 'unknown')):
