@@ -2594,11 +2594,17 @@ Wireframe:
                 self._save_architecture(architecture)
             
             # Log what Mike actually returned
-            logger.info(f"Mike returned structure with keys: {list(result.keys())}")
+            logger.info(f"✅ Mike returned structure with keys: {list(result.keys())}")
             if "tasks" in result:
-                logger.info(f"Mike returned {len(result['tasks'])} tasks")
+                logger.info(f"✅ Mike returned {len(result['tasks'])} tasks")
                 if result['tasks']:
                     logger.info(f"First task keys: {list(result['tasks'][0].keys())}")
+            else:
+                logger.error(f"❌ Mike's parsed result is MISSING 'tasks' field!")
+                logger.error(f"Parsed result keys: {list(result.keys())}")
+                logger.error(f"Parsed result content: {json.dumps(result, default=str)[:500]}")
+                logger.error(f"Raw response length: {len(response_text)} chars")
+                logger.error(f"This indicates a JSON parsing failure, not a Mike output failure")
             
             # PHASE 1: Validate task breakdown
             if not self._validate_task_breakdown(result, story.get('Story_ID', 'unknown')):
@@ -3506,17 +3512,23 @@ OUTPUT ONLY VALID JSON NOW:"""
         
         # Try direct parse first
         try:
-            return json.loads(text.strip())
-        except:
-            pass
+            result = json.loads(text.strip())
+            logger.debug(f"Successfully parsed JSON directly (size: {len(text)} chars)")
+            return result
+        except json.JSONDecodeError as e:
+            logger.debug(f"Direct JSON parse failed at position {e.pos}: {e.msg}")
+        except Exception as e:
+            logger.debug(f"Direct JSON parse failed: {e}")
         
         # Try to find JSON in markdown code blocks
         json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', text, re.DOTALL)
         if json_match:
             try:
-                return json.loads(json_match.group(1))
-            except:
-                pass
+                result = json.loads(json_match.group(1))
+                logger.debug(f"Successfully parsed JSON from markdown code block")
+                return result
+            except Exception as e:
+                logger.debug(f"Markdown code block parse failed: {e}")
         
         # Try to extract JSON object(s) by finding balanced braces
         # This handles cases where there's text before/after JSON
@@ -3575,30 +3587,49 @@ OUTPUT ONLY VALID JSON NOW:"""
         # If we found any valid JSON objects, return the largest one by length.
         if candidates:
             json_str, result = max(candidates, key=lambda x: len(x[0]))
+            logger.info(f"Extracted JSON via brace-counting: {len(json_str)} chars, {len(candidates)} candidates found")
+            logger.debug(f"Parsed JSON has keys: {list(result.keys())}")
             return result
         
+        # No valid candidates found - try aggressive repair before giving up
+        logger.warning(f"No valid JSON candidates found via brace-counting. Attempting repair...")
+        
         # Try to repair common JSON issues and parse again
-        # Common issues: unescaped newlines, missing commas, trailing commas
-        if start_idx != -1:
+        # Common issues: unescaped quotes, newlines in strings, trailing commas
+        if start_idx != -1 or text.strip().startswith('{'):
             # We found a starting brace but couldn't parse - try repairs
             try:
                 # Find the likely end (last closing brace)
+                if start_idx == -1:
+                    start_idx = text.find('{')
                 last_brace = text.rfind('}')
+                
                 if last_brace > start_idx:
                     json_str = text[start_idx:last_brace+1]
+                    logger.debug(f"Attempting to repair JSON substring: {len(json_str)} chars")
                     
-                    # Attempt basic repairs
-                    # 1. Replace literal newlines in strings with \n
-                    # This is risky but handles a common LLM mistake
-                    repaired = json_str
+                    # Attempt multiple repair strategies
+                    repair_attempts = [
+                        # Strategy 1: Original (no changes)
+                        json_str,
+                        # Strategy 2: Fix common escape issues in strings
+                        json_str.replace("\\'", "'").replace('\\"', '"'),
+                        # Strategy 3: Try to fix unescaped quotes by escaping them
+                        re.sub(r'(?<!\\)"(?=.*":)', r'\\"', json_str),
+                    ]
                     
-                    # Try parsing the repaired version
-                    try:
-                        result = json.loads(repaired)
-                        logger.warning("Successfully parsed JSON after repair attempt")
-                        return result
-                    except:
-                        pass
+                    for idx, repaired in enumerate(repair_attempts):
+                        try:
+                            result = json.loads(repaired)
+                            logger.warning(f"Successfully parsed JSON after repair attempt #{idx+1}")
+                            logger.debug(f"Repaired JSON has keys: {list(result.keys())}")
+                            return result
+                        except json.JSONDecodeError as e:
+                            logger.debug(f"Repair attempt #{idx+1} failed at position {e.pos}: {e.msg}")
+                            continue
+                        except Exception as e:
+                            logger.debug(f"Repair attempt #{idx+1} failed: {e}")
+                            continue
             except Exception as e:
                 logger.error(f"Error attempting JSON repair: {e}")
         
