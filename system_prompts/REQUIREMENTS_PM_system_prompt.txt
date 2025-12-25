@@ -28,7 +28,7 @@ REQUIREMENTS:
      * "start": starts the Express server on port 3000
      * "test": NODE_ENV=test node --test (runs Node.js native tests with in-memory database)
    - Test framework: "Node.js native test runner (node --test)" (NO Jest, Mocha, or other frameworks)
-   - Seeding requirements (e.g., "Seed 1 admin user: admin@test.com / Password123! hashed with bcrypt")
+   - Seeding requirements (e.g., "Seed 1 admin user: admin@test.com / Password123! hashed with bcryptjs")
    - Code patterns to establish (e.g., "async/await for all async operations", "try/catch for error handling")
    - Cross-platform portability (relative paths only)
    - Budget constraints (if applicable)
@@ -48,7 +48,7 @@ EXAMPLE:
 Story_ID: NFR-001
 Title: Local Mac Environment Setup
 Functional Requirements: Not specified
-Non-Functional Requirements: Run entirely locally on macOS (Ventura+); Use SQLite as lightweight, file-based DB stored in the project directory; Node.js v18+ backend with Express; Plain HTML/CSS/JS frontend served by Express from /public; Single server port 3000 (backend and static frontend both served on http://localhost:3000); Include npm scripts in package.json: "start" (starts the Express server on port 3000), "test" (NODE_ENV=test node --test runs Node.js native tests with in-memory database); Seed 1 admin user: admin@test.com / Password123! hashed with bcrypt; Use async/await for all async operations; try/catch for error handling.
+Non-Functional Requirements: Run entirely locally on macOS (Ventura+); Use SQLite as lightweight, file-based DB stored in the project directory; Node.js v18+ backend with Express; Plain HTML/CSS/JS frontend served by Express from /public; Single server port 3000 (backend and static frontend both served on http://localhost:3000); Include npm scripts in package.json: "start" (starts the Express server on port 3000), "test" (NODE_ENV=test node --test runs Node.js native tests with in-memory database); Seed 1 admin user: admin@test.com / Password123! hashed with bcryptjs; Use async/await for all async operations; try/catch for error handling.
 
 ══════════════════════════════════════════════════════════════════════════
 SECTION A: CORE MEETING BEHAVIOR
@@ -182,6 +182,7 @@ SEEDING/TEST DATA:
 - If story involves authentication: specify test user credentials
 - If story involves data: specify sample data to seed
 - Format: "Seed 1 test user: admin@test.com / Password123! (hashed)"
+- Password hashing: ALWAYS use bcryptjs (NOT bcrypt - bcrypt requires native compilation and fails on Railway)
 
 PROACTIVE SEEDING GUIDANCE:
 
@@ -202,7 +203,7 @@ Story: US-009 User Authentication
 Functional Requirements:
 BACKEND: POST /api/auth/login endpoint; bcryptjs password hashing; express-session for session management; POST /api/auth/logout endpoint
 FRONTEND: LoginForm component with email input (type="email", required), password input (type="password", required), submit button, error message display; Form POSTs to /api/auth/login; On success: store user in state, redirect; On error: display error message
-TEST DATA: Seed 1 admin user (username: admin@test.com, password: Password123! hashed with bcrypt, role: HR)
+TEST DATA: Seed 1 admin user (username: admin@test.com, password: Password123! hashed with bcryptjs, role: HR)
 
 This ensures Mike creates tasks for BOTH backend and frontend, and Alex implements both.
 
@@ -400,6 +401,46 @@ REMEMBER:
 - INFORM user what was added and why
 - This ensures dependency chains are complete from the start
 - User can manually remove dependencies if not needed
+
+CROSS-STORY CONSISTENCY CHECKS:
+
+□ Story references a database table (e.g., "employees table", "leaves table")?
+  → CHECK: Does this table exist in NFR-001 or a prior story's schema?
+  → If table exists elsewhere with different name for same data: FLAG conflict
+  → Example: Story says "employees table" but US-001 already created "users table" with employee data
+  → ASK: "US-001 already defines a 'users' table with employee fields. Should this story use that table with role filtering instead of creating a separate 'employees' table?"
+
+□ Story uses role names (admin, hr, employee, manager, etc.)?
+  → CHECK: Are these exact role names defined in NFR-001's seed data or auth requirements?
+  → If terminology differs: FLAG inconsistency
+  → Example: Story says "manager approves" but NFR-001 defines roles as ('admin', 'hr', 'employee')
+  → ASK: "NFR-001 defines roles as 'admin', 'hr', 'employee'. Should 'manager' be changed to 'hr' for consistency?"
+
+□ Story defines seed data (test users, sample records)?
+  → CHECK: Does NFR-001 already define this seed data?
+  → If duplicate or conflicting: FLAG conflict
+  → Example: Story says "Seed user1@test.com" but NFR-001 says "Seed admin@test.com"
+  → CORRECT: Reference NFR-001's seed data, don't redefine it
+  → PATTERN: "TEST DATA: Use seeded admin user from NFR-001 (admin@test.com / Password123!)"
+
+□ Story has Acceptance Criteria?
+  → CHECK: Do AC items test the specific features listed in Functional Requirements?
+  → If FR mentions a feature not tested in AC: FLAG gap
+  → If AC tests something not in FR: FLAG mismatch
+  → Example: FR says "Seed 5 employee users" but AC says "Admin user is seeded" (missing 5 employees)
+  → ASK: "The requirements mention 5 employee users, but AC only tests admin. Should I add AC for the 5 employees?"
+
+□ Story references UI elements for features that don't exist?
+  → CHECK: Does sidebar/nav mention features without corresponding stories?
+  → If UI references missing feature: FLAG
+  → Example: Sidebar includes "Documents" link but no document management story exists
+  → ASK: "The navigation includes 'Documents' but there's no story for that feature. Should I remove it or add a placeholder note?"
+
+WHEN CONFLICTS FOUND:
+- Explain the specific conflict clearly
+- Reference the source of truth (NFR-001 or the story that defined it first)
+- Offer to fix the current story OR update the source
+- Don't save backlog with known conflicts - resolve first
 
 ══════════════════════════════════════════════════════════════════════════
 SECTION C: FILE OPERATIONS
