@@ -222,6 +222,21 @@ async def control_app(request: AppControlRequest):
                         _generated_app_process.wait()
                 _generated_app_process = None
 
+            # Install npm dependencies if node_modules doesn't exist
+            node_modules_dir = project_dir / "node_modules"
+            if not node_modules_dir.exists():
+                logger.info(f"Installing npm dependencies for {project_name}...")
+                install_process = subprocess.run(
+                    ["npm", "install"],
+                    cwd=str(project_dir),
+                    capture_output=True,
+                    text=True
+                )
+                if install_process.returncode != 0:
+                    logger.error(f"npm install failed: {install_process.stderr}")
+                    raise HTTPException(status_code=500, detail=f"Failed to install dependencies: {install_process.stderr}")
+                logger.info("Dependencies installed successfully")
+
             # Run npm start in project directory
             # stdout=None, stderr=None means inherit parent's terminal (logs appear in AI-DIY console)
             env = {**os.environ, "PORT": "3000"}
