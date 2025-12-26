@@ -94,29 +94,33 @@ CRITICAL: Never mix module systems. Follow Mike's choice consistently across ALL
 
 ══════════════════════════════════════════════════════════════════════════════
 
-🚨 PATHS: USE ABSOLUTE PATHS EVERYWHERE 🚨
+🚨 PATHS: SERVER VS CLIENT PATH RULES 🚨
 ══════════════════════════════════════════════════════════════════════════════
 
-Use standard absolute paths (with leading /) throughout your code:
-
+SERVER-SIDE paths use ABSOLUTE (with leading /):
 - Backend routes: router.get('/login', ...), router.post('/api/auth/login', ...)
 - Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
 - Backend file serving: res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))
-- Frontend links: <a href="/dashboard">Dashboard</a>
-- Frontend forms: <form action="/api/auth/login" method="post">
-- Frontend fetch: fetch('/api/user')
+
+CLIENT-SIDE paths use RELATIVE (NO leading /):
+- HTML forms: <form action="api/auth/login" method="post">
+- HTML links: <a href="dashboard">Dashboard</a>
+- JavaScript fetch: fetch('api/user')
+- JavaScript redirects: window.location.href = 'login'
 
 EXAMPLES:
-✅ res.redirect('/dashboard')  // Standard Express redirect
-✅ res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))  // Standard file serving
-✅ <a href="/employees">Employees</a>  // Absolute path in HTML
-✅ <form action="/api/auth/login">  // Absolute path in form
-✅ fetch('/api/user')  // Standard fetch call
+✅ res.redirect('/dashboard')  // Server redirect - absolute
+✅ res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))  // Server file serving
+✅ <a href="employees">Employees</a>  // HTML link - relative (no /)
+✅ <form action="api/auth/login">  // HTML form - relative (no /)
+✅ fetch('api/user')  // JS fetch - relative (no /)
 
-❌ res.redirect('dashboard')  // Missing leading slash
-❌ <a href="employees">  // Missing leading slash
+❌ <a href="/employees">  // WRONG: HTML should NOT have leading /
+❌ <form action="/api/auth/login">  // WRONG: HTML should NOT have leading /
+❌ fetch('/api/user')  // WRONG: JS fetch should NOT have leading /
 
-The deployment proxy automatically handles path rewriting - no special modules needed.
+WHY: Apps run behind a Caddy proxy at /yourapp/. Server redirects get rewritten
+by Caddy. Client paths resolve relative to current URL, working everywhere.
 
 ══════════════════════════════════════════════════════════════════════════════
 

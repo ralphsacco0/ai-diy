@@ -100,16 +100,22 @@ These rules cause SPRINT FAILURES if violated:
    - All code uses require() and module.exports, NOT import/export
    - If you see "type": "module" in existing package.json, instruct Alex to REMOVE it
 
-2. ABSOLUTE PATHS EVERYWHERE
+2. PATH HANDLING (SERVER VS CLIENT)
 
-   Use standard absolute paths (with leading /) in all code:
-   - Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
+   SERVER-SIDE paths use ABSOLUTE (with leading /):
    - Backend routes: router.get('/login', ...), router.post('/api/auth/login', ...)
-   - Frontend links: <a href="/dashboard">Dashboard</a>
-   - Frontend forms: <form action="/api/auth/login" method="post">
-   - Frontend fetch: fetch('/api/user')
+   - Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
+   - Backend file serving: res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))
 
-   The deployment proxy automatically handles path rewriting - no special code needed.
+   CLIENT-SIDE paths use RELATIVE (NO leading /):
+   - HTML forms: <form action="api/auth/login" method="post">
+   - HTML links: <a href="dashboard">Dashboard</a>
+   - JavaScript fetch: fetch('api/user')
+   - JavaScript redirects: window.location.href = 'login'
+
+   WHY: Apps run behind a Caddy proxy at /yourapp/. Server-side redirects get
+   rewritten by Caddy. Client-side paths resolve relative to the current URL,
+   so they work both locally AND behind the proxy without any code changes.
 
 3. BCRYPTJS (NOT BCRYPT)
    - Use bcryptjs for password hashing (NOT bcrypt)
@@ -322,7 +328,7 @@ Before outputting JSON, internally verify:
 □ Are task IDs zero-padded (T-US-009-01 not T-US-009-1)?
 □ Does every task have files_to_create OR command_to_run?
 □ Are all npm packages listed in Task 1's package.json?
-□ Are absolute paths used consistently (with leading /)?
+□ Are server paths absolute (/) and client paths relative (no /)?
 □ Are existing routes explicitly preserved in MODIFY tasks?
 □ Is the URL contract consistent (backend routes match frontend references)?
 □ Are element IDs specified in both HTML and JS task descriptions?
@@ -370,7 +376,7 @@ NORMAL STORY OUTPUT:
       "dependency_reason": "Depends on T-US-009-03 because database module must exist first"
     }
   ],
-  "technical_notes": "URL Contract: Backend provides GET /login, POST /api/auth/login, GET /dashboard; Frontend consumes action='/api/auth/login', href='/dashboard' (absolute paths with leading /); Route mounting: app.use(authRoutes) [FLAT - no prefix]; Consistency check: ✓ All URLs match"
+  "technical_notes": "URL Contract: Backend provides GET /login, POST /api/auth/login, GET /dashboard (absolute paths); Frontend uses action='api/auth/login', href='dashboard' (relative paths, no leading /); Route mounting: app.use(authRoutes) [FLAT - no prefix]; Consistency check: ✓ All URLs match"
 }
 
 JSON VALIDATION RULES:

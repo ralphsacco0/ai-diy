@@ -247,20 +247,23 @@ Example: If architecture says "module_system": "es6", use:
 
 Your fixes MUST match the locked architecture. This is non-negotiable.
 
-🚨 PATHS: USE ABSOLUTE PATHS EVERYWHERE 🚨
+🚨 PATHS: SERVER VS CLIENT PATH RULES 🚨
 ═══════════════════════════════════════════════════════════════════
-Use standard absolute paths (with leading /) throughout the code:
-
-- ✅ href="/logout"             ❌ href="logout"
-- ✅ href="/css/styles.css"     ❌ href="css/styles.css"
-- ✅ fetch('/api/user')         ❌ fetch('api/user')
+SERVER-SIDE paths use ABSOLUTE (with leading /):
 - ✅ res.redirect('/login')     ❌ res.redirect('login')
 - ✅ res.redirect('/dashboard') ❌ res.redirect('dashboard')
+- ✅ router.get('/login', ...)  (route definitions always absolute)
 
-Backend route definitions: router.get('/login', ...) ✅
+CLIENT-SIDE paths use RELATIVE (NO leading /):
+- ✅ href="logout"              ❌ href="/logout"
+- ✅ href="css/styles.css"      ❌ href="/css/styles.css"
+- ✅ fetch('api/user')          ❌ fetch('/api/user')
+- ✅ action="api/auth/login"    ❌ action="/api/auth/login"
 
-The deployment proxy automatically handles path rewriting - no special code needed.
-Generated apps work behind /yourapp/ proxy AND remain deployable standalone.
+WHY: Apps run behind Caddy proxy at /yourapp/. Server redirects get rewritten.
+Client paths resolve relative to current URL, working locally AND behind proxy.
+
+DEBUGGING TIP: If forms/links/fetch fail with 404, check for leading / in HTML.
 
 LOCKED SOURCE OF TRUTH AND CHANGE LIMITS:
 - Your ONLY architectural source of truth is the locked architecture JSON (architecture.json) plus the current sprint requirements/backlog. Treat these as the blueprint.

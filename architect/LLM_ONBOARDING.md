@@ -330,13 +330,15 @@ Internet → Caddy (:$PORT/8000) → FastAPI (127.0.0.1:8001)
 
 **Code patterns (standard Express):**
 
-| Context | Pattern |
-|---------|---------|
-| Routes | `router.get('/login', ...)` |
-| Redirects | `res.redirect('/dashboard')` |
-| Form actions | `<form action="/api/auth/login">` |
-| Links | `<a href="/dashboard">` |
-| Fetch | `fetch('/api/user')` |
+| Context | Pattern | Why |
+|---------|---------|-----|
+| Routes | `router.get('/login', ...)` | Absolute - Caddy strips prefix |
+| Redirects | `res.redirect('/dashboard')` | Absolute - Caddy rewrites Location header |
+| Form actions | `<form action="api/auth/login">` | **Relative** - no leading `/` |
+| Links | `<a href="dashboard">` | **Relative** - no leading `/` |
+| Fetch | `fetch('api/user')` | **Relative** - no leading `/` |
+
+**IMPORTANT**: HTML paths (forms, links, fetch) must be **relative** (no leading `/`) so they resolve relative to the current URL. Server-side redirects use absolute paths because Caddy rewrites the `Location` header.
 
 **Cross-platform requirements:**
 - Use `process.env.PORT || 3000`
