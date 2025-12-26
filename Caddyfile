@@ -24,17 +24,17 @@
 
 	# API endpoints for main application
 	handle /api/* {
-		reverse_proxy localhost:8000
+		reverse_proxy localhost:8001
 	}
 
 	# Health endpoint
 	handle /health {
-		reverse_proxy localhost:8000
+		reverse_proxy localhost:8001
 	}
 
 	# Main application routes
 	handle /* {
-		reverse_proxy localhost:8000 {
+		reverse_proxy localhost:8001 {
 			# Health check for FastAPI app
 			health_uri /health
 			health_interval 30s

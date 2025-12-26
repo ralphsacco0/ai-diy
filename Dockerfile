@@ -50,11 +50,11 @@ WORKDIR /app/development/src
 
 # Create startup script
 RUN echo '#!/bin/bash\n\
-# Start FastAPI app in background\n\
-uvicorn main:app --host 0.0.0.0 --port 8000 &\n\
+# Start FastAPI app in background on port 8001\n\
+uvicorn main:app --host 0.0.0.0 --port 8001 &\n\
 # Wait a moment for FastAPI to start\n\
 sleep 3\n\
-# Start Caddy in foreground\n\
+# Start Caddy in foreground on port 8000\n\
 exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile' > /app/start.sh && \
 chmod +x /app/start.sh
 
