@@ -266,6 +266,8 @@ Client paths resolve relative to current URL, working locally AND behind proxy.
 DEBUGGING TIP: If forms/links/fetch fail with 404:
 1. Check for leading / in HTML (should be relative)
 2. Check if current URL has trailing slash - fetch('api/user') from /login resolves to /loginapi/user (wrong), from /login/ resolves to /login/api/user (correct)
+3. NEVER fix by adding leading / to client paths - that breaks proxy routing
+4. FIX by ensuring proper base URLs/trailing slashes, NOT by switching to absolute paths
 
 LOCKED SOURCE OF TRUTH AND CHANGE LIMITS:
 - Your ONLY architectural source of truth is the locked architecture JSON (architecture.json) plus the current sprint requirements/backlog. Treat these as the blueprint.
