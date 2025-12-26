@@ -115,68 +115,124 @@ def extract_exports_from_file(file_path: Path) -> List[str]:
 
 def extract_file_structure(project_path: Path) -> str:
     """
-    Get organized file structure with exported functions.
+    Get complete file structure showing ALL files in the project.
 
-    Scans the project and categorizes files by type (controllers, models, routes, etc.),
-    showing exported functions/classes from each file.
+    Scans the project and categorizes files by type, showing:
+    - JavaScript files with their exports
+    - HTML, CSS, and other frontend files
+    - Configuration files
+    - All other project files
+
+    This ensures Mike can see existing files to use MODIFY instead of CREATE.
 
     Args:
         project_path: Root path of the project
 
     Returns:
-        Formatted string showing file structure with exports
+        Formatted string showing complete file structure
     """
     try:
         structure = {
-            'controllers': [],
-            'models': [],
-            'routes': [],
-            'components': [],
-            'services': [],
-            'middleware': []
+            'backend_js': [],      # src/**/*.js files with exports
+            'frontend_html': [],   # public/**/*.html files
+            'frontend_css': [],    # public/**/*.css files
+            'frontend_js': [],     # public/**/*.js files
+            'config': [],          # package.json, .env, etc.
+            'tests': []            # test files
         }
 
-        # Scan for files and extract exports
-        for js_file in project_path.glob("src/**/*.js"):
-            rel_path = js_file.relative_to(project_path)
+        # Ignore patterns
+        ignore_patterns = {
+            'node_modules', '.git', 'dist', 'build', '.next', 
+            '__pycache__', '.pytest_cache', 'coverage'
+        }
+
+        def should_ignore(path: Path) -> bool:
+            """Check if path should be ignored."""
+            return any(part in ignore_patterns for part in path.parts)
+
+        # Scan ALL files in project
+        for file_path in project_path.glob("**/*"):
+            if not file_path.is_file() or should_ignore(file_path):
+                continue
+
+            rel_path = file_path.relative_to(project_path)
             path_str = str(rel_path)
 
-            # Extract exports from this file
-            exports = extract_exports_from_file(js_file)
-            file_info = {
-                'path': path_str,
-                'exports': exports
-            }
+            # Categorize by file type and location
+            if path_str.startswith('src/') and path_str.endswith('.js'):
+                # Backend JavaScript with exports
+                exports = extract_exports_from_file(file_path)
+                structure['backend_js'].append({
+                    'path': path_str,
+                    'exports': exports
+                })
+            elif path_str.startswith('public/') and path_str.endswith('.html'):
+                structure['frontend_html'].append({'path': path_str})
+            elif path_str.startswith('public/') and path_str.endswith('.css'):
+                structure['frontend_css'].append({'path': path_str})
+            elif path_str.startswith('public/') and path_str.endswith('.js'):
+                structure['frontend_js'].append({'path': path_str})
+            elif path_str.startswith('tests/') or path_str.startswith('test/'):
+                structure['tests'].append({'path': path_str})
+            elif path_str in ['package.json', 'package-lock.json', '.env', 'README.md']:
+                structure['config'].append({'path': path_str})
 
-            if 'controllers' in path_str:
-                structure['controllers'].append(file_info)
-            elif 'models' in path_str:
-                structure['models'].append(file_info)
-            elif 'routes' in path_str:
-                structure['routes'].append(file_info)
-            elif 'components' in path_str:
-                structure['components'].append(file_info)
-            elif 'services' in path_str:
-                structure['services'].append(file_info)
-            elif 'middleware' in path_str:
-                structure['middleware'].append(file_info)
-
-        # Format output with exports
+        # Format output
         result = []
-        for category, files in structure.items():
-            if files:
-                result.append(f"\n{category.upper()}:")
-                for file_info in files[:5]:  # Show up to 5 files per category
-                    exports_str = ', '.join(file_info['exports'][:10]) if file_info['exports'] else 'no exports'
-                    if len(file_info['exports']) > 10:
-                        exports_str += f' (+{len(file_info["exports"]) - 10} more)'
-                    result.append(f"  - {file_info['path']}")
-                    result.append(f"    Exports: {exports_str}")
-                if len(files) > 5:
-                    result.append(f"  (+{len(files) - 5} more files)")
+        
+        # Backend JS files with exports
+        if structure['backend_js']:
+            result.append("\nBACKEND JAVASCRIPT (src/):")
+            for file_info in structure['backend_js'][:10]:
+                exports_str = ', '.join(file_info['exports'][:8]) if file_info['exports'] else 'no exports'
+                if len(file_info['exports']) > 8:
+                    exports_str += f' (+{len(file_info["exports"]) - 8} more)'
+                result.append(f"  - {file_info['path']}")
+                result.append(f"    Exports: {exports_str}")
+            if len(structure['backend_js']) > 10:
+                result.append(f"  (+{len(structure['backend_js']) - 10} more files)")
+
+        # Frontend HTML files
+        if structure['frontend_html']:
+            result.append("\nFRONTEND HTML (public/):")
+            for file_info in structure['frontend_html'][:10]:
+                result.append(f"  - {file_info['path']}")
+            if len(structure['frontend_html']) > 10:
+                result.append(f"  (+{len(structure['frontend_html']) - 10} more files)")
+
+        # Frontend CSS files
+        if structure['frontend_css']:
+            result.append("\nFRONTEND CSS (public/):")
+            for file_info in structure['frontend_css'][:10]:
+                result.append(f"  - {file_info['path']}")
+            if len(structure['frontend_css']) > 10:
+                result.append(f"  (+{len(structure['frontend_css']) - 10} more files)")
+
+        # Frontend JS files
+        if structure['frontend_js']:
+            result.append("\nFRONTEND JAVASCRIPT (public/):")
+            for file_info in structure['frontend_js'][:10]:
+                result.append(f"  - {file_info['path']}")
+            if len(structure['frontend_js']) > 10:
+                result.append(f"  (+{len(structure['frontend_js']) - 10} more files)")
+
+        # Config files
+        if structure['config']:
+            result.append("\nCONFIGURATION:")
+            for file_info in structure['config']:
+                result.append(f"  - {file_info['path']}")
+
+        # Test files
+        if structure['tests']:
+            result.append("\nTESTS:")
+            for file_info in structure['tests'][:5]:
+                result.append(f"  - {file_info['path']}")
+            if len(structure['tests']) > 5:
+                result.append(f"  (+{len(structure['tests']) - 5} more files)")
 
         if result:
-            return "Current file structure with exports:\n" + "\n".join(result)
+            return "Complete file structure (use MODIFY for existing files, CREATE only for new files):\n" + "\n".join(result)
         else:
             return "No files found yet (first story)"
     except Exception as e:
