@@ -207,20 +207,29 @@ These rules prevent bugs and rework:
      "URLs this story CONSUMES (frontend references)": List all form actions, fetch URLs, redirects
    - These MUST match exactly
 
-5. ELEMENT ID CONTRACTS (HTML ↔ JS)
+5. FILE PATH CONSTRUCTION (CRITICAL - PREVENTS FORBIDDEN ERRORS)
+   - When specifying code that serves files (res.sendFile), ALWAYS use path.join()
+   - NEVER use string concatenation with __dirname
+   - ✅ CORRECT: res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))
+   - ❌ WRONG: res.sendFile(__dirname + '/../public/login.html')
+   - ❌ WRONG: res.sendFile(__dirname + '/../../public/login.html')
+   - WHY: String concatenation with .. causes Express ForbiddenError (security risk)
+   - ALWAYS: Ensure task description includes "const path = require('path');" if using path.join()
+
+6. ELEMENT ID CONTRACTS (HTML ↔ JS)
    - When story involves BOTH HTML and JavaScript files:
    - YOU must specify the EXACT element IDs in BOTH task descriptions
    - Example: "Create dashboard.html with <span id='welcome-name'>[User Name]</span>"
    - Example: "Create dashboard.js: document.getElementById('welcome-name').textContent = user.name"
 
-6. DEPENDENCIES IN TASK 1
+7. DEPENDENCIES IN TASK 1
    - Task 1 MUST create package.json (Node.js) with ALL dependencies
    - Review ALL your subsequent task descriptions BEFORE finalizing Task 1
    - Identify EVERY import/require/library you mention in ANY task
    - Include ALL of them in Task 1's package.json
    - This prevents "Cannot find module" errors during testing
 
-7. REQUIREMENTS COMPLIANCE
+8. REQUIREMENTS COMPLIANCE
    - Acceptance Criteria are EXPLICIT REQUIREMENTS
    - DO NOT improvise, simplify, or change specified values
    - Example: If requirements say "admin@test.com / Password123!" use those EXACT values
