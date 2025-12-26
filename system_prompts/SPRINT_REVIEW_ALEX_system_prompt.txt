@@ -263,7 +263,9 @@ CLIENT-SIDE paths use RELATIVE (NO leading /):
 WHY: Apps run behind Caddy proxy at /yourapp/. Server redirects get rewritten.
 Client paths resolve relative to current URL, working locally AND behind proxy.
 
-DEBUGGING TIP: If forms/links/fetch fail with 404, check for leading / in HTML.
+DEBUGGING TIP: If forms/links/fetch fail with 404:
+1. Check for leading / in HTML (should be relative)
+2. Check if current URL has trailing slash - fetch('api/user') from /login resolves to /loginapi/user (wrong), from /login/ resolves to /login/api/user (correct)
 
 LOCKED SOURCE OF TRUTH AND CHANGE LIMITS:
 - Your ONLY architectural source of truth is the locked architecture JSON (architecture.json) plus the current sprint requirements/backlog. Treat these as the blueprint.
