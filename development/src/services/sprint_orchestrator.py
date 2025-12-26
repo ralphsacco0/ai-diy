@@ -107,6 +107,77 @@ class SprintOrchestrator:
         except Exception as e:
             logger.error(f"Could not save Mike failure payload: {e}")
             return None
+
+    def _capture_mike_breakdown(self, story_id: str, task_breakdown: Dict, baseline_files: List[str], arch_contract: Dict) -> Optional[str]:
+        """Capture Mike's successful breakdown for debugging contract enforcement.
+        Files saved to: static/appdocs/sprints/mike_breakdowns/{sprint_id}/{story_id}.json
+        Cleanup: Removes files older than 7 days.
+        """
+        try:
+            breakdown_dir = SPRINT_DIR / "mike_breakdowns" / self.sprint_id
+            breakdown_dir.mkdir(parents=True, exist_ok=True)
+
+            # Cleanup old files (7 days)
+            cutoff_time = datetime.now().timestamp() - (7 * 24 * 60 * 60)
+            for old_file in breakdown_dir.glob("*.json"):
+                try:
+                    if old_file.stat().st_mtime < cutoff_time:
+                        old_file.unlink()
+                        logger.debug(f"Cleaned up old breakdown file: {old_file}")
+                except Exception as cleanup_error:
+                    logger.warning(f"Could not cleanup {old_file}: {cleanup_error}")
+
+            # Extract files_to_create from each task for debugging
+            files_from_tasks = []
+            tasks = task_breakdown.get("tasks", []) or []
+            for task in tasks:
+                if isinstance(task, dict):
+                    task_files = task.get("files_to_create", []) or []
+                    files_from_tasks.extend([f for f in task_files if isinstance(f, str) and f.strip()])
+
+            # Build capture payload
+            capture_data = {
+                "timestamp": datetime.now().isoformat(),
+                "story_id": story_id,
+                "sprint_id": self.sprint_id,
+                "task_count": len(tasks),
+                "breakdown_summary": {
+                    "story_id": task_breakdown.get("story_id"),
+                    "task_count": len(tasks),
+                    "has_architectural_conflict": task_breakdown.get("architectural_conflict", {}).get("detected", False),
+                    "technical_notes": task_breakdown.get("technical_notes", "")[:200]  # Truncate for readability
+                },
+                "tasks_detail": [
+                    {
+                        "task_id": task.get("task_id"),
+                        "description": task.get("description", "")[:100],  # Truncate for readability
+                        "files_to_create": task.get("files_to_create", []),
+                        "command_to_run": task.get("command_to_run"),
+                        "has_files": len(task.get("files_to_create", []) or []) > 0,
+                        "has_command": bool(task.get("command_to_run"))
+                    }
+                    for task in tasks if isinstance(task, dict)
+                ],
+                "contract_summary": {
+                    "baseline_files_count": len(baseline_files),
+                    "baseline_files": sorted(baseline_files),
+                    "files_from_tasks": sorted(files_from_tasks),
+                    "allowed_files_count": len(arch_contract.get("allowed_files", [])),
+                    "allowed_files": sorted(list(arch_contract.get("allowed_files", []))),
+                    "allowed_deps_count": len(arch_contract.get("allowed_deps", [])),
+                    "allowed_deps": sorted(list(arch_contract.get("allowed_deps", [])))
+                }
+            }
+
+            # Write to file
+            safe_story_id = re.sub(r"[^A-Za-z0-9_-]+", "_", story_id or "unknown")
+            path = breakdown_dir / f"{safe_story_id}.json"
+            path.write_text(json.dumps(capture_data, indent=2), encoding="utf-8")
+            logger.info(f"📋 Mike breakdown captured to: {path}")
+            return str(path)
+        except Exception as e:
+            logger.error(f"Could not capture Mike breakdown: {e}", exc_info=True)
+            return None
     
     @classmethod
     def pause_sprint(cls, sprint_id: str):
@@ -1819,6 +1890,9 @@ This pattern prevents "SQLITE_MISUSE: Database is closed" and server startup tim
                 
                 # Freeze Mike's contract for this story (closed world: baseline + design)
                 arch_contract = self._build_arch_contract(baseline_files, baseline_deps, task_breakdown, story_id)
+
+                # Capture Mike's breakdown for debugging contract enforcement
+                self._capture_mike_breakdown(story_id, task_breakdown, baseline_files, arch_contract)
 
                 await self._log_event("mike_breakdown", {
                     "story_id": story_id,
