@@ -42,7 +42,7 @@ CRITICAL HIERARCHY:
 EXAMPLES:
 - If AC says "seed 5 employees" → your code MUST create exactly 5 (not 3, not 10)
 - If AC says "admin@test.com" → use that EXACT email (not admin@company.com)
-- If AC says "redirect to dashboard" → use res.redirect('/dashboard') with absolute path (with leading /)
+- If AC says "redirect to dashboard" → use redirect(res, '/dashboard') with proxy-helper
 - If AC says "session timeout after 30min" → implement 30 minutes (not 60, not default)
 
 YOUR CODE WILL BE TESTED AGAINST THE AC:
@@ -94,35 +94,34 @@ CRITICAL: Never mix module systems. Follow Mike's choice consistently across ALL
 
 ══════════════════════════════════════════════════════════════════════════════
 
-🚨 CRITICAL: REVERSE PROXY PATH REQUIREMENTS (NON-NEGOTIABLE) 🚨
+🚨 CRITICAL: USE PROXY-HELPER MODULE (NON-NEGOTIABLE) 🚨
 ══════════════════════════════════════════════════════════════════════════════
 
-Generated apps run behind a reverse proxy at /yourapp/. Path handling differs by context:
+Apps use standard absolute paths everywhere - proxy-helper handles deployment complexity.
 
-FRONTEND PATHS (HTML/JS) - Use RELATIVE paths (NO leading slash):
-- ✅ href="logout"               ❌ href="/logout"
-- ✅ href="css/styles.css"       ❌ href="/css/styles.css"
-- ✅ fetch('api/user')           ❌ fetch('/api/user')
-- ✅ action="api/auth/login"     ❌ action="/api/auth/login"
+ALL PATHS USE STANDARD ABSOLUTE FORMAT (with leading /):
+- Backend routes: router.get('/login', ...), router.post('/api/auth/login', ...)
+- Backend redirects: Use proxy-helper → redirect(res, '/dashboard')
+- Backend file serving: Use proxy-helper → sendFile(res, 'public/login.html')
+- Frontend links: <a href="/dashboard">Dashboard</a>
+- Frontend forms: <form action="/api/auth/login" method="post">
+- Frontend fetch: Use proxy-helper → ProxyHelper.fetch('/api/user')
 
-WHY: Browser resolves relative to page URL. User at /yourapp/login with href="dashboard"
-goes to /yourapp/dashboard (correct). With href="/dashboard" goes to /dashboard (wrong).
+IMPORT PROXY-HELPER WHEN MIKE SPECIFIES IT:
+- Backend: const { redirect, sendFile } = require('../utils/proxy-helper');
+- Frontend: <script src="/utils/proxy-helper.js"></script>
 
-BACKEND REDIRECTS (Express res.redirect) - Use ABSOLUTE paths (WITH leading slash):
-- ✅ res.redirect('/login')         ❌ res.redirect('login')
-- ✅ res.redirect('/dashboard')     ❌ res.redirect('dashboard')
-- ✅ res.redirect('/login?error=invalid')  ❌ res.redirect('login?error=invalid')
+EXAMPLES:
+✅ redirect(res, '/dashboard')  // Use helper function
+✅ sendFile(res, 'public/login.html')  // Use helper function
+✅ <a href="/employees">Employees</a>  // Standard absolute path
+✅ <form action="/api/auth/login">  // Standard absolute path
+✅ ProxyHelper.fetch('/api/user')  // Use helper for fetch
 
-WHY: Express resolves relative redirects to request URL. POST to /yourapp/api/auth/login
-with res.redirect('dashboard') resolves to /yourapp/api/auth/dashboard (wrong).
-With res.redirect('/dashboard'), proxy rewrites to /yourapp/dashboard (correct).
+❌ res.redirect('dashboard')  // Don't use res.redirect directly
+❌ res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))  // Don't calculate paths manually
 
-Backend route DEFINITIONS stay absolute: router.get('/login', ...) ✅
-
-BEFORE WRITING CODE:
-□ Frontend path (href, fetch, action)? → NO leading /
-□ Backend redirect (res.redirect)? → WITH leading /
-□ Route definition (router.get)? → WITH leading /
+WHY: Apps run behind reverse proxy but you write standard code. Helper handles deployment.
 
 ══════════════════════════════════════════════════════════════════════════════
 

@@ -100,30 +100,29 @@ These rules cause SPRINT FAILURES if violated:
    - All code uses require() and module.exports, NOT import/export
    - If you see "type": "module" in existing package.json, instruct Alex to REMOVE it
 
-2. PATHS FOR PROXY COMPATIBILITY (MANDATORY - CRITICAL)
+2. PROXY-HELPER MODULE (MANDATORY - SIMPLIFIES DEPLOYMENT)
    
-   Apps run behind reverse proxy at /yourapp/. Path handling differs by context:
+   Apps use standard absolute paths everywhere - proxy-helper handles deployment complexity.
    
-   FRONTEND PATHS (HTML/JS) - Use RELATIVE paths (NO leading slash):
-   - ✅ action="api/auth/login"    ❌ action="/api/auth/login"
-   - ✅ href="login"               ❌ href="/login"
-   - ✅ href="css/styles.css"      ❌ href="/css/styles.css"
-   - ✅ src="js/app.js"            ❌ src="/js/app.js"
-   - ✅ fetch('api/user')          ❌ fetch('/api/user')
+   TASK 1 MUST CREATE:
+   - src/utils/proxy-helper.js (copy from /templates/proxy-helper.js)
+   - This module shields the app from reverse proxy complexity
    
-   WHY: Browser resolves relative to page URL. User at /yourapp/login with href="dashboard"
-   goes to /yourapp/dashboard (correct). With href="/dashboard" goes to /dashboard (wrong).
+   ALL PATHS USE STANDARD ABSOLUTE FORMAT (with leading /):
+   - Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
+   - Backend routes: router.get('/login', ...), router.post('/api/auth/login', ...)
+   - Frontend links: <a href="/dashboard">Dashboard</a>
+   - Frontend forms: <form action="/api/auth/login" method="post">
+   - Frontend fetch: fetch('/api/user')
    
-   BACKEND REDIRECTS (Express res.redirect) - Use ABSOLUTE paths (WITH leading slash):
-   - ✅ res.redirect('/dashboard')     ❌ res.redirect('dashboard')
-   - ✅ res.redirect('/login')         ❌ res.redirect('login')
-   - ✅ res.redirect('/login?error=invalid')  ❌ res.redirect('login?error=invalid')
+   USE PROXY-HELPER FUNCTIONS:
+   - Backend redirects: const { redirect } = require('../utils/proxy-helper'); redirect(res, '/dashboard');
+   - Backend file serving: const { sendFile } = require('../utils/proxy-helper'); sendFile(res, 'public/login.html');
+   - Frontend: Include helper in HTML: <script src="/utils/proxy-helper.js"></script>
+   - Frontend: Use ProxyHelper.fetch('/api/user') instead of fetch('/api/user')
    
-   WHY: Express resolves relative redirects to request URL. POST to /yourapp/api/auth/login
-   with res.redirect('dashboard') resolves to /yourapp/api/auth/dashboard (wrong).
-   With res.redirect('/dashboard'), proxy rewrites to /yourapp/dashboard (correct).
-   
-   Backend route DEFINITIONS stay absolute: router.get('/login', ...) ✅
+   WHY: Apps run behind reverse proxy at /yourapp/ but developers write standard code.
+   The proxy-helper automatically handles path translations for deployment.
 
 3. BCRYPTJS (NOT BCRYPT)
    - Use bcryptjs for password hashing (NOT bcrypt)
@@ -207,29 +206,23 @@ These rules prevent bugs and rework:
      "URLs this story CONSUMES (frontend references)": List all form actions, fetch URLs, redirects
    - These MUST match exactly
 
-5. FILE PATH CONSTRUCTION (CRITICAL - PREVENTS FORBIDDEN ERRORS)
-   - When specifying code that serves files (res.sendFile), ALWAYS use path.join()
-   - NEVER use string concatenation with __dirname
-   - WHY: String concatenation with .. causes Express ForbiddenError (security risk)
-   - ALWAYS: Ensure task description includes "const path = require('path');" if using path.join()
+5. FILE SERVING (USE PROXY-HELPER)
+   - ALWAYS use proxy-helper's sendFile() function for serving static files
+   - NEVER use res.sendFile() directly or calculate path depth manually
+   - Pattern:
+     const { sendFile } = require('../utils/proxy-helper');
+     sendFile(res, 'public/login.html');  // Path relative to project root
    
-   PATH DEPTH BASED ON FILE LOCATION (count '..' to reach project root):
-   - Files in src/ (e.g., src/server.js):
-     ✅ path.join(__dirname, '..', 'public', 'file.html')
-     Explanation: src/ → '..' → project root → 'public'
+   ✅ CORRECT:
+   - sendFile(res, 'public/login.html')
+   - sendFile(res, 'public/dashboard.html')
+   - sendFile(res, 'public/css/styles.css')
    
-   - Files in src/routes/, src/middleware/, src/models/ (e.g., src/routes/dashboard.js):
-     ✅ path.join(__dirname, '..', '..', 'public', 'file.html')
-     Explanation: src/routes/ → '..' → src/ → '..' → project root → 'public'
+   ❌ WRONG:
+   - res.sendFile(__dirname + '/../public/login.html')  // Direct sendFile
+   - res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))  // Manual path calculation
    
-   - Files in src/controllers/ or deeper (e.g., src/api/controllers/user.js):
-     ✅ path.join(__dirname, '..', '..', '..', 'public', 'file.html')
-     Explanation: Count directory levels from file to project root, use that many '..'
-   
-   ❌ WRONG EXAMPLES:
-   - res.sendFile(__dirname + '/../public/login.html')  // String concatenation
-   - res.sendFile(path.join(__dirname, '..', 'public', 'dashboard.html'))  // Wrong if file is in src/routes/
-   - res.sendFile(__dirname + '/../../public/login.html')  // String concatenation
+   WHY: proxy-helper calculates correct path depth automatically, preventing ForbiddenError and ENOENT errors
 
 6. ELEMENT ID CONTRACTS (HTML ↔ JS)
    - When story involves BOTH HTML and JavaScript files:
