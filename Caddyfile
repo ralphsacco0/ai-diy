@@ -1,11 +1,12 @@
-:{$PORT}
+:{$PORT} {
 
-# Route generated app
-handle_path /yourapp/* {
-    reverse_proxy 127.0.0.1:3000
-}
+	# Route generated app
+	handle_path /yourapp/* {
+		reverse_proxy 127.0.0.1:3000
+	}
 
-# Route AI-DIY (everything else)
-handle {
-    reverse_proxy 127.0.0.1:8000
+	# Route AI-DIY (everything else)
+	handle {
+		reverse_proxy 127.0.0.1:8000
+	}
 }
