@@ -210,11 +210,26 @@ These rules prevent bugs and rework:
 5. FILE PATH CONSTRUCTION (CRITICAL - PREVENTS FORBIDDEN ERRORS)
    - When specifying code that serves files (res.sendFile), ALWAYS use path.join()
    - NEVER use string concatenation with __dirname
-   - ✅ CORRECT: res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))
-   - ❌ WRONG: res.sendFile(__dirname + '/../public/login.html')
-   - ❌ WRONG: res.sendFile(__dirname + '/../../public/login.html')
    - WHY: String concatenation with .. causes Express ForbiddenError (security risk)
    - ALWAYS: Ensure task description includes "const path = require('path');" if using path.join()
+   
+   PATH DEPTH BASED ON FILE LOCATION (count '..' to reach project root):
+   - Files in src/ (e.g., src/server.js):
+     ✅ path.join(__dirname, '..', 'public', 'file.html')
+     Explanation: src/ → '..' → project root → 'public'
+   
+   - Files in src/routes/, src/middleware/, src/models/ (e.g., src/routes/dashboard.js):
+     ✅ path.join(__dirname, '..', '..', 'public', 'file.html')
+     Explanation: src/routes/ → '..' → src/ → '..' → project root → 'public'
+   
+   - Files in src/controllers/ or deeper (e.g., src/api/controllers/user.js):
+     ✅ path.join(__dirname, '..', '..', '..', 'public', 'file.html')
+     Explanation: Count directory levels from file to project root, use that many '..'
+   
+   ❌ WRONG EXAMPLES:
+   - res.sendFile(__dirname + '/../public/login.html')  // String concatenation
+   - res.sendFile(path.join(__dirname, '..', 'public', 'dashboard.html'))  // Wrong if file is in src/routes/
+   - res.sendFile(__dirname + '/../../public/login.html')  // String concatenation
 
 6. ELEMENT ID CONTRACTS (HTML ↔ JS)
    - When story involves BOTH HTML and JavaScript files:
