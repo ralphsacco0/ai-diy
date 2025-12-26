@@ -324,7 +324,8 @@ Generated apps run behind a Caddy reverse proxy at `/yourapp/`. The proxy handle
 
 **Architecture:**
 ```
-Internet → Caddy (Port 80) → FastAPI (Port 8000) → Generated Apps (Port 3000)
+Internet → Caddy (:$PORT/8000) → FastAPI (127.0.0.1:8001)
+                              → Generated Apps (127.0.0.1:3000) via /yourapp/*
 ```
 
 **Code patterns (standard Express):**
@@ -362,6 +363,8 @@ The production site is protected with HTTP Basic Authentication to prevent unaut
 | File | Purpose |
 |------|---------|
 | `Dockerfile` | Container build instructions |
+| `Caddyfile` | Caddy reverse proxy config - routes /yourapp/* to generated apps |
+| `start.sh` | Startup script - launches FastAPI then Caddy |
 | `railway.json` | Railway deployment settings (uses Dockerfile builder) |
 | `development/src/auth_middleware.py` | HTTP Basic Auth implementation |
 
@@ -634,13 +637,3 @@ That's how we move forward without going backward.
 
 *For questions or clarifications, ask Ralph. For detailed patterns, see the documentation map in Section 6.*
 
----
-
-## TODO: Architecture Document Updates
-
-The following updates are needed in the core architecture documents to reflect the proxy path handling changes:
-
-- [ ] `architecture.md` - Update path guidance to use absolute paths
-- [ ] `system-flow.md` - Update sprint execution path examples
-- [ ] `PATTERNS_AND_METHODS.md` - Update code pattern examples
-- [ ] Remove any references to "relative paths only" or proxy-helper module
