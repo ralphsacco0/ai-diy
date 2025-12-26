@@ -1209,35 +1209,19 @@ This pattern prevents "SQLITE_MISUSE: Database is closed" and server startup tim
         - Allowed files = baseline project files + any files Mike explicitly lists in tasks
         - Allowed dependencies = baseline deps + any deps Mike explicitly lists
         """
-        logger.info(f"🔨 Building arch contract for {story_id}")
-        logger.info(f"   Baseline files count: {len(baseline_files)}")
-        logger.info(f"   Baseline deps count: {len(baseline_deps)}")
-        
         allowed_files = set(baseline_files)
 
         # Collect all files Mike expects to be created/modified for this story
         try:
             tasks = design.get("tasks", []) or []
-            logger.info(f"   Mike's design has {len(tasks)} tasks")
-            
-            files_from_tasks = []
             for task in tasks:
                 if not isinstance(task, dict):
                     continue
-                task_id = task.get("task_id", "unknown")
-                files_to_create = task.get("files_to_create", []) or []
-                logger.debug(f"   Task {task_id}: files_to_create = {files_to_create}")
-                
-                for path in files_to_create:
+                for path in task.get("files_to_create", []) or []:
                     if isinstance(path, str) and path.strip():
-                        normalized_path = path.strip()
-                        allowed_files.add(normalized_path)
-                        files_from_tasks.append(normalized_path)
-            
-            logger.info(f"   Files from Mike's tasks: {files_from_tasks}")
-            logger.info(f"   Total allowed files: {sorted(allowed_files)}")
+                        allowed_files.add(path.strip())
         except Exception as e:
-            logger.error(f"Error building file surface for arch contract on {story_id}: {e}", exc_info=True)
+            logger.debug(f"Error building file surface for arch contract on {story_id}: {e}")
 
         allowed_deps = set(baseline_deps)
         try:
@@ -1269,39 +1253,23 @@ This pattern prevents "SQLITE_MISUSE: Database is closed" and server startup tim
         On violation, logs details but does not raise.
         """
         try:
-            logger.info(f"🔍 Enforcing arch contract for {story_id}")
-            
             allowed_files = set(contract.get("allowed_files") or [])
             allowed_deps = set(contract.get("allowed_deps") or [])
-            
-            logger.info(f"   Contract allowed files ({len(allowed_files)}): {sorted(allowed_files)}")
-            logger.info(f"   Alex wrote files ({len(story_files_written)}): {story_files_written}")
 
             # 1) File-level enforcement: Alex must not create files outside the contract
             violating_files = []
             for path in story_files_written:
                 # Normalize path style for comparison
                 norm_path = Path(path).as_posix()
-                logger.debug(f"   Checking file: '{path}' -> normalized: '{norm_path}'")
-                
                 if norm_path not in allowed_files:
                     violating_files.append(norm_path)
-                    logger.warning(f"   ⚠️ File '{norm_path}' NOT in allowed_files")
-                else:
-                    logger.debug(f"   ✅ File '{norm_path}' is allowed")
 
             # 2) Dependency-level enforcement: Alex must not introduce new deps not in contract
             current_deps = set(self._read_package_dependencies(project_root))
-            logger.info(f"   Current deps ({len(current_deps)}): {sorted(current_deps)}")
-            logger.info(f"   Allowed deps ({len(allowed_deps)}): {sorted(allowed_deps)}")
-            
             # Only consider deps that weren't already allowed by contract
             violating_deps = sorted(current_deps - allowed_deps) if current_deps else []
-            if violating_deps:
-                logger.warning(f"   ⚠️ Violating deps: {violating_deps}")
 
             if not violating_files and not violating_deps:
-                logger.info(f"   ✅ Contract enforcement PASSED for {story_id}")
                 return True
 
             # Log all violations together
@@ -1309,19 +1277,15 @@ This pattern prevents "SQLITE_MISUSE: Database is closed" and server startup tim
                 logger.error(
                     f"❌ Architectural contract violation for {story_id}: Files outside contract were written: {violating_files}"
                 )
-                logger.error(f"   Allowed files were: {sorted(allowed_files)}")
-                logger.error(f"   Files written were: {story_files_written}")
             if violating_deps:
                 logger.error(
                     f"❌ Architectural contract violation for {story_id}: Dependencies outside contract were added: {violating_deps}"
                 )
-                logger.error(f"   Allowed deps were: {sorted(allowed_deps)}")
-                logger.error(f"   Current deps are: {sorted(current_deps)}")
 
             return False
         except Exception as e:
             # Contract enforcement must never crash the orchestrator; if it can't run, treat as pass
-            logger.error(f"Arch contract enforcement skipped for {story_id} due to error: {e}", exc_info=True)
+            logger.debug(f"Arch contract enforcement skipped for {story_id} due to error: {e}")
             return True
 
     # ============================================================================
