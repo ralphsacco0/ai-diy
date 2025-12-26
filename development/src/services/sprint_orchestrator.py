@@ -894,9 +894,11 @@ PURPOSE: Established pattern - study this and follow the same approach
         """Return the mandatory test template for Node.js projects."""
         return """
 ═══════════════════════════════════════════════════════════════════════════════
-MANDATORY TEST TEMPLATE FOR NODE.JS/SQLITE PROJECTS:
+MANDATORY TEST TEMPLATES FOR NODE.JS/SQLITE PROJECTS:
 ═══════════════════════════════════════════════════════════════════════════════
 
+PATTERN 1: Database-only tests (for testing DB operations, models, etc.)
+───────────────────────────────────────────────────────────────────────────────
 import test from 'node:test';
 import assert from 'node:assert';
 
@@ -920,13 +922,55 @@ test('Your test description here', async (t) => {
   }
 });
 
-CRITICAL RULES:
-1. Import db INSIDE each test function (not at file level)
-2. Always close db in finally block
-3. Each test gets its own fresh database connection
-4. Never share db connections between tests
+PATTERN 2: Express Server tests (for testing routes, endpoints, server startup)
+───────────────────────────────────────────────────────────────────────────────
+const test = require('node:test');
+const assert = require('node:assert');
+const http = require('node:http');
 
-This pattern prevents "SQLITE_MISUSE: Database is closed" errors.
+test('Server starts and responds', async () => {
+  const app = require('../src/server.js');
+  const { createDb, initDb } = require('../src/db.js');
+  let server;
+  let db;
+  
+  try {
+    process.env.NODE_ENV = 'test';
+    db = createDb();
+    await initDb(db);
+    // CRITICAL: DO NOT close db here - server needs it running during startup
+    
+    server = await new Promise((resolve, reject) => {
+      const s = app.listen(0, (err) => {
+        if (err) reject(err);
+        else resolve(s);
+      });
+    });
+    
+    // Run your server tests here
+    const port = server.address().port;
+    // Example: make HTTP request to test endpoint
+    // const res = await makeRequest('/', port);
+    // assert.ok(res.statusCode < 500);
+    
+  } finally {
+    // CRITICAL: Close in correct order - server first, then DB
+    if (server) await new Promise(r => server.close(r));
+    if (db) await new Promise(r => db.close(r));
+  }
+});
+
+CRITICAL RULES:
+1. For database tests: Import db INSIDE each test function (not at file level)
+2. For server tests: DO NOT close database before calling app.listen()
+3. For server tests: Server needs DB connection alive during startup and runtime
+4. Always close resources in finally block
+5. For server tests: Close server BEFORE closing database
+6. Each test gets its own fresh database connection
+7. Never share db connections between tests
+8. Always set process.env.NODE_ENV = 'test' for in-memory database
+
+This pattern prevents "SQLITE_MISUSE: Database is closed" and server startup timeout errors.
 ═══════════════════════════════════════════════════════════════════════════════
 """
 
