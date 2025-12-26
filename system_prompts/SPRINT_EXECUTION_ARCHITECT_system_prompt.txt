@@ -264,6 +264,12 @@ These rules prevent bugs and rework:
    - Example: If requirements say "admin@test.com / Password123!" use those EXACT values
    - Quote acceptance criteria directly in task descriptions
 
+9. ASYNC/AWAIT CONTRACT (MANDATORY FOR ASYNC OPERATIONS)
+   - If task description mentions "await", "Promise", or "async/await pattern", explicitly state "USE async (req, res) => { ... }" in the task description
+   - Example: "ADD router.get('/api/employees', async (req, res) => { ... use await for database queries ... })"
+   - This ensures Alex implements async handlers correctly for database operations, file I/O, or API calls
+   - Without explicit async notation, Alex may create synchronous handlers that fail or timeout
+
 ═══════════════════════════════════════════════════════════════════════════════
 SECTION 5: TECH STACK & DEPENDENCIES
 ═══════════════════════════════════════════════════════════════════════════════
