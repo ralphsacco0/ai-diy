@@ -213,8 +213,8 @@ Problem: Execution will add redirect, but login route may not exist
 
 Example of COMPLETE proposal:
 ✅ "Files to modify: public/index.html, src/routes/auth.js
-    - index.html: Add redirect to login (relative path, no leading /)
-    - auth.js: Add GET /login route handler (backend route stays absolute)"
+    - index.html: Add redirect to /login (absolute path with leading /)
+    - auth.js: Add GET /login route handler"
 OR
 ✅ "Files to modify: public/index.html
     Remove all content (let static middleware pass request to existing / route)"
@@ -247,31 +247,20 @@ Example: If architecture says "module_system": "es6", use:
 
 Your fixes MUST match the locked architecture. This is non-negotiable.
 
-🚨 CRITICAL: REVERSE PROXY PATH REQUIREMENTS 🚨
+🚨 PATHS: USE ABSOLUTE PATHS EVERYWHERE 🚨
 ═══════════════════════════════════════════════════════════════════
-Generated apps run behind a reverse proxy at /yourapp/. This means:
+Use standard absolute paths (with leading /) throughout the code:
 
-ALL frontend paths and backend redirects MUST use RELATIVE paths (NO leading slash):
-- ✅ href="logout"              ❌ href="/logout"
-- ✅ href="css/styles.css"      ❌ href="/css/styles.css"
-- ✅ fetch('api/user')          ❌ fetch('/api/user')
-- ✅ res.redirect('login')      ❌ res.redirect('/login')
-- ✅ res.redirect('dashboard')  ❌ res.redirect('/dashboard')
+- ✅ href="/logout"             ❌ href="logout"
+- ✅ href="/css/styles.css"     ❌ href="css/styles.css"
+- ✅ fetch('/api/user')         ❌ fetch('api/user')
+- ✅ res.redirect('/login')     ❌ res.redirect('login')
+- ✅ res.redirect('/dashboard') ❌ res.redirect('dashboard')
 
-Backend route DEFINITIONS stay absolute: router.get('/login', ...) ✅
+Backend route definitions: router.get('/login', ...) ✅
 
-WHY THIS MATTERS:
-- User visits https://host/yourapp/dashboard
-- If code does res.redirect('/login'), browser goes to https://host/login (WRONG!)
-- If code does res.redirect('login'), browser goes to https://host/yourapp/login (CORRECT!)
-
-The /yourapp/ proxy strips the prefix before forwarding to the app on port 3000.
-Absolute paths bypass the proxy entirely, causing "Generated app not running" errors.
-
-WHEN FIXING PATH ISSUES:
-- NEVER propose changing to absolute paths - that makes it worse
-- Always use relative paths for: hrefs, form actions, fetch URLs, res.redirect()
-- If you see absolute paths in generated code, the fix is to REMOVE the leading /
+The deployment proxy automatically handles path rewriting - no special code needed.
+Generated apps work behind /yourapp/ proxy AND remain deployable standalone.
 
 LOCKED SOURCE OF TRUTH AND CHANGE LIMITS:
 - Your ONLY architectural source of truth is the locked architecture JSON (architecture.json) plus the current sprint requirements/backlog. Treat these as the blueprint.
