@@ -49,19 +49,9 @@ ENV PYTHONPATH=/app/development/src
 # Change working directory to where main.py is located
 WORKDIR /app/development/src
 
-# Create startup script
-RUN echo '#!/usr/bin/env bash\n\
-set -euo pipefail\n\
-\n\
-# Start FastAPI app in background on internal port\n\
-uvicorn main:app --host 127.0.0.1 --port 8000 &\n\
-\n\
-# Wait a moment for FastAPI to start\n\
-sleep 3\n\
-\n\
-# Start Caddy in foreground\n\
-exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile' > /app/start.sh && \
-chmod +x /app/start.sh
+# Copy startup script
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
 
 # Start Caddy (which will proxy to FastAPI)
 CMD ["/app/start.sh"]
