@@ -1242,6 +1242,11 @@
     </div>
 
     <script>
+        // Global HTML escape function to prevent XSS and display HTML tags as text
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+        }
+
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
@@ -1506,8 +1511,8 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'response-block system-message';
             messageDiv.innerHTML = `
-                <div class="response-header" style="color: #60a5fa;">${persona}</div>
-                <div class="response-content" style="font-style: italic; color: #94a3b8;">${message}</div>
+                <div class="response-header" style="color: #60a5fa;">${escapeHtml(persona)}</div>
+                <div class="response-content" style="font-style: italic; color: #94a3b8;">${escapeHtml(message)}</div>
             `;
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1696,7 +1701,7 @@
                         <div class="thinking-dots">
                             <span></span><span></span><span></span>
                         </div>
-                        <div class="thinking-text">${personaName} is thinking...</div>
+                        <div class="thinking-text">${escapeHtml(personaName)} is thinking...</div>
                         <div class="thinking-progress" style="font-size: 0.9em; margin-top: 5px; color: #666;">
                             Preparing response...
                         </div>
@@ -1875,8 +1880,8 @@
                         streamingDiv.id = `streaming-${data.persona}`;
                         streamingDiv.className = 'response-block streaming';
                         streamingDiv.innerHTML = `
-                            <div class="response-header">${data.name}</div>
-                            <div class="response-content" id="streaming-content-${data.persona}"></div>
+                            <div class="response-header">${escapeHtml(data.name)}</div>
+                            <div class="response-content" id="streaming-content-${escapeHtml(data.persona)}"></div>
                         `;
                         chatMessages.appendChild(streamingDiv);
                     }
@@ -2075,8 +2080,8 @@
                     const responseDiv = document.createElement('div');
                     responseDiv.className = 'response-block';
                     responseDiv.innerHTML = `
-                        <div class="response-header">${headerName}</div>
-                        <div class="response-content">${displayContent}</div>
+                        <div class="response-header">${escapeHtml(headerName)}</div>
+                        <div class="response-content">${escapeHtml(displayContent)}</div>
                     `;
                     chatMessages.appendChild(responseDiv);
                     
