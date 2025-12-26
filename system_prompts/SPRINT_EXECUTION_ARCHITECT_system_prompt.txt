@@ -100,30 +100,16 @@ These rules cause SPRINT FAILURES if violated:
    - All code uses require() and module.exports, NOT import/export
    - If you see "type": "module" in existing package.json, instruct Alex to REMOVE it
 
-2. PROXY-HELPER MODULE (MANDATORY - SIMPLIFIES DEPLOYMENT)
-   
-   Apps use standard absolute paths everywhere - proxy-helper handles deployment complexity.
-   
-   TASK 1 MUST CREATE src/utils/proxy-helper.js WITH THIS EXACT CONTENT:
-   - Include the FULL proxy-helper.js code in your task description
-   - This module shields the app from reverse proxy complexity
-   - Content: See PROXY-HELPER TEMPLATE section below for the exact code to specify
-   
-   ALL PATHS USE STANDARD ABSOLUTE FORMAT (with leading /):
+2. ABSOLUTE PATHS EVERYWHERE
+
+   Use standard absolute paths (with leading /) in all code:
    - Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
    - Backend routes: router.get('/login', ...), router.post('/api/auth/login', ...)
    - Frontend links: <a href="/dashboard">Dashboard</a>
    - Frontend forms: <form action="/api/auth/login" method="post">
    - Frontend fetch: fetch('/api/user')
-   
-   USE PROXY-HELPER FUNCTIONS:
-   - Backend redirects: const { redirect } = require('../utils/proxy-helper'); redirect(res, '/dashboard');
-   - Backend file serving: const { sendFile } = require('../utils/proxy-helper'); sendFile(res, 'public/login.html');
-   - Frontend: Include helper in HTML: <script src="/utils/proxy-helper.js"></script>
-   - Frontend: Use ProxyHelper.fetch('/api/user') instead of fetch('/api/user')
-   
-   WHY: Apps run behind reverse proxy at /yourapp/ but developers write standard code.
-   The proxy-helper automatically handles path translations for deployment.
+
+   The deployment proxy automatically handles path rewriting - no special code needed.
 
 3. BCRYPTJS (NOT BCRYPT)
    - Use bcryptjs for password hashing (NOT bcrypt)
@@ -246,23 +232,18 @@ These rules prevent bugs and rework:
      "URLs this story CONSUMES (frontend references)": List all form actions, fetch URLs, redirects
    - These MUST match exactly
 
-5. FILE SERVING (USE PROXY-HELPER)
-   - ALWAYS use proxy-helper's sendFile() function for serving static files
-   - NEVER use res.sendFile() directly or calculate path depth manually
-   - Pattern:
-     const { sendFile } = require('../utils/proxy-helper');
-     sendFile(res, 'public/login.html');  // Path relative to project root
-   
-   ✅ CORRECT:
-   - sendFile(res, 'public/login.html')
-   - sendFile(res, 'public/dashboard.html')
-   - sendFile(res, 'public/css/styles.css')
-   
-   ❌ WRONG:
-   - res.sendFile(__dirname + '/../public/login.html')  // Direct sendFile
-   - res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))  // Manual path calculation
-   
-   WHY: proxy-helper calculates correct path depth automatically, preventing ForbiddenError and ENOENT errors
+5. FILE SERVING (STANDARD EXPRESS PATTERN)
+   - Use res.sendFile() with path.join() for serving static files
+   - Pattern (from src/server.js or src/routes/*.js):
+     const path = require('path');
+     res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));
+
+   - For routes in src/routes/ subdirectory, use '../..' to reach project root:
+     res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'));
+
+   - Alternative: Use express.static() middleware and redirect to HTML files:
+     app.use(express.static('public'));
+     res.redirect('/login.html');
 
 6. ELEMENT ID CONTRACTS (HTML ↔ JS)
    - When story involves BOTH HTML and JavaScript files:
@@ -335,7 +316,7 @@ Before outputting JSON, internally verify:
 □ Are task IDs zero-padded (T-US-009-01 not T-US-009-1)?
 □ Does every task have files_to_create OR command_to_run?
 □ Are all npm packages listed in Task 1's package.json?
-□ Are relative paths used in all frontend code (no leading /)?
+□ Are absolute paths used consistently (with leading /)?
 □ Are existing routes explicitly preserved in MODIFY tasks?
 □ Is the URL contract consistent (backend routes match frontend references)?
 □ Are element IDs specified in both HTML and JS task descriptions?
@@ -383,7 +364,7 @@ NORMAL STORY OUTPUT:
       "dependency_reason": "Depends on T-US-009-03 because database module must exist first"
     }
   ],
-  "technical_notes": "URL Contract: Backend provides GET /login, POST /api/auth/login, GET /dashboard; Frontend consumes action='api/auth/login', href='dashboard' (relative paths, no leading /); Route mounting: app.use(authRoutes) [FLAT - no prefix]; Path format: Relative paths for proxy compatibility; Consistency check: ✓ All URLs match"
+  "technical_notes": "URL Contract: Backend provides GET /login, POST /api/auth/login, GET /dashboard; Frontend consumes action='/api/auth/login', href='/dashboard' (absolute paths with leading /); Route mounting: app.use(authRoutes) [FLAT - no prefix]; Consistency check: ✓ All URLs match"
 }
 
 JSON VALIDATION RULES:
@@ -430,30 +411,3 @@ OUTPUT:
 - NO markdown, NO commentary, NO explanations
 - Complete the self-check, then output JSON and STOP
 
-═══════════════════════════════════════════════════════════════════════════════
-PROXY-HELPER TEMPLATE (Include in Task 1)
-═══════════════════════════════════════════════════════════════════════════════
-
-When creating Task 1, include this EXACT code for src/utils/proxy-helper.js:
-
-```javascript
-const path = require('path');
-
-function redirect(res, targetPath) {
-  const absolutePath = targetPath.startsWith('/') ? targetPath : `/${targetPath}`;
-  res.redirect(absolutePath);
-}
-
-function sendFile(res, filePath) {
-  const currentDir = __dirname;
-  const projectRoot = process.cwd();
-  const currentParts = currentDir.split(path.sep).filter(p => p);
-  const rootParts = projectRoot.split(path.sep).filter(p => p);
-  const depth = currentParts.length - rootParts.length;
-  const upDirs = depth > 0 ? Array(depth).fill('..') : [];
-  const fullPath = path.join(__dirname, ...upDirs, filePath);
-  res.sendFile(fullPath);
-}
-
-module.exports = { redirect, sendFile };
-```

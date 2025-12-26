@@ -203,7 +203,7 @@ test('AC-4: Logout clears session', async () => {
   // Action: Logout (Mike specified GET /logout)
   const logoutRes = await makeRequest('/logout', {}, sessionCookie);
   
-  // Mike specified: redirects to login (relative path), session destroyed
+  // Mike specified: redirects to login, session destroyed
   assert.strictEqual(logoutRes.statusCode, 302);
   assert.ok(logoutRes.location.includes('login'));
   

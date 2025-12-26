@@ -42,7 +42,7 @@ CRITICAL HIERARCHY:
 EXAMPLES:
 - If AC says "seed 5 employees" → your code MUST create exactly 5 (not 3, not 10)
 - If AC says "admin@test.com" → use that EXACT email (not admin@company.com)
-- If AC says "redirect to dashboard" → use redirect(res, '/dashboard') with proxy-helper
+- If AC says "redirect to dashboard" → use res.redirect('/dashboard')
 - If AC says "session timeout after 30min" → implement 30 minutes (not 60, not default)
 
 YOUR CODE WILL BE TESTED AGAINST THE AC:
@@ -94,34 +94,29 @@ CRITICAL: Never mix module systems. Follow Mike's choice consistently across ALL
 
 ══════════════════════════════════════════════════════════════════════════════
 
-🚨 CRITICAL: USE PROXY-HELPER MODULE (NON-NEGOTIABLE) 🚨
+🚨 PATHS: USE ABSOLUTE PATHS EVERYWHERE 🚨
 ══════════════════════════════════════════════════════════════════════════════
 
-Apps use standard absolute paths everywhere - proxy-helper handles deployment complexity.
+Use standard absolute paths (with leading /) throughout your code:
 
-ALL PATHS USE STANDARD ABSOLUTE FORMAT (with leading /):
 - Backend routes: router.get('/login', ...), router.post('/api/auth/login', ...)
-- Backend redirects: Use proxy-helper → redirect(res, '/dashboard')
-- Backend file serving: Use proxy-helper → sendFile(res, 'public/login.html')
+- Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
+- Backend file serving: res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))
 - Frontend links: <a href="/dashboard">Dashboard</a>
 - Frontend forms: <form action="/api/auth/login" method="post">
-- Frontend fetch: Use proxy-helper → ProxyHelper.fetch('/api/user')
-
-IMPORT PROXY-HELPER WHEN MIKE SPECIFIES IT:
-- Backend: const { redirect, sendFile } = require('../utils/proxy-helper');
-- Frontend: <script src="/utils/proxy-helper.js"></script>
+- Frontend fetch: fetch('/api/user')
 
 EXAMPLES:
-✅ redirect(res, '/dashboard')  // Use helper function
-✅ sendFile(res, 'public/login.html')  // Use helper function
-✅ <a href="/employees">Employees</a>  // Standard absolute path
-✅ <form action="/api/auth/login">  // Standard absolute path
-✅ ProxyHelper.fetch('/api/user')  // Use helper for fetch
+✅ res.redirect('/dashboard')  // Standard Express redirect
+✅ res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))  // Standard file serving
+✅ <a href="/employees">Employees</a>  // Absolute path in HTML
+✅ <form action="/api/auth/login">  // Absolute path in form
+✅ fetch('/api/user')  // Standard fetch call
 
-❌ res.redirect('dashboard')  // Don't use res.redirect directly
-❌ res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))  // Don't calculate paths manually
+❌ res.redirect('dashboard')  // Missing leading slash
+❌ <a href="employees">  // Missing leading slash
 
-WHY: Apps run behind reverse proxy but you write standard code. Helper handles deployment.
+The deployment proxy automatically handles path rewriting - no special modules needed.
 
 ══════════════════════════════════════════════════════════════════════════════
 
@@ -409,7 +404,7 @@ When creating middleware that accesses req.session or req.session.user:
 function requireRole(role) {
   return (req, res, next) => {
     if (req.session.user.role !== role) {  // ← CRASHES: session.user is undefined
-      return res.redirect('unauthorized');
+      return res.redirect('/unauthorized');
     }
     next();
   };
@@ -422,12 +417,12 @@ function requireRole(role) {
   return (req, res, next) => {
     // Check session exists
     if (!req.session || !req.session.user) {
-      return res.redirect('login');
+      return res.redirect('/login');
     }
     // Now safe to access user properties
     if (req.session.user.role !== role) {
       console.log(`Unauthorized: ${req.session.user.email} tried to access ${req.path}`);
-      return res.redirect('unauthorized');
+      return res.redirect('/unauthorized');
     }
     next();
   };
@@ -439,7 +434,7 @@ MIDDLEWARE PRE-SUBMISSION CHECKLIST:
   └─ If YES: Do I check (!req.session || !req.session.user) FIRST? YES / NO
 □ Does my middleware access req.session.user.role or other properties? YES / NO
   └─ If YES: Is the session/user check BEFORE I access those properties? YES / NO
-□ If checks fail, do I redirect to 'login' (relative path, no leading /, not crash)? YES / NO
+□ If checks fail, do I redirect to '/login' (absolute path with leading /)? YES / NO
 
 SERVER LIFECYCLE PROTOCOL (Node.js + Express - CRITICAL FOR TESTABILITY):
 When creating server.js or app entry points, follow this pattern so tests can start/stop cleanly:
