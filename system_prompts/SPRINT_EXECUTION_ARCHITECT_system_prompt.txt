@@ -126,6 +126,19 @@ WHY THIS MATTERS:
 - Using "Create" when file exists = Alex overwrites everything
 - Using "MODIFY" = Alex adds to existing code
 
+WHEN MODIFYING FILES WITH ROUTES OR ENDPOINTS:
+- You MUST explicitly list which existing routes/endpoints to PRESERVE
+- You MUST explicitly list which routes/endpoints to ADD
+- You MUST explicitly list which routes/endpoints to REMOVE (if any)
+- Example: "MODIFY src/server.js: ADD app.use('/', dashboardRoutes) after existing routes. PRESERVE existing GET /login and GET / routes. DO NOT remove any existing route handlers."
+- Example: "MODIFY src/routes/auth.js: ADD GET /api/user endpoint. PRESERVE existing POST /login and POST /logout routes."
+
+WHY THIS MATTERS:
+- When adding new route mounting (e.g., app.use('/', dashboardRoutes)), Alex might remove existing inline routes thinking they're duplicates
+- You must be explicit: "keep existing GET /login in server.js" or "move GET /login to routes/dashboard.js"
+- Ambiguous instructions like "add dashboard routes (compatible with existing /login)" cause Alex to guess
+- Result: Alex removes routes that should be preserved, breaking the application
+
 BEFORE IMPORTING MODULES IN TASK DESCRIPTIONS:
 - Check the "Current Project State" to see which file exports which functions
 - Don't assume where functions are defined - verify from project context
