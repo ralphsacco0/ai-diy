@@ -350,12 +350,40 @@ async def control_app(request: AppControlRequest):
 # Reverse proxy to generated app on port 3000
 # Access your generated app at /yourapp/ (e.g., /yourapp/login, /yourapp/api/users)
 import httpx
+import re
+
+def rewrite_html_paths(html: str, prefix: str = "/yourapp") -> str:
+    """Rewrite absolute paths in HTML to go through the proxy.
+
+    This allows generated apps to use standard absolute paths (e.g., href="/dashboard")
+    while still working behind the /yourapp/ proxy prefix.
+
+    The generated app stays clean and deployable standalone - this rewriting
+    only happens when served through the AI-DIY proxy.
+    """
+    # Rewrite href, action, src attributes with absolute paths
+    # Matches: href="/path" or href='/path' (not href="http://", href="#", or href="path")
+    html = re.sub(r'(href|action|src)="(/[^"]*)"', rf'\1="{prefix}\2"', html)
+    html = re.sub(r"(href|action|src)='(/[^']*)'", rf"\1='{prefix}\2'", html)
+
+    # Rewrite fetch() calls with absolute paths
+    html = re.sub(r"fetch\('(/[^']*)'", rf"fetch('{prefix}\1'", html)
+    html = re.sub(r'fetch\("(/[^"]*)"', rf'fetch("{prefix}\1"', html)
+
+    # Rewrite window.location.href assignments with absolute paths
+    html = re.sub(r"window\.location\.href\s*=\s*'(/[^']*)'", rf"window.location.href = '{prefix}\1'", html)
+    html = re.sub(r'window\.location\.href\s*=\s*"(/[^"]*)"', rf'window.location.href = "{prefix}\1"', html)
+
+    return html
 
 @app.api_route("/yourapp/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"])
 async def proxy_to_generated_app(path: str, request: Request):
     """Proxy requests to the generated app running on port 3000.
 
     Works on both Mac and Railway. The generated app is started via /api/control-app.
+
+    This proxy handles all path rewriting so generated apps can use standard
+    absolute paths and remain deployable standalone without modification.
     """
     try:
         async with httpx.AsyncClient() as client:
@@ -377,9 +405,10 @@ async def proxy_to_generated_app(path: str, request: Request):
                 follow_redirects=False
             )
 
-            # Return the response, handling redirects
+            # Return the response, handling redirects and HTML rewriting
             from starlette.responses import Response
             resp_headers = dict(response.headers)
+
             # Rewrite Location header for redirects to go through proxy (case-insensitive)
             location_key = None
             for key in resp_headers:
@@ -391,8 +420,23 @@ async def proxy_to_generated_app(path: str, request: Request):
                 if loc.startswith('/'):
                     resp_headers[location_key] = f"/yourapp{loc}"
 
+            # Rewrite HTML content to prefix absolute paths with /yourapp
+            content_type = resp_headers.get('content-type', '')
+            if 'text/html' in content_type.lower():
+                try:
+                    html = response.content.decode('utf-8')
+                    html = rewrite_html_paths(html)
+                    content = html.encode('utf-8')
+                    # Update content-length header
+                    resp_headers['content-length'] = str(len(content))
+                except UnicodeDecodeError:
+                    # Not valid UTF-8, return as-is
+                    content = response.content
+            else:
+                content = response.content
+
             return Response(
-                content=response.content,
+                content=content,
                 status_code=response.status_code,
                 headers=resp_headers
             )
