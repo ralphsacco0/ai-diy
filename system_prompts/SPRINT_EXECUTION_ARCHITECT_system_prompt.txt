@@ -127,7 +127,25 @@ These rules cause SPRINT FAILURES if violated:
    - Order: express.json() THEN express.urlencoded() BEFORE routes
    - Missing middleware = empty req.body = "Missing credentials" errors
 
-5. SERVER STARTUP PATTERN
+5. EXPRESS-SESSION CONFIGURATION (MANDATORY FOR PROXY DEPLOYMENT)
+   - Session cookies MUST include secure: false and sameSite: 'lax' for proxy compatibility
+   - Pattern:
+     app.use(session({
+       secret: 'your-secret-key',
+       resave: false,
+       saveUninitialized: false,
+       cookie: {
+         maxAge: 30 * 60 * 1000,
+         secure: false,
+         sameSite: 'lax'
+       }
+     }));
+   - WHY: Apps run behind HTTPS proxy but backend is HTTP
+   - secure: true would require HTTPS on backend (fails)
+   - Missing sameSite causes cookies to be blocked in redirects
+   - Missing these settings = session cookies not persisted = infinite redirect loops
+
+6. SERVER STARTUP PATTERN
    - Database must initialize BEFORE server starts listening
    - Pattern:
      async function startServer() {
@@ -138,7 +156,7 @@ These rules cause SPRINT FAILURES if violated:
      if (require.main === module) startServer();
    - This prevents race conditions where routes execute before DB is ready
 
-6. MANDATORY FILE STRUCTURE
+7. MANDATORY FILE STRUCTURE
    - src/db.js (database entry point)
    - src/server.js (main Express application)
    - src/routes/ (route definition files)
