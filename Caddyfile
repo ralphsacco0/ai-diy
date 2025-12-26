@@ -9,13 +9,8 @@
 
 :80 {
 	# Handle /yourapp paths - proxy to generated app on port 3000
-	handle_path /yourapp/* {
-		reverse_proxy localhost:3000 {
-			# Health check for generated app
-			health_uri /health
-			health_interval 30s
-			health_timeout 5s
-		}
+	handle /yourapp/* {
+		reverse_proxy localhost:3000
 	}
 
 	# Handle root /yourapp redirect
