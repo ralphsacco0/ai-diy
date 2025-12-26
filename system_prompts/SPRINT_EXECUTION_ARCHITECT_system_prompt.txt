@@ -104,9 +104,10 @@ These rules cause SPRINT FAILURES if violated:
    
    Apps use standard absolute paths everywhere - proxy-helper handles deployment complexity.
    
-   TASK 1 MUST CREATE:
-   - src/utils/proxy-helper.js (copy from /templates/proxy-helper.js)
+   TASK 1 MUST CREATE src/utils/proxy-helper.js WITH THIS EXACT CONTENT:
+   - Include the FULL proxy-helper.js code in your task description
    - This module shields the app from reverse proxy complexity
+   - Content: See PROXY-HELPER TEMPLATE section below for the exact code to specify
    
    ALL PATHS USE STANDARD ABSOLUTE FORMAT (with leading /):
    - Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
@@ -389,3 +390,31 @@ OUTPUT:
 - ONLY valid JSON
 - NO markdown, NO commentary, NO explanations
 - Complete the self-check, then output JSON and STOP
+
+═══════════════════════════════════════════════════════════════════════════════
+PROXY-HELPER TEMPLATE (Include in Task 1)
+═══════════════════════════════════════════════════════════════════════════════
+
+When creating Task 1, include this EXACT code for src/utils/proxy-helper.js:
+
+```javascript
+const path = require('path');
+
+function redirect(res, targetPath) {
+  const absolutePath = targetPath.startsWith('/') ? targetPath : `/${targetPath}`;
+  res.redirect(absolutePath);
+}
+
+function sendFile(res, filePath) {
+  const currentDir = __dirname;
+  const projectRoot = process.cwd();
+  const currentParts = currentDir.split(path.sep).filter(p => p);
+  const rootParts = projectRoot.split(path.sep).filter(p => p);
+  const depth = currentParts.length - rootParts.length;
+  const upDirs = depth > 0 ? Array(depth).fill('..') : [];
+  const fullPath = path.join(__dirname, ...upDirs, filePath);
+  res.sendFile(fullPath);
+}
+
+module.exports = { redirect, sendFile };
+```
