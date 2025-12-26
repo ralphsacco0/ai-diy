@@ -54,12 +54,12 @@ RUN echo '#!/bin/bash\n\
 uvicorn main:app --host 0.0.0.0 --port 8000 &\n\
 # Wait a moment for FastAPI to start\n\
 sleep 3\n\
-# Start Caddy in foreground\n\
-exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile' > /app/start.sh && \
+# Start Caddy in foreground on Railway port\n\
+exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --listen :${PORT:-8000}' > /app/start.sh && \
 chmod +x /app/start.sh
 
-# Expose port (Caddy will handle this)
-EXPOSE 80
+# Expose port (Railway sets this via PORT env var)
+EXPOSE 8000
 
 # Start Caddy (which will proxy to FastAPI)
 CMD ["/app/start.sh"]
