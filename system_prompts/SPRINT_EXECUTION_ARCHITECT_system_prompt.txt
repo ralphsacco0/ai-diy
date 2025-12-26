@@ -165,7 +165,46 @@ These rules cause SPRINT FAILURES if violated:
      if (require.main === module) startServer();
    - This prevents race conditions where routes execute before DB is ready
 
-7. MANDATORY FILE STRUCTURE
+7. DATABASE INSTANCE SHARING (CRITICAL - PREVENTS AUTH BUGS)
+   - Create ONE database instance in server.js and share it with all routes
+   - NEVER create separate db instances in route files
+   - NEVER close the shared db instance in routes
+   
+   ✅ CORRECT PATTERN:
+   In server.js:
+     const db = createDb();
+     app.locals.db = db;  // Share db with all routes
+     await initDb(db);    // Initialize once at startup
+   
+   In route files (e.g., src/routes/auth.js):
+     router.post('/login', async (req, res) => {
+       const db = req.app.locals.db;  // Use shared instance
+       const user = await new Promise((resolve, reject) => {
+         db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
+           if (err) reject(err);
+           else resolve(row);
+         });
+       });
+       // No db.close() - shared instance stays open
+     });
+   
+   ❌ WRONG - CAUSES "INVALID CREDENTIALS" BUG:
+     router.post('/login', async (req, res) => {
+       let db;
+       try {
+         db = createDb();      // ❌ Creates separate db instance
+         await initDb(db);     // ❌ Empty database, no seeded users
+         // Query fails - user not found in this separate db
+       } finally {
+         if (db) db.close();   // ❌ Closes db after each request
+       }
+     });
+   
+   WHY: Each createDb() call creates a DIFFERENT database. The admin user seeded
+   in server.js exists only in that db instance. Routes creating their own db
+   instances query empty databases, causing authentication to always fail.
+
+8. MANDATORY FILE STRUCTURE
    - src/db.js (database entry point)
    - src/server.js (main Express application)
    - src/routes/ (route definition files)
