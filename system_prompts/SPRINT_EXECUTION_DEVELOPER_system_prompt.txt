@@ -42,7 +42,7 @@ CRITICAL HIERARCHY:
 EXAMPLES:
 - If AC says "seed 5 employees" → your code MUST create exactly 5 (not 3, not 10)
 - If AC says "admin@test.com" → use that EXACT email (not admin@company.com)
-- If AC says "redirect to dashboard" → use res.redirect('dashboard') with relative path (no leading /)
+- If AC says "redirect to dashboard" → use res.redirect('/dashboard') with absolute path (with leading /)
 - If AC says "session timeout after 30min" → implement 30 minutes (not 60, not default)
 
 YOUR CODE WILL BE TESTED AGAINST THE AC:
@@ -97,28 +97,32 @@ CRITICAL: Never mix module systems. Follow Mike's choice consistently across ALL
 🚨 CRITICAL: REVERSE PROXY PATH REQUIREMENTS (NON-NEGOTIABLE) 🚨
 ══════════════════════════════════════════════════════════════════════════════
 
-Generated apps run behind a reverse proxy at /yourapp/. This means:
+Generated apps run behind a reverse proxy at /yourapp/. Path handling differs by context:
 
-ALL frontend paths AND backend redirects MUST use RELATIVE paths (NO leading slash):
-- ✅ res.redirect('login')       ❌ res.redirect('/login')
-- ✅ res.redirect('dashboard')   ❌ res.redirect('/dashboard')
+FRONTEND PATHS (HTML/JS) - Use RELATIVE paths (NO leading slash):
 - ✅ href="logout"               ❌ href="/logout"
 - ✅ href="css/styles.css"       ❌ href="/css/styles.css"
 - ✅ fetch('api/user')           ❌ fetch('/api/user')
 - ✅ action="api/auth/login"     ❌ action="/api/auth/login"
 
+WHY: Browser resolves relative to page URL. User at /yourapp/login with href="dashboard"
+goes to /yourapp/dashboard (correct). With href="/dashboard" goes to /dashboard (wrong).
+
+BACKEND REDIRECTS (Express res.redirect) - Use ABSOLUTE paths (WITH leading slash):
+- ✅ res.redirect('/login')         ❌ res.redirect('login')
+- ✅ res.redirect('/dashboard')     ❌ res.redirect('dashboard')
+- ✅ res.redirect('/login?error=invalid')  ❌ res.redirect('login?error=invalid')
+
+WHY: Express resolves relative redirects to request URL. POST to /yourapp/api/auth/login
+with res.redirect('dashboard') resolves to /yourapp/api/auth/dashboard (wrong).
+With res.redirect('/dashboard'), proxy rewrites to /yourapp/dashboard (correct).
+
 Backend route DEFINITIONS stay absolute: router.get('/login', ...) ✅
 
-WHY THIS IS CRITICAL:
-- User visits https://host/yourapp/dashboard
-- If code does res.redirect('/login'), browser goes to https://host/login (WRONG!)
-- If code does res.redirect('login'), browser goes to https://host/yourapp/login (CORRECT!)
-
-Absolute paths bypass the /yourapp/ proxy and cause "Generated app not running" errors.
-
-BEFORE WRITING ANY res.redirect(), href=, fetch(), or action=:
-□ Does it have a leading /? → REMOVE IT
-□ Is it relative (no leading /)? → CORRECT
+BEFORE WRITING CODE:
+□ Frontend path (href, fetch, action)? → NO leading /
+□ Backend redirect (res.redirect)? → WITH leading /
+□ Route definition (router.get)? → WITH leading /
 
 ══════════════════════════════════════════════════════════════════════════════
 
