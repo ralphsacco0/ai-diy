@@ -1571,7 +1571,11 @@ This pattern prevents "SQLITE_MISUSE: Database is closed" and server startup tim
             
             # Parse output based on framework
             output = result.stdout + result.stderr
-            
+
+            # Log test output for debugging when tests fail
+            if result.returncode != 0:
+                logger.warning(f"Test execution failed (returncode={result.returncode}). Output:\n{output[:2000]}")
+
             if parse_nodejs:
                 # Parse Node.js native test runner output
                 # Format: "✔ test_name" for pass, "✖ test_name" for fail
