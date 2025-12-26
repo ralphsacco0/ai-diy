@@ -7,41 +7,43 @@
 	}
 }
 
-# Handle /yourapp paths - proxy to generated app on port 3000
-handle_path /yourapp/* {
-	reverse_proxy localhost:3000 {
-		# Health check for generated app
-		health_uri /health
-		health_interval 30s
-		health_timeout 5s
+:80 {
+	# Handle /yourapp paths - proxy to generated app on port 3000
+	handle_path /yourapp/* {
+		reverse_proxy localhost:3000 {
+			# Health check for generated app
+			health_uri /health
+			health_interval 30s
+			health_timeout 5s
+		}
 	}
-}
 
-# Handle root /yourapp redirect
-redir /yourapp /yourapp/ 307
+	# Handle root /yourapp redirect
+	redir /yourapp /yourapp/ 307
 
-# Static files for main application
-handle /static/* {
-	root * /app/development/src
-	file_server
-}
+	# Static files for main application
+	handle /static/* {
+		root * /app/development/src
+		file_server
+	}
 
-# API endpoints for main application
-handle /api/* {
-	reverse_proxy localhost:8000
-}
+	# API endpoints for main application
+	handle /api/* {
+		reverse_proxy localhost:8000
+	}
 
-# Health endpoint
-handle /health {
-	reverse_proxy localhost:8000
-}
+	# Health endpoint
+	handle /health {
+		reverse_proxy localhost:8000
+	}
 
-# Main application routes
-handle /* {
-	reverse_proxy localhost:8000 {
-		# Health check for FastAPI app
-		health_uri /health
-		health_interval 30s
-		health_timeout 5s
+	# Main application routes
+	handle /* {
+		reverse_proxy localhost:8000 {
+			# Health check for FastAPI app
+			health_uri /health
+			health_interval 30s
+			health_timeout 5s
+		}
 	}
 }
