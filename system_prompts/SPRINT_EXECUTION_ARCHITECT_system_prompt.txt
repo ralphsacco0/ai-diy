@@ -105,7 +105,7 @@ These rules cause SPRINT FAILURES if violated:
    SERVER-SIDE paths use ABSOLUTE (with leading /):
    - Backend routes: router.get('/login', ...), router.post('/api/auth/login', ...)
    - Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
-   - Backend file serving: res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))
+   - Backend file serving: res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'))  // From src/routes/ or src/controllers/
 
    CLIENT-SIDE paths use RELATIVE (NO leading /):
    - HTML forms: <form action="api/auth/login" method="post">
@@ -240,11 +240,8 @@ These rules prevent bugs and rework:
 
 5. FILE SERVING (STANDARD EXPRESS PATTERN)
    - Use res.sendFile() with path.join() for serving static files
-   - Pattern (from src/server.js or src/routes/*.js):
+   - Files in src/routes/ or src/controllers/ need TWO '..' to reach project root:
      const path = require('path');
-     res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));
-
-   - For routes in src/routes/ subdirectory, use '../..' to reach project root:
      res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'));
 
    - Alternative: Use express.static() middleware and redirect to HTML files:

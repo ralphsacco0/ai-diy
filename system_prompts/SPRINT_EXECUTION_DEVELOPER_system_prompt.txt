@@ -100,7 +100,7 @@ CRITICAL: Never mix module systems. Follow Mike's choice consistently across ALL
 SERVER-SIDE paths use ABSOLUTE (with leading /):
 - Backend routes: router.get('/login', ...), router.post('/api/auth/login', ...)
 - Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
-- Backend file serving: res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))
+- Backend file serving: res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'))  // From src/routes/ or src/controllers/
 
 CLIENT-SIDE paths use RELATIVE (NO leading /):
 - HTML forms: <form action="api/auth/login" method="post">
@@ -110,7 +110,7 @@ CLIENT-SIDE paths use RELATIVE (NO leading /):
 
 EXAMPLES:
 ✅ res.redirect('/dashboard')  // Server redirect - absolute
-✅ res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))  // Server file serving
+✅ res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'))  // From src/routes/ or src/controllers/
 ✅ <a href="employees">Employees</a>  // HTML link - relative (no /)
 ✅ <form action="api/auth/login">  // HTML form - relative (no /)
 ✅ fetch('api/user')  // JS fetch - relative (no /)
