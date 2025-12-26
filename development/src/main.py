@@ -369,6 +369,7 @@ def rewrite_html_paths(html: str, prefix: str = "/yourapp") -> str:
     # Rewrite fetch() calls with absolute paths
     html = re.sub(r"fetch\('(/[^']*)'", rf"fetch('{prefix}\1'", html)
     html = re.sub(r'fetch\("(/[^"]*)"', rf'fetch("{prefix}\1"', html)
+    html = re.sub(r'fetch\(`(/[^`]*)`', rf'fetch(`{prefix}\1`', html)
 
     # Rewrite window.location.href assignments with absolute paths
     html = re.sub(r"window\.location\.href\s*=\s*'(/[^']*)'", rf"window.location.href = '{prefix}\1'", html)
