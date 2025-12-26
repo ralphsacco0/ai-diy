@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Install Caddy
 RUN apt-get update && apt-get install -y \
+    bash \
     curl \
     gnupg \
     debian-keyring \
@@ -49,17 +50,18 @@ ENV PYTHONPATH=/app/development/src
 WORKDIR /app/development/src
 
 # Create startup script
-RUN echo '#!/bin/bash\n\
-# Start FastAPI app in background on internal port 8001\n\
-uvicorn main:app --host 127.0.0.1 --port 8001 &\n\
+RUN echo '#!/usr/bin/env bash\n\
+set -euo pipefail\n\
+\n\
+# Start FastAPI app in background on internal port\n\
+uvicorn main:app --host 127.0.0.1 --port 8000 &\n\
+\n\
 # Wait a moment for FastAPI to start\n\
 sleep 3\n\
+\n\
 # Start Caddy in foreground\n\
 exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile' > /app/start.sh && \
 chmod +x /app/start.sh
-
-# Expose port (Railway sets this via PORT env var)
-EXPOSE 8000
 
 # Start Caddy (which will proxy to FastAPI)
 CMD ["/app/start.sh"]
