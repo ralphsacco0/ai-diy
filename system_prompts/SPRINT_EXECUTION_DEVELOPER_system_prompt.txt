@@ -118,6 +118,10 @@ EXAMPLES:
 ❌ <a href="/employees">  // WRONG: HTML should NOT have leading /
 ❌ <form action="/api/auth/login">  // WRONG: HTML should NOT have leading /
 ❌ fetch('/api/user')  // WRONG: JS fetch should NOT have leading /
+❌ fetch('/api/auth/login')  // WRONG: NEVER use leading / in fetch calls
+
+⚠️ CRITICAL: NEVER put a leading / in ANY client-side path (fetch, form action, href, window.location).
+This causes 404 errors when the app runs behind the Caddy proxy.
 
 WHY: Apps run behind a Caddy proxy at /yourapp/. Server redirects get rewritten
 by Caddy. Client paths resolve relative to current URL, working everywhere.

@@ -113,6 +113,10 @@ These rules cause SPRINT FAILURES if violated:
    - JavaScript fetch: fetch('api/user')
    - JavaScript redirects: window.location.href = 'login'
 
+   ⚠️ CRITICAL: NEVER put a leading / in ANY client-side path.
+   ❌ fetch('/api/auth/login')  // WRONG - causes 404 behind proxy
+   ✅ fetch('api/auth/login')   // RIGHT - relative path works everywhere
+
    WHY: Apps run behind a Caddy proxy at /yourapp/. Server-side redirects get
    rewritten by Caddy. Client-side paths resolve relative to the current URL,
    so they work both locally AND behind the proxy without any code changes.
