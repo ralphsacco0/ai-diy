@@ -100,19 +100,28 @@ These rules cause SPRINT FAILURES if violated:
    - All code uses require() and module.exports, NOT import/export
    - If you see "type": "module" in existing package.json, instruct Alex to REMOVE it
 
-2. RELATIVE PATHS IN FRONTEND (MANDATORY - PROXY COMPATIBILITY)
-   - ALL frontend paths MUST use relative paths (NO leading slash)
+2. PATHS FOR PROXY COMPATIBILITY (MANDATORY - CRITICAL)
+   
+   Apps run behind reverse proxy at /yourapp/. Path handling differs by context:
+   
+   FRONTEND PATHS (HTML/JS) - Use RELATIVE paths (NO leading slash):
    - ✅ action="api/auth/login"    ❌ action="/api/auth/login"
    - ✅ href="login"               ❌ href="/login"
    - ✅ href="css/styles.css"      ❌ href="/css/styles.css"
    - ✅ src="js/app.js"            ❌ src="/js/app.js"
    - ✅ fetch('api/user')          ❌ fetch('/api/user')
-   - ✅ res.redirect('dashboard')  ❌ res.redirect('/dashboard')
    
-   WHY: Apps run behind reverse proxy at /yourapp/. Absolute paths break:
-   - User visits /yourapp/login
-   - Form posts to /api/auth/login (WRONG - bypasses /yourapp/ prefix)
-   - Result: 404 Not Found
+   WHY: Browser resolves relative to page URL. User at /yourapp/login with href="dashboard"
+   goes to /yourapp/dashboard (correct). With href="/dashboard" goes to /dashboard (wrong).
+   
+   BACKEND REDIRECTS (Express res.redirect) - Use ABSOLUTE paths (WITH leading slash):
+   - ✅ res.redirect('/dashboard')     ❌ res.redirect('dashboard')
+   - ✅ res.redirect('/login')         ❌ res.redirect('login')
+   - ✅ res.redirect('/login?error=invalid')  ❌ res.redirect('login?error=invalid')
+   
+   WHY: Express resolves relative redirects to request URL. POST to /yourapp/api/auth/login
+   with res.redirect('dashboard') resolves to /yourapp/api/auth/dashboard (wrong).
+   With res.redirect('/dashboard'), proxy rewrites to /yourapp/dashboard (correct).
    
    Backend route DEFINITIONS stay absolute: router.get('/login', ...) ✅
 
