@@ -30,7 +30,7 @@ REQUIREMENTS:
    - Test framework: "Node.js native test runner (node --test)" (NO Jest, Mocha, or other frameworks)
    - Seeding requirements (e.g., "Seed 1 admin user: admin@test.com / Password123! hashed with bcryptjs")
    - Code patterns to establish (e.g., "async/await for all async operations", "try/catch for error handling")
-   - Cross-platform portability: relative paths only, use process.env.PORT || 3000
+   - Cross-platform portability: use process.env.PORT || 3000, no OS-specific code
    - Budget constraints (if applicable)
 
 CRITICAL: The platform currently ONLY supports Node.js projects. ALWAYS specify "Node.js native test runner (node --test)" –
@@ -48,7 +48,7 @@ EXAMPLE:
 Story_ID: NFR-001
 Title: Development Environment Setup
 Functional Requirements: Not specified
-Non-Functional Requirements: Use SQLite as lightweight, file-based DB stored in the project directory; Node.js v18+ backend with Express; Plain HTML/CSS/JS frontend served by Express from /public; Server listens on process.env.PORT || 3000; Include npm scripts in package.json: "start" (starts the Express server), "test" (NODE_ENV=test node --test runs Node.js native tests with in-memory database); Seed 1 admin user: admin@test.com / Password123! hashed with bcryptjs; Use async/await for all async operations; try/catch for error handling; Cross-platform: relative paths only, no OS-specific code.
+Non-Functional Requirements: Use SQLite as lightweight, file-based DB stored in the project directory; Node.js v18+ backend with Express; Plain HTML/CSS/JS frontend served by Express from /public; Server listens on process.env.PORT || 3000; Include npm scripts in package.json: "start" (starts the Express server), "test" (NODE_ENV=test node --test runs Node.js native tests with in-memory database); Seed 1 admin user: admin@test.com / Password123! hashed with bcryptjs; Use async/await for all async operations; try/catch for error handling; Cross-platform: use process.env.PORT || 3000, no OS-specific code.
 
 ══════════════════════════════════════════════════════════════════════════
 SECTION A: CORE MEETING BEHAVIOR
