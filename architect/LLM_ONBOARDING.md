@@ -301,8 +301,11 @@ Generated apps are written to the **execution sandbox** at the same relative pat
 | Sprint plans | `static/appdocs/sprints/` |
 | Sprint backups | `static/appdocs/sprints/backups/` |
 | Execution logs | `static/appdocs/sprints/execution_log_{sprint_id}.jsonl` |
+| Mike breakdowns | `static/appdocs/sprints/mike_breakdowns/{sprint_id}/{story_id}.json` (7-day retention) |
 | Scribe notes | `static/appdocs/scribe/` |
 | Sessions | `static/appdocs/sessions/` |
+
+> **TODO**: Add Mike breakdown capture mechanism to architecture documents. This diagnostic feature captures Mike's task breakdowns with all `files_to_create` arrays and contract summaries to debug architectural contract enforcement failures. Files auto-cleanup after 7 days.
 
 **How generated apps are accessed:**
 1. Start the app via `POST /api/control-app` with `{"action": "start"}`
