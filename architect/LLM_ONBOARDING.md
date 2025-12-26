@@ -3,7 +3,7 @@
 **Status**: Canonical - MUST READ before any work session  
 **Audience**: LLMs working on AI-DIY platform  
 **Purpose**: Prevent "2 steps forward, 1 step back" by ensuring deep understanding  
-**Last Updated**: 2025-12-24
+**Last Updated**: 2025-12-26
 
 ---
 
@@ -312,46 +312,36 @@ Generated apps are written to the **execution sandbox** at the same relative pat
 2. Access the running app at `{BASE_URL}/yourapp/` (e.g., `/yourapp/login`, `/yourapp/api/users`)
 3. AI-DIY proxies requests from `/yourapp/*` to the generated app running on port 3000
 
-### 🚨 CRITICAL: Reverse Proxy Path Requirements
+### Reverse Proxy Path Handling
 
-Generated apps run behind a reverse proxy at `/yourapp/`. This has **critical implications** for how frontend code references URLs:
+Generated apps run behind a Caddy reverse proxy at `/yourapp/`. The proxy handles all path rewriting automatically.
 
-**The Problem:**
-- User visits `https://ai-diy-dev.../yourapp/login`
-- Login form has `action="/api/auth/login"` (absolute path with leading `/`)
-- Browser posts to `https://ai-diy-dev.../api/auth/login` (WRONG - bypasses `/yourapp/` prefix)
-- Result: `404 Not Found` because the main AI-DIY app doesn't have that route
+**How it works:**
+- Generated apps use standard **absolute paths** with leading `/` (e.g., `/dashboard`, `/api/auth/login`)
+- Caddy routes `/yourapp/*` requests to the generated app on port 3000
+- No special code needed in generated apps
+- Caddy handles health checks and connection management
 
-**The Solution - RELATIVE PATHS (no leading slash):**
+**Architecture:**
+```
+Internet → Caddy (Port 80) → FastAPI (Port 8000) → Generated Apps (Port 3000)
+```
 
-| Context | ✅ Correct | ❌ Wrong |
-|---------|-----------|---------|
-| Form action | `action="api/auth/login"` | `action="/api/auth/login"` |
-| Links | `href="login"` | `href="/login"` |
-| CSS/JS | `href="css/styles.css"` | `href="/css/styles.css"` |
-| Fetch calls | `fetch('api/user')` | `fetch('/api/user')` |
-| Redirects | `res.redirect('dashboard')` | `res.redirect('/dashboard')` |
+**Code patterns (standard Express):**
 
-**Backend route definitions stay absolute:** `router.get('/login', ...)` ✅
+| Context | Pattern |
+|---------|---------|
+| Routes | `router.get('/login', ...)` |
+| Redirects | `res.redirect('/dashboard')` |
+| Form actions | `<form action="/api/auth/login">` |
+| Links | `<a href="/dashboard">` |
+| Fetch | `fetch('/api/user')` |
 
-**Why this works:**
-- User at `/yourapp/login` clicks form with `action="api/auth/login"`
-- Browser resolves relative path: `/yourapp/` + `api/auth/login` = `/yourapp/api/auth/login`
-- Proxy routes `/yourapp/*` to the generated app on port 3000
-- Generated app receives request at `/api/auth/login` ✅
-
-**Where this is enforced:**
-- Mike's prompt (`SPRINT_EXECUTION_ARCHITECT_system_prompt.txt`) has a MANDATORY section requiring relative paths
-- Alex's prompt (`SPRINT_EXECUTION_DEVELOPER_system_prompt.txt`) reinforces this in redirect examples
-- The orchestrator validates generated code follows these patterns
-
-**Cross-platform requirements for generated code:**
-- Use `process.env.PORT || 3000` (not hardcoded port)
-- Use relative paths only (no `/Users/...` or OS-specific paths)
-- Use `bcryptjs` (not `bcrypt` which requires native compilation)
-- No shell scripts or OS-specific commands
-
-> ⚠️ **NOTE**: The six core architecture documents (`architecture.md`, `system-flow.md`, `PATTERNS_AND_METHODS.md`, `summary.md`, `api_docs.md`, `PERSONAS.md`) have NOT been updated with these path changes. They may still reference outdated locations. This onboarding doc is the source of truth for paths until those docs are updated.
+**Cross-platform requirements:**
+- Use `process.env.PORT || 3000`
+- Use `bcryptjs` (not `bcrypt` - requires native compilation)
+- CommonJS module system (`require`/`module.exports`)
+- Database sharing via `app.locals.db`
 
 **When making changes:**
 - Avoid Mac-specific paths or shell scripts
@@ -643,3 +633,14 @@ That's how we move forward without going backward.
 **End of LLM Onboarding Document**
 
 *For questions or clarifications, ask Ralph. For detailed patterns, see the documentation map in Section 6.*
+
+---
+
+## TODO: Architecture Document Updates
+
+The following updates are needed in the core architecture documents to reflect the proxy path handling changes:
+
+- [ ] `architecture.md` - Update path guidance to use absolute paths
+- [ ] `system-flow.md` - Update sprint execution path examples
+- [ ] `PATTERNS_AND_METHODS.md` - Update code pattern examples
+- [ ] Remove any references to "relative paths only" or proxy-helper module

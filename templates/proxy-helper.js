@@ -1,6 +1,11 @@
 /**
  * Proxy Helper Module
  * 
+ * NOTE: This module is deprecated. AI-DIY now uses Caddy as the reverse proxy.
+ * Generated apps can use standard absolute paths without any helper modules.
+ * 
+ * Legacy documentation for reference:
+ * 
  * Shields generated apps from reverse proxy complexity.
  * Apps can use standard absolute paths - this module handles the rest.
  * 
