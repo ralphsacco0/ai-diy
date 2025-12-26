@@ -380,11 +380,16 @@ async def proxy_to_generated_app(path: str, request: Request):
             # Return the response, handling redirects
             from starlette.responses import Response
             resp_headers = dict(response.headers)
-            # Rewrite Location header for redirects to go through proxy
-            if 'location' in resp_headers:
-                loc = resp_headers['location']
+            # Rewrite Location header for redirects to go through proxy (case-insensitive)
+            location_key = None
+            for key in resp_headers:
+                if key.lower() == 'location':
+                    location_key = key
+                    break
+            if location_key:
+                loc = resp_headers[location_key]
                 if loc.startswith('/'):
-                    resp_headers['location'] = f"/yourapp{loc}"
+                    resp_headers[location_key] = f"/yourapp{loc}"
 
             return Response(
                 content=response.content,
