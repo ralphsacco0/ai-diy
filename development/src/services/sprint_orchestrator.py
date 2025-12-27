@@ -2409,6 +2409,25 @@ CREATE TABLE users (
             test_summary += f", {summary['tests_failed']} failed"
         
         await self._post_to_chat("Sarah", f"✅ Sprint {self.sprint_id} completed! {summary['stories_completed']} stories, {summary['tasks_completed']} tasks, {test_summary}.")
+        
+        # TESTING: Check if all stories completed successfully
+        all_completed = True
+        for story_id in stories:
+            try:
+                # Read story execution status from backlog
+                backlog_stories = self._load_backlog_stories()
+                story_data = backlog_stories.get(story_id, {})
+                execution_status = story_data.get('Execution_Status', '')
+                if execution_status != "completed":
+                    all_completed = False
+                    break
+            except Exception:
+                all_completed = False
+                break
+        
+        if not all_completed:
+            await self._post_to_chat("Sarah", f"⚠️ NOTE: Some stories had issues during execution. Consider using sprint rollback if needed.")
+        
         await self._post_to_chat("Sarah", "📝 Meeting ended: Sprint Execution")
         
         # Close SSE stream
@@ -4479,14 +4498,23 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
             if log_backup.stat().st_size == 0:
                 # Empty file = pre-execution state, remove current log
                 if log_path.exists():
-                    log_path.unlink()
+                    try:
+                        log_path.unlink()
+                        logger.info(f"✅ Deleted execution log for {sprint_id} during rollback (backup was empty)")
+                    except Exception as e:
+                        logger.error(f"❌ Failed to delete execution log for {sprint_id}: {e}")
             else:
                 # Non-empty file = restore it
                 shutil.copy2(log_backup, log_path)
+                logger.info(f"✅ Restored execution log for {sprint_id} from backup")
         else:
             # Fallback for old backups without empty file marker
             if log_path.exists():
-                log_path.unlink()
+                try:
+                    log_path.unlink()
+                    logger.info(f"✅ Deleted execution log for {sprint_id} during rollback (no backup marker)")
+                except Exception as e:
+                    logger.error(f"❌ Failed to delete execution log for {sprint_id}: {e}")
 
         # Restore architecture.json (always exists in backup, may be empty {} for pre-NFR-001 state)
         arch_backup = backup_root / "architecture.json"
