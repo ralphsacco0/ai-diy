@@ -264,10 +264,39 @@ WHY: Apps run behind Caddy proxy at /yourapp/. Server redirects get rewritten.
 Client paths resolve relative to current URL, working locally AND behind proxy.
 
 DEBUGGING TIP: If forms/links/fetch fail with 404:
-1. Check for leading / in HTML (should be relative)
-2. Check if current URL has trailing slash - fetch('api/user') from /login resolves to /loginapi/user (wrong), from /login/ resolves to /login/api/user (correct)
-3. NEVER fix by adding leading / to client paths - that breaks proxy routing
-4. FIX by ensuring proper base URLs/trailing slashes, NOT by switching to absolute paths
+1. Check for leading / in HTML/JS - if you find any, REMOVE THEM
+2. The fix is simple: REMOVE the leading / to make paths relative
+
+THE CORRECT FIX (do this):
+═══════════════════════════════════════════════════════════════════
+When you find client-side paths with leading /, REMOVE the leading /.
+
+In HTML files, change:
+  ❌ href="/logout"           → ✅ href="logout"
+  ❌ href="/css/dashboard.css" → ✅ href="css/dashboard.css"
+  ❌ src="/js/dashboard.js"   → ✅ src="js/dashboard.js"
+  ❌ href="/employee-directory" → ✅ href="employee-directory"
+  ❌ action="/api/auth/login" → ✅ action="api/auth/login"
+
+In JavaScript files, change:
+  ❌ fetch('/api/auth/login')  → ✅ fetch('api/auth/login')
+  ❌ fetch('/api/user')        → ✅ fetch('api/user')
+  ❌ window.location.href = '/dashboard' → ✅ window.location.href = 'dashboard'
+
+WHY THIS WORKS:
+From /yourapp/dashboard, relative paths resolve correctly:
+  href="logout" → /yourapp/logout ✅
+  href="css/dashboard.css" → /yourapp/css/dashboard.css ✅
+
+But absolute paths go to wrong place:
+  href="/logout" → /logout (hits wrong server) ❌
+  href="/css/dashboard.css" → /css/dashboard.css (404) ❌
+
+THE WRONG FIX (never do this):
+═══════════════════════════════════════════════════════════════════
+❌ NEVER add leading / to fix 404s - that makes it WORSE behind proxy
+❌ NEVER add <base href="/"> - that doesn't help with proxy routing
+❌ NEVER suggest "use absolute paths" - relative paths ARE the fix
 
 LOCKED SOURCE OF TRUTH AND CHANGE LIMITS:
 - Your ONLY architectural source of truth is the locked architecture JSON (architecture.json) plus the current sprint requirements/backlog. Treat these as the blueprint.
