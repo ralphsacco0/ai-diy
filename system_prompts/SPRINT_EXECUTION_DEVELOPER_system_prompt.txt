@@ -481,40 +481,61 @@ MIDDLEWARE PRE-SUBMISSION CHECKLIST:
 □ If checks fail, do I redirect to '/login' (absolute path with leading /)? YES / NO
 
 SERVER LIFECYCLE PROTOCOL (Node.js + Express - CRITICAL FOR TESTABILITY):
-When creating server.js or app entry points, follow this pattern so tests can start/stop cleanly:
+When creating server.js or app entry points, follow this EXACT pattern so tests can start/stop cleanly:
 
-1. EXPORT APP SEPARATELY from server start:
+🚨 THE PROBLEM: Tests need to import the app and start it on a random port.
+If you don't export app, tests must spawn a subprocess, which is slow and flaky.
+
+✅ REQUIRED PATTERN (CommonJS - most common):
 ```javascript
-export const app = express();
-// ... middleware and routes ...
+const express = require('express');
+const app = express();
+
+// ... all middleware and routes setup ...
+
+async function startServer() {
+  // Database init, etc.
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => console.log(`Server on port ${port}`));
+}
+
+// CRITICAL: Export app for tests to import
+module.exports = app;
 
 // Only start if run directly (not imported by tests)
+if (require.main === module) {
+  startServer();
+}
+```
+
+✅ REQUIRED PATTERN (ES6 modules):
+```javascript
+import express from 'express';
+export const app = express();
+
+// ... all middleware and routes setup ...
+
+async function startServer() {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => console.log(`Server on port ${port}`));
+}
+
+// Only start if run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   startServer();
 }
 ```
 
-2. CONDITIONAL MIDDLEWARE for test mode:
-```javascript
-const isTest = process.env.NODE_ENV === 'test';
-
-if (!isTest) {
-  // Auth middleware that would block test requests
-  app.use(isAuthenticated);
-}
-// Static files and public routes AFTER the conditional block
-app.use(express.static('public'));
-```
-
-3. DATABASE CONNECTIONS must be closeable:
-- Tests need to clean up connections to avoid hanging
-- Export db instance or provide a close function
+WHY THIS MATTERS:
+- Tests can do: const app = require('./server.js'); server = app.listen(0);
+- Random port (0) avoids port conflicts between tests
+- Tests control when server starts/stops - no subprocess management needed
+- This prevents "Promise resolution pending" test timeouts
 
 SERVER LIFECYCLE CHECKLIST:
-□ Does my server.js export `app` separately from starting the server? YES / NO
-□ Does my server only call `app.listen()` when run directly (not imported)? YES / NO
-□ If I have global auth middleware, is it skipped in test mode (NODE_ENV=test)? YES / NO
-□ Can database connections be closed by tests? YES / NO
+□ Does my server.js have `module.exports = app;` (CommonJS) or `export const app` (ES6)? YES / NO
+□ Does my server only call `app.listen()` inside `if (require.main === module)`? YES / NO
+□ Is the app configured BEFORE the export (middleware, routes, etc.)? YES / NO
 
 IMPORT vs LOCAL FUNCTION NAME CONFLICTS (CRITICAL):
 □ Am I importing a module (e.g., const rbac = require('./middleware/rbac'))? YES / NO

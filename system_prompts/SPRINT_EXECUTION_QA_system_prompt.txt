@@ -347,66 +347,83 @@ You MUST:
 
 For Node.js + Express HTTP apps:
 
-- Start servers on a **random port**: `app.listen(0)` and `server.address().port`.
-- Never hard‑code port 3000 in tests.
+- Import the app and start on a **random port**: `app.listen(0)` and `server.address().port`.
+- NEVER spawn subprocess with `spawn('node', ['src/server.js'])` - this is fragile and times out.
+- NEVER hard‑code port 3000 in tests.
 - Always close the server in a `finally` block.
 
-SERVER LIFECYCLE PROTOCOL (CRITICAL - PREVENTS TEST TIMEOUTS):
+🚨 SERVER LIFECYCLE PROTOCOL (CRITICAL - PREVENTS TEST TIMEOUTS):
 
-Tests MUST follow this exact pattern to prevent hanging. Failure to do so causes 120+ second timeouts.
+Tests MUST follow this EXACT pattern to prevent hanging. Failure causes "Promise resolution pending" errors.
 
-1. START SERVER with proper Promise handling:
-```javascript
-server = await new Promise((resolve, reject) => {
-  const s = app.listen(0);  // Random port
-  s.once('listening', () => resolve(s));  // ← MUST resolve WITH server
-  s.once('error', reject);
-});
-```
+**THE KEY INSIGHT**: Mike's server.js exports `app` (via `module.exports = app`).
+This means you can import it and start on a random port - no subprocess needed!
 
-2. CLOSE SERVER with Promise wrapper (not just server.close()):
-```javascript
-finally {
-  if (server) {
-    await new Promise((resolve) => {
-      server.close(() => resolve());  // ← Wait for close to complete
-    });
-  }
-}
-```
-
-3. SET TEST TIMEOUT to prevent infinite hangs:
-```javascript
-test('My test', { timeout: 10000 }, async () => {
-  // test code - will fail after 10 seconds instead of hanging forever
-});
-```
-
-COMPLETE MANDATORY PATTERN (COMMONJS - use for Node.js projects):
+COMPLETE MANDATORY PATTERN (COMMONJS):
 ```javascript
 const test = require('node:test');
 const assert = require('node:assert');
 const http = require('node:http');
 
-test('Server responds without crashing', { timeout: 10000 }, async () => {
+// Helper to make HTTP requests
+function makeRequest(path, port) {
+  return new Promise((resolve, reject) => {
+    const req = http.request({
+      hostname: 'localhost',
+      port: port,
+      path: path,
+      method: 'GET'
+    }, (res) => {
+      res.resume();  // CRITICAL: consume stream to prevent hanging
+      resolve({ statusCode: res.statusCode, headers: res.headers });
+    });
+    req.on('error', reject);
+    req.end();
+  });
+}
+
+test('Server responds without crashing', { timeout: 30000 }, async () => {
+  // STEP 1: Import app (Mike exports it via module.exports = app)
   const app = require('../src/server.js');
   let server;
+
   try {
+    // STEP 2: Start on random port with proper Promise handling
     server = await new Promise((resolve, reject) => {
-      const s = app.listen(0);
-      s.once('listening', () => resolve(s));  // ← resolve WITH server instance
+      const s = app.listen(0);  // Port 0 = random available port
+      s.once('listening', () => resolve(s));  // Resolve WITH server instance
       s.once('error', reject);
     });
-    
+
+    // STEP 3: Get the assigned port
     const port = server.address().port;
+
+    // STEP 4: Make request and assert
     const res = await makeRequest('/', port);
-    assert.ok(res.statusCode < 500, 'Response status is 5xx or higher');
+    assert.ok(res.statusCode < 500, `Response status is 5xx: ${res.statusCode}`);
+
   } finally {
+    // STEP 5: ALWAYS close server (even if test fails)
     if (server) {
-      await new Promise((resolve) => server.close(() => resolve()));  // ← AWAIT close
+      await new Promise((resolve) => server.close(() => resolve()));
     }
   }
 });
+```
+
+❌ NEVER DO THIS (spawning subprocess - causes timeouts):
+```javascript
+// BAD - DO NOT USE spawn()
+const { spawn } = require('child_process');
+const serverProcess = spawn('node', ['src/server.js']);
+// This is fragile, hard to clean up, and causes "Promise resolution pending" errors
+```
+
+✅ ALWAYS DO THIS (import app directly):
+```javascript
+// GOOD - import and start on random port
+const app = require('../src/server.js');
+const server = app.listen(0);  // Random port, no conflicts
 ```
 
 🚨 CRITICAL - MODULE SYSTEM MATCHING:
@@ -417,15 +434,19 @@ test('Server responds without crashing', { timeout: 10000 }, async () => {
 - For this platform, CommonJS is the default - use require() unless explicitly told otherwise
 
 TEST LIFECYCLE CHECKLIST (verify before submitting):
+□ Am I using `require('../src/server.js')` NOT `spawn('node', ...)`? YES / NO
+□ Am I using `app.listen(0)` for random port NOT hard-coded 3000? YES / NO
 □ Do I resolve the Promise WITH the server instance (not undefined)? YES / NO
-□ Do I AWAIT server.close() with a Promise wrapper? YES / NO
-□ Do I have a timeout on my test (e.g., { timeout: 10000 })? YES / NO
-□ Is my server cleanup in a finally block (runs even if test fails)? YES / NO
+□ Do I AWAIT server.close() with a Promise wrapper in finally block? YES / NO
+□ Do I have a timeout of 30000ms (30 seconds) on my test? YES / NO
+□ Do I call res.resume() to consume the response stream? YES / NO
 
 WHY THIS MATTERS:
+- spawn() subprocess = slow startup, unreliable cleanup, timeout errors
+- Hard-coded port = conflicts between tests, "EADDRINUSE" errors
 - server.close() without await → test exits before close completes → process hangs
-- No timeout → test hangs forever if something goes wrong → 120s orchestrator timeout
-- resolve() without server → server is undefined → server.address() crashes
+- No timeout → test hangs forever if something goes wrong
+- No res.resume() → response stream never closes → test hangs
 
 For database access:
 
