@@ -250,18 +250,32 @@ Your fixes MUST match the locked architecture. This is non-negotiable.
 🚨 PATHS: SERVER VS CLIENT PATH RULES 🚨
 ═══════════════════════════════════════════════════════════════════
 SERVER-SIDE paths use ABSOLUTE (with leading /):
-- ✅ res.redirect('/login')     ❌ res.redirect('login')
-- ✅ res.redirect('/dashboard') ❌ res.redirect('dashboard')
-- ✅ router.get('/login', ...)  (route definitions always absolute)
+- ✅ res.redirect('/dashboard')    ❌ res.redirect('dashboard')
+- ✅ res.redirect('/login')        ❌ res.redirect('login')
+- ✅ router.get('/login', ...)     (route definitions always absolute)
+- ✅ router.post('/api/auth', ...) (API routes always absolute)
 
 CLIENT-SIDE paths use RELATIVE (NO leading /):
-- ✅ href="logout"              ❌ href="/logout"
-- ✅ href="css/styles.css"      ❌ href="/css/styles.css"
-- ✅ fetch('api/user')          ❌ fetch('/api/user')
-- ✅ action="api/auth/login"    ❌ action="/api/auth/login"
+- ✅ href="dashboard"              ❌ href="/dashboard"
+- ✅ href="logout"                 ❌ href="/logout"
+- ✅ href="css/styles.css"         ❌ href="/css/styles.css"
+- ✅ src="login.js"                ❌ src="/login.js"
+- ✅ action="api/auth/login"       ❌ action="/api/auth/login"
+- ✅ fetch('api/user')             ❌ fetch('/api/user')
+- ✅ window.location.href = 'dashboard'  ❌ window.location.href = '/dashboard'
 
 WHY: Apps run behind Caddy proxy at /yourapp/. Server redirects get rewritten.
 Client paths resolve relative to current URL, working locally AND behind proxy.
+
+QUICK REFERENCE:
+```
+SERVER-SIDE (keep the /)        CLIENT-SIDE (remove the /)
+========================        ==========================
+res.redirect('/dashboard')      href="dashboard"
+router.get('/login')            src="login.js"
+router.post('/api/auth')        fetch('api/auth')
+app.use('/api')                 window.location.href = 'login'
+```
 
 DEBUGGING TIP: If forms/links/fetch fail with 404:
 1. Check for leading / in HTML/JS - if you find any, REMOVE THEM
@@ -272,25 +286,25 @@ THE CORRECT FIX (do this):
 When you find client-side paths with leading /, REMOVE the leading /.
 
 In HTML files, change:
-  ❌ href="/logout"           → ✅ href="logout"
-  ❌ href="/css/dashboard.css" → ✅ href="css/dashboard.css"
-  ❌ src="/js/dashboard.js"   → ✅ src="js/dashboard.js"
+  ❌ href="/logout"             → ✅ href="logout"
+  ❌ href="/css/styles.css"     → ✅ href="css/styles.css"
+  ❌ src="/login.js"            → ✅ src="login.js"
   ❌ href="/employee-directory" → ✅ href="employee-directory"
-  ❌ action="/api/auth/login" → ✅ action="api/auth/login"
+  ❌ action="/api/auth/login"   → ✅ action="api/auth/login"
 
 In JavaScript files, change:
-  ❌ fetch('/api/auth/login')  → ✅ fetch('api/auth/login')
-  ❌ fetch('/api/user')        → ✅ fetch('api/user')
-  ❌ window.location.href = '/dashboard' → ✅ window.location.href = 'dashboard'
+  ❌ fetch('/api/auth/login')              → ✅ fetch('api/auth/login')
+  ❌ fetch('/api/user')                    → ✅ fetch('api/user')
+  ❌ window.location.href = '/dashboard'   → ✅ window.location.href = 'dashboard'
 
 WHY THIS WORKS:
 From /yourapp/dashboard, relative paths resolve correctly:
   href="logout" → /yourapp/logout ✅
-  href="css/dashboard.css" → /yourapp/css/dashboard.css ✅
+  href="css/styles.css" → /yourapp/css/styles.css ✅
 
 But absolute paths go to wrong place:
   href="/logout" → /logout (hits wrong server) ❌
-  href="/css/dashboard.css" → /css/dashboard.css (404) ❌
+  href="/css/styles.css" → /css/styles.css (404) ❌
 
 THE WRONG FIX (never do this):
 ═══════════════════════════════════════════════════════════════════
@@ -307,6 +321,31 @@ If you see a 404 after login redirect:
 1. The server redirect res.redirect('/dashboard') is CORRECT - don't touch it
 2. The problem is in the HTML/JS files - check dashboard.html for href="/..." or src="/..."
 3. Fix the CLIENT-SIDE paths, leave SERVER-SIDE alone
+
+🚨 MISSING SCRIPT TAGS - COMMON BUG 🚨
+═══════════════════════════════════════════════════════════════════
+If a form submits and shows raw JSON like {"success":true,...} instead of redirecting:
+
+DIAGNOSIS: The HTML file is missing its <script> tag.
+
+CHECK: Does the HTML file include <script src="filename.js"></script> before </body>?
+
+EXAMPLES:
+- login.html should have: <script src="login.js"></script>
+- dashboard.html should have: <script src="dashboard.js"></script>
+
+THE FIX:
+Add the script tag before </body>:
+```html
+<script src="login.js"></script>
+</body>
+</html>
+```
+
+WHY THIS HAPPENS:
+- Without the script tag, the JS file never loads
+- Forms POST directly to the API instead of using fetch()
+- The browser shows raw JSON response instead of handling it
 
 LOCKED SOURCE OF TRUTH AND CHANGE LIMITS:
 - Your ONLY architectural source of truth is the locked architecture JSON (architecture.json) plus the current sprint requirements/backlog. Treat these as the blueprint.

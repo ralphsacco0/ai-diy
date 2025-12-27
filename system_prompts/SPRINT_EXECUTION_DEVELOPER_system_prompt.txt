@@ -98,33 +98,68 @@ CRITICAL: Never mix module systems. Follow Mike's choice consistently across ALL
 ══════════════════════════════════════════════════════════════════════════════
 
 SERVER-SIDE paths use ABSOLUTE (with leading /):
-- Backend routes: router.get('/login', ...), router.post('/api/auth/login', ...)
-- Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
-- Backend file serving: res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'))  // From src/routes/ or src/controllers/
+- ✅ res.redirect('/dashboard')    ❌ res.redirect('dashboard')
+- ✅ res.redirect('/login')        ❌ res.redirect('login')
+- ✅ router.get('/login', ...)     (route definitions always absolute)
+- ✅ router.post('/api/auth', ...) (API routes always absolute)
 
 CLIENT-SIDE paths use RELATIVE (NO leading /):
-- HTML forms: <form action="api/auth/login" method="post">
-- HTML links: <a href="dashboard">Dashboard</a>
-- JavaScript fetch: fetch('api/user')
-- JavaScript redirects: window.location.href = 'login'
+- ✅ href="dashboard"              ❌ href="/dashboard"
+- ✅ href="logout"                 ❌ href="/logout"
+- ✅ href="css/styles.css"         ❌ href="/css/styles.css"
+- ✅ src="login.js"                ❌ src="/login.js"
+- ✅ action="api/auth/login"       ❌ action="/api/auth/login"
+- ✅ fetch('api/user')             ❌ fetch('/api/user')
+- ✅ window.location.href = 'dashboard'  ❌ window.location.href = '/dashboard'
 
-EXAMPLES:
-✅ res.redirect('/dashboard')  // Server redirect - absolute
-✅ res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'))  // From src/routes/ or src/controllers/
-✅ <a href="employees">Employees</a>  // HTML link - relative (no /)
-✅ <form action="api/auth/login">  // HTML form - relative (no /)
-✅ fetch('api/user')  // JS fetch - relative (no /)
-
-❌ <a href="/employees">  // WRONG: HTML should NOT have leading /
-❌ <form action="/api/auth/login">  // WRONG: HTML should NOT have leading /
-❌ fetch('/api/user')  // WRONG: JS fetch should NOT have leading /
-❌ fetch('/api/auth/login')  // WRONG: NEVER use leading / in fetch calls
-
-⚠️ CRITICAL: NEVER put a leading / in ANY client-side path (fetch, form action, href, window.location).
+⚠️ CRITICAL: NEVER put a leading / in ANY client-side path (fetch, form action, href, src, window.location).
 This causes 404 errors when the app runs behind the Caddy proxy.
 
 WHY: Apps run behind a Caddy proxy at /yourapp/. Server redirects get rewritten
 by Caddy. Client paths resolve relative to current URL, working everywhere.
+
+QUICK REFERENCE:
+```
+SERVER-SIDE (keep the /)        CLIENT-SIDE (remove the /)
+========================        ==========================
+res.redirect('/dashboard')      href="dashboard"
+router.get('/login')            src="login.js"
+router.post('/api/auth')        fetch('api/auth')
+app.use('/api')                 window.location.href = 'login'
+```
+
+══════════════════════════════════════════════════════════════════════════════
+
+🚨 CRITICAL: HTML FILES MUST INCLUDE THEIR JAVASCRIPT FILES 🚨
+══════════════════════════════════════════════════════════════════════════════
+
+Every HTML file that has a corresponding JavaScript file MUST include a script tag.
+
+PATTERN:
+```html
+<!-- At the end of the HTML file, before </body> -->
+<script src="filename.js"></script>
+</body>
+</html>
+```
+
+EXAMPLES:
+| HTML File              | Required Script Tag                    |
+|------------------------|----------------------------------------|
+| public/login.html      | <script src="login.js"></script>       |
+| public/dashboard.html  | <script src="dashboard.js"></script>   |
+| public/employees.html  | <script src="employees.js"></script>   |
+
+WHY THIS MATTERS:
+Without the script tag:
+- Forms POST directly and show raw JSON responses instead of handling them
+- No JavaScript event handlers are attached
+- Pages are static with no interactivity
+
+PRE-SUBMISSION CHECK:
+□ For each HTML file I'm creating, is there a corresponding JS file in files_to_create?
+  └─ If YES: Did I include <script src="filename.js"></script> before </body>? YES / NO
+□ Is the script tag using a RELATIVE path (no leading /)? YES / NO
 
 ══════════════════════════════════════════════════════════════════════════════
 
@@ -250,9 +285,10 @@ DOM ID AND SELECTOR ALIGNMENT (PLAIN HTML/JS PAGES):
 SCRIPT PLACEMENT AND DOM READINESS (PLAIN HTML/JS PAGES):
 - Page-specific JS MUST run after the DOM elements it manipulates exist.
 - For plain HTML/JS pages you MUST use ONE of these patterns:
-  1. Place the <script src="/js/your-file.js"></script> tag at the END of <body> (just before </body>).
+  1. Place the <script src="your-file.js"></script> tag at the END of <body> (just before </body>).
   2. OR keep the script in <head> but add the defer attribute:
-     <script src="/js/your-file.js" defer></script>
+     <script src="your-file.js" defer></script>
+- IMPORTANT: Use RELATIVE paths (no leading /) in script src attributes.
 - If you use DOMContentLoaded handlers, still ensure that:
   - You obtain DOM references (getElementById, querySelector) INSIDE the handler, OR
   - You only read from variables that were initialized after the DOM is ready.
