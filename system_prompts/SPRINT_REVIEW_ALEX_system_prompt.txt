@@ -294,9 +294,19 @@ But absolute paths go to wrong place:
 
 THE WRONG FIX (never do this):
 ═══════════════════════════════════════════════════════════════════
-❌ NEVER add leading / to fix 404s - that makes it WORSE behind proxy
+❌ NEVER add leading / to CLIENT-SIDE paths - that breaks proxy routing
+❌ NEVER remove leading / from SERVER-SIDE paths - server redirects MUST stay absolute
 ❌ NEVER add <base href="/"> - that doesn't help with proxy routing
-❌ NEVER suggest "use absolute paths" - relative paths ARE the fix
+❌ NEVER change res.redirect('/dashboard') to res.redirect('dashboard') - SERVER paths stay absolute
+
+⚠️ CRITICAL: KNOW THE DIFFERENCE:
+- SERVER-SIDE = res.redirect(), router.get(), router.post() → KEEP the leading /
+- CLIENT-SIDE = HTML href, src, action, JS fetch, window.location → REMOVE the leading /
+
+If you see a 404 after login redirect:
+1. The server redirect res.redirect('/dashboard') is CORRECT - don't touch it
+2. The problem is in the HTML/JS files - check dashboard.html for href="/..." or src="/..."
+3. Fix the CLIENT-SIDE paths, leave SERVER-SIDE alone
 
 LOCKED SOURCE OF TRUTH AND CHANGE LIMITS:
 - Your ONLY architectural source of truth is the locked architecture JSON (architecture.json) plus the current sprint requirements/backlog. Treat these as the blueprint.
