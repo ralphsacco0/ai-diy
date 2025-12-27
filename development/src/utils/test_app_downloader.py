@@ -41,6 +41,55 @@ class TestAppDownloader:
             '.snapshots', 'uploads'
         }
         
+    def create_smart_start_script(self) -> str:
+        """Create a smart start script that works from any location."""
+        script_content = '''#!/bin/bash
+
+# BrightHR Lite Smart Start Script
+# This script works from any location - no manual configuration needed!
+
+echo "🚀 Starting BrightHR Lite Application..."
+
+# Auto-detect script location (works from any folder)
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+echo "📍 Location: $SCRIPT_DIR"
+
+# Find the app folder (looks for package.json)
+APP_FOLDER=$(find "$SCRIPT_DIR" -name "package.json" -dirname | head -1)
+if [ -z "$APP_FOLDER" ]; then
+    echo "❌ Error: Could not find application folder"
+    exit 1
+fi
+
+echo "📁 App found in: $APP_FOLDER"
+cd "$APP_FOLDER"
+
+# Kill any process on port 3001
+echo "🛑 Clearing port 3001..."
+lsof -ti:3001 | xargs kill -9 2>/dev/null || true
+
+# Install dependencies if needed
+if [ ! -d "node_modules" ]; then
+    echo "📦 Installing dependencies..."
+    npm install
+fi
+
+# Start the application
+echo "🚀 Starting application on http://localhost:3001"
+PORT=3001 npm start
+
+echo ""
+echo "✅ BrightHR Lite is running!"
+echo "🌐 Open: http://localhost:3001"
+echo ""
+echo "📝 Login Credentials:"
+echo "   Admin: admin@test.com / Password123!"
+echo "   Employee: john@company.com / Password123!"
+echo ""
+echo "🛑 To stop: Press Ctrl+C"
+'''
+        return script_content
+    
     def should_exclude(self, file_path: Path) -> bool:
         """Check if file should be excluded from package."""
         for pattern in self.exclude_patterns:
@@ -65,6 +114,12 @@ class TestAppDownloader:
         total_size = 0
         
         with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            # Add smart start script at root level
+            smart_script = self.create_smart_start_script()
+            zip_file.writestr("start.command", smart_script)
+            files_included += 1
+            
+            # Add all project files
             for root, dirs, files in os.walk(self.project_root):
                 # Filter directories
                 dirs[:] = [d for d in dirs if not self.should_exclude(Path(root) / d)]
@@ -76,8 +131,8 @@ class TestAppDownloader:
                         files_excluded += 1
                         continue
                     
-                    # Calculate relative path for ZIP
-                    arc_name = file_path.relative_to(self.project_root)
+                    # Calculate relative path for ZIP (place in subfolder)
+                    arc_name = Path(self.project_name) / file_path.relative_to(self.project_root)
                     
                     try:
                         zip_file.write(file_path, arc_name)
@@ -90,6 +145,7 @@ class TestAppDownloader:
         print(f"✅ Package created: {zip_path}")
         print(f"📊 Files included: {files_included}, excluded: {files_excluded}")
         print(f"💾 Package size: {total_size / 1024 / 1024:.2f} MB")
+        print(f"🚀 Smart start script included at root level")
         
         return zip_path
     
