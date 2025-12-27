@@ -156,6 +156,7 @@ from api.scribe import router as scribe_router
 from api.sprint import router as sprint_router
 from api.sandbox import router as sandbox_router
 from api.session import router as session_router
+from api.download import router as download_router
 
 app.include_router(streaming_router)
 app.include_router(models_router)
@@ -168,6 +169,7 @@ app.include_router(scribe_router)
 app.include_router(sprint_router)
 app.include_router(sandbox_router)
 app.include_router(session_router)
+app.include_router(download_router, prefix="/api/download", tags=["download"])
 
 logger.info("✅ All API routers loaded successfully")
 

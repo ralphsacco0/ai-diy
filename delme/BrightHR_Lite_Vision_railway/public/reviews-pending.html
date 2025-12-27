@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Performance Reviews - BrightHR Lite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1D4ED8',
+                        lightBlue: '#DBEAFE'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <button id="mobile-toggle" class="lg:hidden p-2 text-gray-700">
+                        ☰
+                    </button>
+                    <h1 class="text-xl font-semibold text-primary">BrightHR Lite</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="user-name" class="text-gray-700">User</span>
+                    <form action="api/auth/logout" method="post" style="display: inline;">
+                        <button type="submit" id="logout-btn" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <nav class="hidden lg:w-64 lg:flex flex-col bg-white shadow-md h-screen space-y-2 py-6">
+            <ul class="space-y-2">
+                <li><a href="dashboard" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Dashboard</a></li>
+                <li><a href="employees" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Employee Directory</a></li>
+                <li>
+                    <span class="flex items-center px-6 py-3 text-gray-700 font-medium hover:text-primary hover:bg-lightBlue rounded-md">Leave Management</span>
+                    <ul class="ml-6 space-y-1 mt-1">
+                        <li><a href="leaves/pending" class="flex items-center px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">Pending Requests</a></li>
+                        <li><a href="leaves/calendar" class="flex items-center px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">Calendar</a></li>
+                    </ul>
+                </li>
+                <li><a href="documents" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Documents</a></li>
+                <li><a href="reviews/pending" class="flex items-center px-6 py-3 text-primary bg-lightBlue rounded-md">Performance Reviews</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <h1 class="text-2xl font-bold text-primary mb-4">Pending Performance Reviews</h1>
+            <div class="overflow-x-auto">
+                <table id="pending-table" class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th class="py-2 px-4 text-left">Employee Name</th>
+                            <th class="py-2 px-4 text-left">Next Review Date</th>
+                            <th class="py-2 px-4 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+            <div id="error-message" class="text-red-500 mt-4 hidden"></div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Fetch current user
+                const userResponse = await fetch('user');
+                if (!userResponse.ok) {
+                    window.location.href = 'login';
+                    return;
+                }
+                const user = await userResponse.json();
+                document.getElementById('user-name').textContent = user.name || user.email;
+
+                // Mobile toggle
+                const toggle = document.getElementById('mobile-toggle');
+                const sidebar = document.querySelector('nav');
+                if (toggle && sidebar) {
+                    toggle.addEventListener('click', () => {
+                        sidebar.classList.toggle('hidden');
+                    });
+                }
+
+                // Load pending reviews
+                await loadPendingReviews();
+            } catch (error) {
+                console.error('Initialization error:', error);
+                window.location.href = 'login';
+            }
+        });
+
+        async function loadPendingReviews() {
+            try {
+                const response = await fetch('api/reviews/pending');
+                if (!response.ok) {
+                    throw new Error('Failed to load pending reviews');
+                }
+                const reviews = await response.json();
+
+                const tbody = document.querySelector('#pending-table tbody');
+                tbody.innerHTML = '';
+
+                if (reviews.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" class="px-4 py-2 text-center text-gray-500">No pending reviews found</td></tr>';
+                    return;
+                }
+
+                for (const review of reviews) {
+                    // Fetch employee details
+                    const empResponse = await fetch(`api/employees/${review.employee_id}`);
+                    if (!empResponse.ok) {
+                        console.error(`Failed to fetch employee ${review.employee_id}`);
+                        continue;
+                    }
+                    const employee = await empResponse.json();
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-4 py-2">
+                            <a href="reviews/${review.employee_id}" class="text-primary hover:underline">${employee.name}</a>
+                        </td>
+                        <td class="px-4 py-2">${review.next_review_date || 'N/A'}</td>
+                        <td class="px-4 py-2">
+                            <a href="reviews/${review.employee_id}" class="bg-primary text-white px-3 py-1 rounded mr-2 hover:bg-secondary">View</a>
+                            <a href="reviews/${review.employee_id}" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Assign</a>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            } catch (error) {
+                console.error('Error loading pending reviews:', error);
+                const errorMsg = document.getElementById('error-message');
+                errorMsg.textContent = 'Error loading pending reviews: ' + error.message;
+                errorMsg.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

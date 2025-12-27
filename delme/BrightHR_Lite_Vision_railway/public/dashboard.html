@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrightHR Lite - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1D4ED8',
+                        lightBlue: '#DBEAFE'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <button id="mobile-toggle" class="lg:hidden p-2 text-gray-700">
+                        ☰
+                    </button>
+                    <h1 class="text-xl font-semibold text-primary">BrightHR Lite</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">Admin User</span>
+                    <button id="logout-btn" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <nav class="hidden lg:w-64 lg:flex flex-col bg-white shadow-md h-screen space-y-2 py-6">
+            <ul class="space-y-2">
+                <li><a href="dashboard" class="flex items-center px-6 py-3 text-primary bg-lightBlue rounded-md">Dashboard</a></li>
+                <li><a href="employees" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Employee Directory</a></li>
+                <li>
+                    <span class="flex items-center px-6 py-3 text-gray-700 font-medium hover:text-primary hover:bg-lightBlue rounded-md">Leave Management</span>
+                    <ul class="ml-6 space-y-1 mt-1">
+                        <li><a href="leaves/pending" class="flex items-center px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">Pending Requests</a></li>
+                        <li><a href="leaves/calendar" class="flex items-center px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">Calendar</a></li>
+                    </ul>
+                </li>
+                <li><a href="documents" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Documents</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Dashboard</h2>
+            <p class="text-gray-600 mb-6">Welcome to your dashboard!</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-primary">Total Employees</h3>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">25</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-primary">Pending Leaves</h3>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">3</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-primary">Documents</h3>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">42</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mobile toggle
+        const toggle = document.getElementById('mobile-toggle');
+        const sidebar = document.querySelector('nav');
+        toggle.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await fetch('api/auth/logout', { method: 'POST' });
+            window.location.href = 'login';
+        });
+    </script>
+</body>
+</html>

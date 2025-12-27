@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Leave Requests</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1D4ED8',
+                        lightBlue: '#DBEAFE'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <button id="mobile-toggle" class="lg:hidden p-2 text-gray-700">
+                        ☰
+                    </button>
+                    <h1 class="text-xl font-semibold text-primary">BrightHR Lite</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-700">User</span>
+                    <form action="api/auth/logout" method="post" style="display: inline;">
+                        <button type="submit" id="logout-btn" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <nav class="hidden lg:w-64 lg:flex flex-col bg-white shadow-md h-screen space-y-2 py-6">
+            <ul class="space-y-2">
+                <li><a href="dashboard" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Dashboard</a></li>
+                <li><a href="employees" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Employee Directory</a></li>
+                <li>
+                    <span class="flex items-center px-6 py-3 text-primary bg-lightBlue rounded-md font-medium">Leave Management</span>
+                    <ul class="ml-6 space-y-1 mt-1">
+                        <li><a href="leaves/pending" class="flex items-center px-3 py-1 text-primary bg-lightBlue rounded">Pending Requests</a></li>
+                        <li><a href="leaves/calendar" class="flex items-center px-3 py-1 text-gray-600 hover:bg-gray-100 rounded">Calendar</a></li>
+                    </ul>
+                </li>
+                <li><a href="documents" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Documents</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <h1 class="text-2xl font-bold text-primary mb-4">Pending Leave Requests</h1>
+            <div class="overflow-x-auto">
+                <table id="pending-table" class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th class="py-2 px-4 text-left">Employee</th>
+                            <th class="py-2 px-4 text-left">Dates</th>
+                            <th class="py-2 px-4 text-left">Type</th>
+                            <th class="py-2 px-4 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+            <div id="error-message" class="text-red-500 mt-4 hidden"></div>
+        </main>
+    </div>
+
+    <script src="js/leaves.js"></script>
+</body>
+</html>

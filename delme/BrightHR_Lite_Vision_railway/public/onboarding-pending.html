@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Onboarding Checklists - BrightHR Lite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1D4ED8',
+                        lightBlue: '#DBEAFE'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <button id="mobile-toggle" class="lg:hidden p-2 text-gray-700">
+                        ☰
+                    </button>
+                    <h1 class="text-xl font-semibold text-primary">BrightHR Lite</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="user-name" class="text-gray-700">User</span>
+                    <form action="api/auth/logout" method="post" style="display: inline;">
+                        <button type="submit" id="logout-btn" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <nav class="hidden lg:w-64 lg:flex flex-col bg-white shadow-md h-screen space-y-2 py-6">
+            <ul class="space-y-2">
+                <li><a href="dashboard" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Dashboard</a></li>
+                <li><a href="employees" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Employee Directory</a></li>
+                <li><a href="leaves" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Leave Management</a></li>
+                <li><a href="documents" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Documents</a></li>
+                <li><a href="onboarding/pending" class="flex items-center px-6 py-3 text-primary bg-lightBlue rounded-md">Onboarding</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <h1 class="text-2xl font-bold text-primary mb-4">Pending Onboarding Checklists</h1>
+            <div class="overflow-x-auto">
+                <table id="pending-table" class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th class="py-2 px-4 text-left">Employee Name</th>
+                            <th class="py-2 px-4 text-left">Start Date</th>
+                            <th class="py-2 px-4 text-left">Progress %</th>
+                            <th class="py-2 px-4 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <!-- Rows populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="error-message" class="text-red-500 mt-4 hidden">Error loading checklists.</div>
+            <div id="no-results" class="text-gray-500 mt-4 hidden">No pending checklists found.</div>
+        </main>
+    </div>
+
+    <script>
+        let currentUser;
+
+        // Mobile toggle
+        const toggle = document.getElementById('mobile-toggle');
+        const sidebar = document.querySelector('nav');
+        if (toggle && sidebar) {
+            toggle.addEventListener('click', () => {
+                sidebar.classList.toggle('hidden');
+            });
+        }
+
+        // Load user info
+        async function loadUser() {
+            try {
+                const response = await fetch('/api/auth/user');
+                if (!response.ok) {
+                    window.location.href = '/login';
+                    return;
+                }
+                currentUser = await response.json();
+                document.getElementById('user-name').textContent = currentUser.name || currentUser.email;
+                if (currentUser.role !== 'hr' && currentUser.role !== 'admin') {
+                    window.location.href = '/dashboard';
+                    return;
+                }
+                loadPendingChecklists();
+            } catch (err) {
+                console.error('Error loading user:', err);
+                window.location.href = '/login';
+            }
+        }
+
+        // Load pending checklists
+        async function loadPendingChecklists() {
+            try {
+                const response = await fetch('/api/onboarding/pending');
+                if (!response.ok) throw new Error('Failed to load checklists');
+                const checklists = await response.json();
+                const tbody = document.querySelector('#pending-table tbody');
+                const noResults = document.getElementById('no-results');
+                const errorMsg = document.getElementById('error-message');
+                tbody.innerHTML = '';
+                errorMsg.classList.add('hidden');
+                if (noResults) noResults.classList.add('hidden');
+
+                if (checklists.length === 0) {
+                    if (noResults) noResults.classList.remove('hidden');
+                    return;
+                }
+
+                checklists.forEach(checklist => {
+                    const tasks = JSON.parse(checklist.tasks || '[]');
+                    const completed = tasks.filter(task => task.completed).length;
+                    const total = tasks.length;
+                    const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="px-4 py-2 border">${checklist.employee_name}</td>
+                        <td class="px-4 py-2 border">${checklist.start_date}</td>
+                        <td class="px-4 py-2 border">${progress}%</td>
+                        <td class="px-4 py-2 border"><a href="onboarding/${checklist.employee_id}" class="text-primary hover:underline">View Details</a></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error('Error loading checklists:', err);
+                document.getElementById('error-message').textContent = err.message;
+                document.getElementById('error-message').classList.remove('hidden');
+            }
+        }
+
+        // Logout handler
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            // Form submits on button click
+        });
+
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadUser);
+        } else {
+            loadUser();
+        }
+    </script>
+</body>
+</html>

@@ -1066,6 +1066,7 @@
                         <div class="row">
                             <button onclick="openProgressStatus()">Progress</button>
                             <button id="appControlBtn" onclick="toggleApp()">Run App</button>
+                            <button id="downloadAppBtn" onclick="downloadApp()" style="display: none;">Dnld App</button>
                         </div>
                     </div>
                 </div>
@@ -3898,6 +3899,69 @@
                 btn.textContent = appRunning ? 'Stop App' : 'Run App';
             } finally {
                 btn.disabled = false;
+            }
+        }
+
+        // Show download button for completed sprints
+        function showDownloadButton() {
+            const downloadBtn = document.getElementById('downloadAppBtn');
+            if (downloadBtn) {
+                downloadBtn.style.display = 'inline-block';
+            }
+        }
+
+        // Hide download button
+        function hideDownloadButton() {
+            const downloadBtn = document.getElementById('downloadAppBtn');
+            if (downloadBtn) {
+                downloadBtn.style.display = 'none';
+            }
+        }
+
+        // Download app function
+        async function downloadApp() {
+            const btn = document.getElementById('downloadAppBtn');
+            
+            try {
+                btn.disabled = true;
+                btn.textContent = 'Downloading...';
+                
+                // Create download link
+                const response = await fetch('/api/download/app');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to download app');
+                }
+                
+                // Get filename from headers
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'BrightHR_Lite_Vision.zip';
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+                    if (filenameMatch) {
+                        filename = filenameMatch[1];
+                    }
+                }
+                
+                // Create blob and download
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                alert('✅ App downloaded successfully! Check your Downloads folder.');
+                
+            } catch (error) {
+                console.error('Error downloading app:', error);
+                alert('❌ Failed to download app: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Dnld App';
             }
         }
     </script>

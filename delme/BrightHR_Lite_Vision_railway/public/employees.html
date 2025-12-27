@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Directory - BrightHR Lite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1D4ED8',
+                        lightBlue: '#DBEAFE'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <button id="mobile-toggle" class="lg:hidden p-2 text-gray-700">
+                        ☰
+                    </button>
+                    <h1 class="text-xl font-semibold text-primary">BrightHR Lite</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="user-name" class="text-gray-700">User</span>
+                    <form action="api/auth/logout" method="post" style="display: inline;">
+                        <button type="submit" id="logout-btn" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-secondary">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <nav class="hidden lg:w-64 lg:flex flex-col bg-white shadow-md h-screen space-y-2 py-6">
+            <ul class="space-y-2">
+                <li><a href="dashboard" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Dashboard</a></li>
+                <li><a href="employees" class="flex items-center px-6 py-3 text-primary bg-lightBlue rounded-md">Employee Directory</a></li>
+                <li><a href="leaves" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Leave Management</a></li>
+                <li><a href="documents" class="flex items-center px-6 py-3 text-gray-700 hover:text-primary hover:bg-lightBlue rounded-md">Documents</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <h1 class="text-2xl font-bold text-primary mb-4">Employee Directory</h1>
+            <div class="mb-4 flex space-x-2">
+                <a href="employees/add" class="bg-primary hover:bg-secondary text-white font-bold py-2 px-4 rounded-md">Add Employee</a>
+                <a href="onboarding/assign" id="assignOnboardingBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md hidden">Assign Onboarding</a>
+            </div>
+            <form id='searchForm' class='mb-4'>
+                <input type='text' id='searchInput' placeholder='Search by name or email' class='border border-gray-300 rounded-lg px-3 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-primary'>
+                <button type='submit' class='bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg ml-2'>Search</button>
+            </form>
+            <div id='errorMsg' class='hidden mt-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded'></div>
+            <div id='noResults' class='hidden mt-4 text-gray-500 italic'>No employees found</div>
+            <div class='overflow-x-auto'>
+                <table id='employeesTable' class='min-w-full bg-white border border-gray-300 rounded-lg shadow-md'>
+                    <thead class='bg-primary text-white'>
+                        <tr>
+                            <th class='px-4 py-2 text-left'>Name</th>
+                            <th class='px-4 py-2 text-left'>Email</th>
+                            <th class='px-4 py-2 text-left'>Phone</th>
+                            <th class='px-4 py-2 text-left'>Department</th>
+                            <th class='px-4 py-2 text-left'>Hire Date</th>
+                            <th class='px-4 py-2 text-left'>Edit</th>
+                            <th class='px-4 py-2 text-left'>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class='divide-y divide-gray-200'></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mobile toggle
+        const toggle = document.getElementById('mobile-toggle');
+        const sidebar = document.querySelector('nav');
+        if (toggle && sidebar) {
+            toggle.addEventListener('click', () => {
+                sidebar.classList.toggle('hidden');
+            });
+        }
+
+        // Fetch user info and initialize
+        async function initUser() {
+            try {
+                const resp = await fetch('/user');
+                if (resp.status === 401 || resp.status === 403) {
+                    window.location.href = '/login';
+                    return;
+                }
+                if (resp.ok) {
+                    const user = await resp.json();
+                    document.getElementById('user-name').textContent = user.name || user.email;
+                    if (['hr', 'admin'].includes(user.role)) {
+                        document.getElementById('assignOnboardingBtn').classList.remove('hidden');
+                    }
+                }
+                // else, do nothing for 404 or other non-auth errors
+            } catch (err) {
+                console.error(err);
+                // No redirect to avoid unnecessary logouts on transient errors
+            }
+        }
+
+        async function loadEmployees(search = '', page = 1) {
+            const url = `api/employees?${search ? `search=${encodeURIComponent(search)}&` : ''}page=${page}`;
+            try {
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error('Network response not ok');
+                const data = await resp.json();
+                const tbody = document.querySelector('#employeesTable tbody');
+                tbody.innerHTML = '';
+                document.getElementById('noResults').classList.add('hidden');
+                document.getElementById('errorMsg').classList.add('hidden');
+                if (data.employees.length === 0) {
+                    document.getElementById('noResults').classList.remove('hidden');
+                } else {
+                    data.employees.forEach(emp => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-gray-50';
+                        tr.innerHTML = `
+                            <td class='px-4 py-2'>${emp.name}</td>
+                            <td class='px-4 py-2'>${emp.email}</td>
+                            <td class='px-4 py-2'>${emp.phone || ''}</td>
+                            <td class='px-4 py-2'>${emp.department}</td>
+                            <td class='px-4 py-2'>${emp.hire_date}</td>
+                            <td class='px-4 py-2'><a href="employees/edit/${emp.id}" class="bg-primary hover:bg-secondary text-white px-2 py-1 rounded">Edit</a></td>
+                            <td class='px-4 py-2'>
+                                <a href="onboarding/${emp.id}" class="text-primary hover:text-secondary underline mr-2">View Onboarding</a>
+                                <a href="reviews/${emp.id}" class="text-primary hover:text-secondary underline" style="color: #3B82F6;">Performance Reviews</a>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('errorMsg').textContent = 'Error loading employees. Please try again.';
+                document.getElementById('errorMsg').classList.remove('hidden');
+            }
+        }
+
+        document.getElementById('searchForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const search = document.getElementById('searchInput').value;
+            loadEmployees(search, 1);
+        });
+
+        window.addEventListener('load', () => {
+            initUser();
+            loadEmployees();
+        });
+    </script>
+</body>
+</html>
