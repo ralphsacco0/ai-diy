@@ -3492,6 +3492,13 @@
             if (endMeetingBtn) {
                 endMeetingBtn.style.display = currentMeeting ? 'block' : 'none';
             }
+
+            // Show/hide Download App button based on completed sprint
+            if (hasCompletedSprint) {
+                showDownloadButton();
+            } else {
+                hideDownloadButton();
+            }
         }
 
         async function checkArtifactExists(endpoint) {
@@ -3697,11 +3704,15 @@
                     <div class="response-header" style="color: #22c55e;">✅ Sprint Execution Complete</div>
                     <div class="response-content" style="font-style: italic; color: #94a3b8;">
                         Sprint execution has finished! Ready to review the results?<br><br>
-                        💡 Say: <strong>"start sprint review meeting"</strong> to demo the completed work.
+                        💡 Say: <strong>"start sprint review meeting"</strong> to demo the completed work.<br><br>
+                        📦 <strong>Your app is ready to download!</strong> Click the <strong>"Dnld App"</strong> button below to get the complete application.
                     </div>
                 `;
                 chatMessages.appendChild(reviewPrompt);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Show the download button
+                showDownloadButton();
             }, 1000);
         }
 
