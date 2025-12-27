@@ -54,10 +54,13 @@ echo "🚀 Starting BrightHR Lite Application..."
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 echo "📍 Location: $SCRIPT_DIR"
 
-# Find the app folder (looks for package.json)
-APP_FOLDER=$(find "$SCRIPT_DIR" -name "package.json" -dirname | head -1)
+# Find the app folder (Mac-compatible find command)
+APP_FOLDER=$(find "$SCRIPT_DIR" -name "package.json" -exec dirname {} \; | head -1)
 if [ -z "$APP_FOLDER" ]; then
     echo "❌ Error: Could not find application folder"
+    echo "🔍 Looking for package.json in: $SCRIPT_DIR"
+    echo "📁 Contents:"
+    ls -la "$SCRIPT_DIR"
     exit 1
 fi
 
