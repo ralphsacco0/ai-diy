@@ -382,6 +382,79 @@ async def get_latest_sprint() -> ApiResponse:
         )
 
 
+@router.post("/sprints/execute-next", response_model=ApiResponse)
+async def execute_next_sprint(background_tasks: BackgroundTasks):
+    """Find and execute the next planned sprint (oldest by creation date)."""
+    start_time = time.time()
+
+    try:
+        log_api_call(
+            route="/api/sprints/execute-next",
+            action="execute-next",
+            status="start"
+        )
+
+        # Find the oldest sprint with status "planned"
+        planned_sprints = []
+        for sprint_file in SPRINT_DIR.glob("SP-*.json"):
+            try:
+                with open(sprint_file, "r", encoding="utf-8") as f:
+                    sprint_doc = json.load(f)
+                    if sprint_doc.get("status") == "planned":
+                        planned_sprints.append({
+                            "sprint_id": sprint_doc.get("sprint_id", sprint_file.stem),
+                            "created_at": sprint_doc.get("created_at", ""),
+                            "file": sprint_file
+                        })
+            except Exception:
+                continue
+
+        if not planned_sprints:
+            raise HTTPException(
+                status_code=HTTP_STATUS_MAP[ApiErrorCode.NOT_FOUND],
+                detail=create_error_response(
+                    "No planned sprints found. Create a sprint plan first.",
+                    ApiErrorCode.NOT_FOUND
+                ).model_dump()
+            )
+
+        # Sort by created_at and pick the oldest
+        planned_sprints.sort(key=lambda x: x["created_at"])
+        next_sprint = planned_sprints[0]
+        sprint_id = next_sprint["sprint_id"]
+
+        duration_ms = int((time.time() - start_time) * 1000)
+        log_api_call(
+            route="/api/sprints/execute-next",
+            action="execute-next",
+            id=sprint_id,
+            status="redirecting",
+            duration_ms=duration_ms
+        )
+
+        # Delegate to the existing execute_sprint function
+        return await execute_sprint(sprint_id, background_tasks)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        duration_ms = int((time.time() - start_time) * 1000)
+        logger.error(f"Execute-next error: {str(e)}")
+        log_api_call(
+            route="/api/sprints/execute-next",
+            action="execute-next",
+            status="error",
+            duration_ms=duration_ms
+        )
+        raise HTTPException(
+            status_code=HTTP_STATUS_MAP[ApiErrorCode.SERVER_ERROR],
+            detail=create_error_response(
+                f"Failed to find next sprint: {str(e)}",
+                ApiErrorCode.SERVER_ERROR
+            ).model_dump()
+        )
+
+
 @router.post("/sprints/{sprint_id}/execute", response_model=ApiResponse)
 async def execute_sprint(sprint_id: str, background_tasks: BackgroundTasks):
     """Trigger sprint execution for the given sprint plan (sequential MVP)."""
