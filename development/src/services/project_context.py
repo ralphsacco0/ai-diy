@@ -22,7 +22,7 @@ from typing import List
 logger = logging.getLogger(__name__)
 
 
-def extract_exports_from_file(file_path: Path) -> List[str]:
+def extract_exports_from_file(file_path: Path, include_style: bool = False) -> List[str]:
     """
     Extract exported functions/constants from a JavaScript file.
 
@@ -42,9 +42,12 @@ def extract_exports_from_file(file_path: Path) -> List[str]:
 
     Args:
         file_path: Path to JavaScript file
+        include_style: If True, returns tuple (exports, style) where style is
+                      'object' (destructured import needed) or 'direct' (direct import)
 
     Returns:
         List of exported names (sorted, deduplicated)
+        OR tuple (List[str], str) if include_style=True
     """
     try:
         content = file_path.read_text(encoding='utf-8')
@@ -107,9 +110,30 @@ def extract_exports_from_file(file_path: Path) -> List[str]:
         cjs_shorthand_exports = re.findall(r'(?<!module\.)exports\.(\w+)\s*=', content)
         exports.extend(cjs_shorthand_exports)
 
-        return sorted(set(exports))  # Remove duplicates and sort
+        # Determine export style for import guidance
+        # 'object' = module.exports = { ... } -> requires destructuring: const { func } = require()
+        # 'direct' = module.exports = func -> requires direct: const func = require()
+        export_style = 'unknown'
+        if cjs_object_exports:
+            export_style = 'object'  # module.exports = { name1, name2 }
+        elif cjs_single_export:
+            export_style = 'direct'  # module.exports = singleFunc
+        elif cjs_named_exports or cjs_shorthand_exports:
+            export_style = 'object'  # module.exports.name = ... or exports.name = ...
+        elif re.search(r'export\s+default', content):
+            export_style = 'direct'  # ES6 default export
+        elif export_blocks or re.search(r'export\s+(?:async\s+)?function|export\s+class|export\s+(?:const|let|var)', content):
+            export_style = 'object'  # ES6 named exports
+
+        result = sorted(set(exports))  # Remove duplicates and sort
+
+        if include_style:
+            return (result, export_style)
+        return result
     except Exception as e:
         logger.debug(f"Could not extract exports from {file_path}: {e}")
+        if include_style:
+            return ([], 'unknown')
         return []
 
 
@@ -161,11 +185,12 @@ def extract_file_structure(project_path: Path) -> str:
 
             # Categorize by file type and location
             if path_str.startswith('src/') and path_str.endswith('.js'):
-                # Backend JavaScript with exports
-                exports = extract_exports_from_file(file_path)
+                # Backend JavaScript with exports and export style
+                exports, export_style = extract_exports_from_file(file_path, include_style=True)
                 structure['backend_js'].append({
                     'path': path_str,
-                    'exports': exports
+                    'exports': exports,
+                    'export_style': export_style
                 })
             elif path_str.startswith('public/') and path_str.endswith('.html'):
                 structure['frontend_html'].append({'path': path_str})
@@ -188,8 +213,17 @@ def extract_file_structure(project_path: Path) -> str:
                 exports_str = ', '.join(file_info['exports'][:8]) if file_info['exports'] else 'no exports'
                 if len(file_info['exports']) > 8:
                     exports_str += f' (+{len(file_info["exports"]) - 8} more)'
+                # Add import guidance based on export style
+                style = file_info.get('export_style', 'unknown')
+                if style == 'object':
+                    import_hint = "use destructured import: const { name } = require()"
+                elif style == 'direct':
+                    import_hint = "use direct import: const name = require()"
+                else:
+                    import_hint = "check file for export pattern"
                 result.append(f"  - {file_info['path']}")
-                result.append(f"    Exports: {exports_str}")
+                result.append(f"    Exports ({style}): {exports_str}")
+                result.append(f"    Import: {import_hint}")
             if len(structure['backend_js']) > 10:
                 result.append(f"  (+{len(structure['backend_js']) - 10} more files)")
 

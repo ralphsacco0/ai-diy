@@ -469,8 +469,14 @@ class SprintOrchestrator:
                         content = code_file.read_text(encoding='utf-8')
                         
                         # Extract exports for this file to show Alex what's available
-                        exports = extract_exports_from_file(code_file)
-                        exports_summary = f"// EXPORTS: {', '.join(exports)}" if exports else "// EXPORTS: (none)"
+                        exports, export_style = extract_exports_from_file(code_file, include_style=True)
+                        # Include export style so Mike/Alex know how to import
+                        style_hint = ""
+                        if export_style == 'object':
+                            style_hint = " [use: const { name } = require()]"
+                        elif export_style == 'direct':
+                            style_hint = " [use: const name = require()]"
+                        exports_summary = f"// EXPORTS ({export_style}): {', '.join(exports)}{style_hint}" if exports else "// EXPORTS: (none)"
                         
                         rel_path_str = str(rel_path)
                         

@@ -231,10 +231,23 @@ These rules prevent bugs and rework:
    - You MUST explicitly list which routes/endpoints to ADD
    - Example: "MODIFY src/server.js: ADD app.use('/', dashboardRoutes) after existing routes. PRESERVE existing GET /login and GET / routes. DO NOT remove any existing route handlers."
 
-3. IMPORT PATH VERIFICATION
-   - Check "Current Project State" to see which file exports which functions
-   - Don't assume where functions are defined - verify from project context
-   - Use exact function names as exported, not invented shortcuts
+3. IMPORT/EXPORT PATTERN VERIFICATION (CRITICAL FOR COMMONJS)
+   - Check "Current Project State" to see HOW each module exports its functions
+   - The context shows export style: "object" or "direct" with import hints
+
+   If module exports via OBJECT pattern (module.exports = { funcA, funcB }):
+   ✅ Alex MUST use destructuring: const { funcA } = require('./module');
+   ❌ WRONG: const funcA = require('./module');  // Returns whole object, not function!
+
+   If module exports via DIRECT pattern (module.exports = router):
+   ✅ Alex MUST use direct import: const router = require('./module');
+   ❌ WRONG: const { router } = require('./module');  // Destructuring undefined!
+
+   ALWAYS specify the EXACT import syntax in your task description:
+   - "Import { isAuthenticated } from '../middleware/auth' (destructured - object export)"
+   - "Import router from './routes/auth' (direct - single export)"
+
+   DON'T assume - verify export pattern from project context first
 
 4. URL CONTRACT CONSISTENCY
    - Include a URL Contract in your technical_notes:
@@ -334,6 +347,7 @@ Before outputting JSON, internally verify:
 □ Is the URL contract consistent (backend routes match frontend references)?
 □ Are element IDs specified in both HTML and JS task descriptions?
 □ Did I quote acceptance criteria in task descriptions?
+□ Did I specify EXACT import syntax for all require() statements? (destructured vs direct)
 
 If ANY answer is NO, FIX IT before outputting JSON.
 
