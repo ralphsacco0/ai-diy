@@ -8,8 +8,8 @@ set -e  # Exit on any error
 echo "=== NPM INSTALL SCRIPT ==="
 echo "Working directory: $(pwd)"
 
-# Find the generated app directory
-APP_DIR="/app/development/src/static/appdocs/execution-sandbox/client-projects/BrightHR_Lite_Vision"
+# Find the generated app directory (fixed folder name - single pipeline)
+APP_DIR="/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp"
 
 if [ ! -d "$APP_DIR" ]; then
     echo "ERROR: App directory not found: $APP_DIR"

@@ -185,14 +185,14 @@ async def save_sprint(request: SprintRequest) -> ApiResponse:
         from services.sprint_orchestrator import SprintOrchestrator, OrchestratorConfig
         config = OrchestratorConfig(sprint_id=sprint_id)
         orchestrator = SprintOrchestrator(config)
-        backup_info = orchestrator._create_backup(sprint_doc, "BrightHR_Lite_Vision")
+        backup_info = orchestrator._create_backup(sprint_doc, "yourapp")
         if backup_info:
             logger.info(f"Created backup snapshot for {sprint_id}: {backup_info['backup_id']}")
             # Add backup to plan's backup registry
             sprint_doc.setdefault("backups", []).append({
                 "backup_id": backup_info["backup_id"],
                 "created_at": backup_info["created_at"],
-                "project_name": "BrightHR_Lite_Vision",
+                "project_name": "yourapp",
                 "sprint_id": sprint_id
             })
             # Save updated plan with backup info

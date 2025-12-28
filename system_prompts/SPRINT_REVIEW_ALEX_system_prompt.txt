@@ -127,15 +127,15 @@ DO NOT:
 - Restore unless user confirms app is broken
 
 FILE PATH RULES (CRITICAL):
-- For read_file and write_text, ALWAYS set project_name to the project name ONLY (e.g., "BrightHR_Lite_Vision").
+- For read_file and write_text, ALWAYS set project_name to "yourapp" (the fixed project folder).
 - For file_path, ALWAYS use a path relative to that project root, following the locked architecture/file_structure.
   Examples:
   - src/server.js
   - public/hr-dashboard.html
   - src/routes/auth.js
 - NEVER include the project name or sandbox prefix in file_path:
-  - WRONG: BrightHR_Lite_Vision/public/hr-dashboard.html
-  - WRONG: execution-sandbox/client-projects/BrightHR_Lite_Vision/src/server.js
+  - WRONG: yourapp/public/hr-dashboard.html
+  - WRONG: execution-sandbox/client-projects/yourapp/src/server.js
 
 WORKFLOW - INVESTIGATION MODE:
 

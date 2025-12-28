@@ -78,7 +78,7 @@ def build_tools_array(persona_tools: Optional[List[str]] = None) -> List[Dict[st
                     "properties": {
                         "path": {
                             "type": "string",
-                            "description": "Path relative to sandbox root (e.g., 'BrightHR_Lite_Vision' or 'BrightHR_Lite_Vision/routes')"
+                            "description": "Path relative to sandbox root (e.g., 'yourapp' or 'yourapp/routes')"
                         },
                         "recursive": {
                             "type": "boolean",
@@ -108,7 +108,7 @@ def build_tools_array(persona_tools: Optional[List[str]] = None) -> List[Dict[st
                     "properties": {
                         "project_name": {
                             "type": "string",
-                            "description": "Project name only (e.g., 'BrightHR_Lite_Vision'), not full path"
+                            "description": "Project name (always 'yourapp')"
                         },
                         "command": {
                             "type": "string",
@@ -142,7 +142,7 @@ def build_tools_array(persona_tools: Optional[List[str]] = None) -> List[Dict[st
                     "properties": {
                         "project_name": {
                             "type": "string",
-                            "description": "Project name (e.g., 'BrightHR_Lite_Vision')"
+                            "description": "Project name (always 'yourapp')"
                         },
                         "file_path": {
                             "type": "string",
@@ -163,7 +163,7 @@ def build_tools_array(persona_tools: Optional[List[str]] = None) -> List[Dict[st
                     "properties": {
                         "project_name": {
                             "type": "string",
-                            "description": "Project name (e.g., 'BrightHR_Lite_Vision')"
+                            "description": "Project name (always 'yourapp')"
                         },
                         "file_path": {
                             "type": "string",
@@ -193,7 +193,7 @@ def build_tools_array(persona_tools: Optional[List[str]] = None) -> List[Dict[st
                     "properties": {
                         "project_name": {
                             "type": "string",
-                            "description": "Project name (e.g., 'BrightHR_Lite_Vision')"
+                            "description": "Project name (always 'yourapp')"
                         }
                     },
                     "required": ["project_name"]
@@ -210,7 +210,7 @@ def build_tools_array(persona_tools: Optional[List[str]] = None) -> List[Dict[st
                     "properties": {
                         "project_name": {
                             "type": "string",
-                            "description": "Project name (e.g., 'BrightHR_Lite_Vision')"
+                            "description": "Project name (always 'yourapp')"
                         },
                         "snapshot_id": {
                             "type": "string",
