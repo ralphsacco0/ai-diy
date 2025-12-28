@@ -3760,8 +3760,9 @@ OUTPUT ONLY VALID JSON NOW:"""
                         # Strategy 4: Fix template literal escape issues (${...} causes invalid \escape)
                         # Replace backticks with single quotes and ${} with placeholder text
                         re.sub(r'`([^`]*)\$\{([^}]*)\}([^`]*)`', r"'\1[VAR:\2]\3'", json_str),
-                        # Strategy 5: Escape bare ${} that aren't in template literals
-                        json_str.replace('${', '\\${'),
+                        # Strategy 5: Escape ${ using unicode escape (JSON-safe)
+                        # ${  -> $\u007B (preserves content but makes valid JSON)
+                        json_str.replace('${', '$\\u007B'),
                     ]
                     
                     for idx, repaired in enumerate(repair_attempts):
