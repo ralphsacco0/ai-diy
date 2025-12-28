@@ -178,8 +178,6 @@ from pydantic import BaseModel as PydanticBaseModel
 import subprocess
 import asyncio
 import signal
-from core.project_metadata import get_project_name_safe
-
 # Module-level variable to track the running generated app process
 _generated_app_process = None
 
@@ -190,27 +188,25 @@ class AppControlRequest(PydanticBaseModel):
 async def control_app(request: AppControlRequest):
     """Start or stop the generated application.
 
-    Works on both Mac and Railway (Linux) by using Python subprocess directly
-    instead of shell scripts. Uses get_project_name_safe() to find the project.
+    Works on both Mac and Railway (Linux) by using Python subprocess directly.
+    Project is always in the 'yourapp' folder - single pipeline, no dynamic naming.
     """
     global _generated_app_process
 
     try:
-        # Get project name dynamically
-        project_name = get_project_name_safe()
-        if not project_name or project_name in ("Unknown", "default_project"):
-            raise HTTPException(status_code=400, detail="No approved project found. Complete a sprint first.")
+        # Fixed project folder - single pipeline
+        project_name = "yourapp"
 
         # Project is in execution sandbox
         sandbox_base = Path(__file__).parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
         project_dir = sandbox_base / project_name
 
         if not project_dir.exists():
-            raise HTTPException(status_code=404, detail=f"Project directory not found: {project_name}")
+            raise HTTPException(status_code=404, detail="No app found. Complete a sprint first.")
 
         # Check for package.json to verify it's a valid Node project
         if not (project_dir / "package.json").exists():
-            raise HTTPException(status_code=400, detail=f"No package.json found in {project_name}. Sprint may not have completed.")
+            raise HTTPException(status_code=400, detail="No package.json found. Sprint may not have completed.")
 
         if request.action == "start":
             # Ruthlessly kill ANY process on port 3000 first (manual, orphaned, or managed)

@@ -80,7 +80,7 @@ class ListDirectoryResponse(BaseModel):
 
 class ExecuteCommandRequest(BaseModel):
     """Request to execute a command in the sandbox"""
-    project_name: str = Field(..., description="Project name (subdirectory in sandbox)")
+    project_name: str = Field(default="yourapp", description="Project folder (defaults to 'yourapp')")
     command: str = Field(..., description="Command to execute (must be in allowlist)")
     args: List[str] = Field(default_factory=list, description="Command arguments")
     working_dir: Optional[str] = Field(None, description="Working directory (relative to project root)")
@@ -325,7 +325,7 @@ async def execute_command(request: ExecuteCommandRequest):
 
 class ReadFileRequest(BaseModel):
     """Request to read a file from the sandbox"""
-    project_name: str = Field(..., description="Project name (subdirectory in sandbox)")
+    project_name: str = Field(default="yourapp", description="Project folder (defaults to 'yourapp')")
     file_path: str = Field(..., description="File path relative to project root")
 
 
@@ -340,7 +340,7 @@ class ReadFileResponse(BaseModel):
 
 class WriteFileRequest(BaseModel):
     """Request to write a file to the sandbox"""
-    project_name: str = Field(..., description="Project name (subdirectory in sandbox)")
+    project_name: str = Field(default="yourapp", description="Project folder (defaults to 'yourapp')")
     file_path: str = Field(..., description="File path relative to project root")
     content: str = Field(..., description="File content to write")
     force_replace: bool = Field(default=False, description="If True, skip merge and replace file entirely (used by Sprint Review)")

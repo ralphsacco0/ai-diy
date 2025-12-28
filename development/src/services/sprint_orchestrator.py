@@ -5,7 +5,7 @@ Coordinates sprint execution with real LLM calls:
 - Mike (SPRINT_EXECUTION_ARCHITECT) breaks down stories into tasks
 - Alex (SPRINT_EXECUTION_DEVELOPER) generates actual code files with context
 - Jordan (SPRINT_EXECUTION_QA) generates and runs pytest test files
-- All files written to execution-sandbox/client-projects/{ProjectName}/
+- All files written to execution-sandbox/client-projects/yourapp/
 - Updates Backlog.csv with execution status
 - Logs events to execution_log_{sprint_id}.jsonl
 
@@ -46,7 +46,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from core.project_metadata import get_project_name_safe
+# Project folder is always 'yourapp' - single pipeline, no dynamic naming needed
 from api.conventions import validate_csv_headers
 from services.project_context import (
     extract_exports_from_file,
@@ -1704,7 +1704,7 @@ This pattern prevents "SQLITE_MISUSE: Database is closed" and server startup tim
         await self._post_to_chat("System", f"🚀 Sprint Orchestrator v{ORCHESTRATOR_VERSION}")
         
         stories: List[str] = plan.get("stories", [])
-        project_name = get_project_name_safe()
+        project_name = "yourapp"  # Fixed folder name - single pipeline
         
         # STEP 1: Identify Tech Stack NFR (required for SP-001, optional for SP-002+)
         logger.info("=" * 80)
@@ -4154,7 +4154,7 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
                 with open(arch_file, 'r', encoding='utf-8') as f:
                     return json.load(f)
             return {
-                "project_name": get_project_name_safe(),
+                "project_name": "yourapp",
                 "architecture_locked": False,
                 "locked_at_sprint": None,
                 "conventions": {},
@@ -4164,7 +4164,7 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
         except Exception as e:
             logger.warning(f"Could not load architecture: {e}")
             return {
-                "project_name": get_project_name_safe(),
+                "project_name": "yourapp",
                 "architecture_locked": False,
                 "locked_at_sprint": None,
                 "conventions": {},

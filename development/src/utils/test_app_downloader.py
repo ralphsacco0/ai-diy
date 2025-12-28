@@ -25,7 +25,7 @@ import json
 
 class TestAppDownloader:
     def __init__(self):
-        self.project_name = "BrightHR_Lite_Vision"
+        self.project_name = "yourapp"
         self.project_root = Path("static/appdocs/execution-sandbox/client-projects") / self.project_name
         self.output_dir = Path("downloads")
         self.test_dir = Path("test_extraction")
@@ -45,10 +45,10 @@ class TestAppDownloader:
         """Create a smart start script that works from any location."""
         script_content = '''#!/bin/bash
 
-# BrightHR Lite Smart Start Script
+# Your App - Smart Start Script
 # This script works from any location - no manual configuration needed!
 
-echo "🚀 Starting BrightHR Lite Application..."
+echo "🚀 Starting Your Application..."
 
 # Auto-detect script location (works from any folder)
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -82,12 +82,8 @@ echo "🚀 Starting application on http://localhost:3001"
 PORT=3001 npm start
 
 echo ""
-echo "✅ BrightHR Lite is running!"
+echo "✅ Your app is running!"
 echo "🌐 Open: http://localhost:3001"
-echo ""
-echo "📝 Login Credentials:"
-echo "   Admin: admin@test.com / Password123!"
-echo "   Employee: john@company.com / Password123!"
 echo ""
 echo "🛑 To stop: Press Ctrl+C"
 '''

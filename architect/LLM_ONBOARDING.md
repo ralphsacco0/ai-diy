@@ -284,12 +284,12 @@ AI-DIY was originally built to run locally on Mac. It is now being migrated to a
 
 ### Generated App Output Path
 
-Generated apps are written to the **execution sandbox** at the same relative path on both platforms:
+Generated apps are written to the **execution sandbox** at a fixed path on both platforms (single pipeline - folder is always `yourapp`):
 
 | Environment | Generated app location |
 |-------------|------------------------|
-| Railway | `/app/development/src/static/appdocs/execution-sandbox/client-projects/{project_name}/` (mounted volume) |
-| Mac | `development/src/static/appdocs/execution-sandbox/client-projects/{project_name}/` (local filesystem) |
+| Railway | `/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp/` (mounted volume) |
+| Mac | `development/src/static/appdocs/execution-sandbox/client-projects/yourapp/` (local filesystem) |
 
 **Other key data paths (same structure on both platforms):**
 
@@ -431,7 +431,7 @@ curl -s -u "Ralph:!password321!" "https://ai-diy-dev-production.up.railway.app/s
 **File Paths on Railway:**
 - Railway container root: `/app/`
 - Sprint logs: `/app/development/src/static/appdocs/sprints/`
-- Client projects: `/app/development/src/static/appdocs/execution-sandbox/client-projects/`
+- Generated app: `/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp/`
 - Backlog: `/app/development/src/static/appdocs/backlog/Backlog.csv`
 - Visions: `/app/development/src/static/appdocs/visions/`
 
