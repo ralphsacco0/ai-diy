@@ -402,6 +402,13 @@ JSON VALIDATION RULES:
    ❌ { 'key': 'value' }
    ✅ { "key": "value" }
 
+6. NO TEMPLATE LITERALS IN JSON STRINGS:
+   ❌ "Use query like \`%${search}%\`"
+   ✅ "Use LIKE query with percent wildcards around search term"
+
+   Template literal backticks and ${} syntax cause JSON parse errors.
+   Describe the logic in plain English, not JavaScript code syntax.
+
 Your output will be parsed by JSON.parse(). Any JavaScript code will cause errors.
 
 ═══════════════════════════════════════════════════════════════════════════════

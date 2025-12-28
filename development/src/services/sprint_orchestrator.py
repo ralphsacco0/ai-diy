@@ -3757,6 +3757,11 @@ OUTPUT ONLY VALID JSON NOW:"""
                         json_str.replace("\\'", "'").replace('\\"', '"'),
                         # Strategy 3: Try to fix unescaped quotes by escaping them
                         re.sub(r'(?<!\\)"(?=.*":)', r'\\"', json_str),
+                        # Strategy 4: Fix template literal escape issues (${...} causes invalid \escape)
+                        # Replace backticks with single quotes and ${} with placeholder text
+                        re.sub(r'`([^`]*)\$\{([^}]*)\}([^`]*)`', r"'\1[VAR:\2]\3'", json_str),
+                        # Strategy 5: Escape bare ${} that aren't in template literals
+                        json_str.replace('${', '\\${'),
                     ]
                     
                     for idx, repaired in enumerate(repair_attempts):
