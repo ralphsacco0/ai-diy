@@ -411,9 +411,19 @@ JSON VALIDATION RULES:
    ❌ { "port": 3000 /* default port */ }
    ✅ { "port": 3000 }
 
-4. ESCAPE BACKSLASHES IN REGEX:
+4. ESCAPE BACKSLASHES IN REGEX AND CODE:
    ❌ "Validate email with /^[^\s@]+@[^\s@]+\.[^\s@]+$/"
    ✅ "Validate email with /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/"
+   
+   ❌ "csv.split(/\\r?\\n/).slice(1)"
+   ✅ "csv.split(/\\\\r?\\\\n/).slice(1)"
+   
+   CRITICAL: In JSON strings, ALL backslashes must be doubled:
+   - \r becomes \\r
+   - \n becomes \\n  
+   - \t becomes \\t
+   - \" becomes \\"
+   - \\ becomes \\\\
 
 5. USE DOUBLE QUOTES ONLY:
    ❌ { 'key': 'value' }
