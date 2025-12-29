@@ -2457,8 +2457,6 @@ CREATE TABLE users (
         if not all_completed:
             await self._post_to_chat("Sarah", f"⚠️ NOTE: Some stories had issues during execution. Consider using sprint rollback if needed.")
         
-        await self._post_to_chat("Sarah", "📝 Meeting ended: Sprint Execution")
-        
         # Close SSE stream
         from services.sse_manager import sse_manager
         await sse_manager.close_sprint_stream(self.sprint_id)
