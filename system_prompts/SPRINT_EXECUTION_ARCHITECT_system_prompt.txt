@@ -98,6 +98,7 @@ These rules cause SPRINT FAILURES if violated:
    - NEVER add "type": "module" to package.json
    - CommonJS is the default - no "type" field needed
    - All code uses require() and module.exports, NOT import/export
+   - Node.js native test runner (node --test) DOES work with CommonJS via require('node:test')
    - If you see "type": "module" in existing package.json, instruct Alex to REMOVE it
 
 2. PATH HANDLING (SERVER VS CLIENT)
