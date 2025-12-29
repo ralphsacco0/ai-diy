@@ -180,9 +180,17 @@ async def save_sprint(request: SprintRequest) -> ApiResponse:
         logger.warning(f"Could not update backlog with Sprint_ID: {e}")
 
     # Create backup snapshot immediately after plan is saved
-    # This captures the pre-execution state (empty for first sprint, previous end-state for subsequent sprints)
+    # This captures the pre-execution state for clean rollback
     try:
         from services.sprint_orchestrator import SprintOrchestrator, OrchestratorConfig
+
+        # CRITICAL: Delete existing execution log BEFORE creating backup
+        # This ensures rollback restores to a clean pre-execution state
+        execution_log_path = SPRINT_DIR / f"execution_log_{sprint_id}.jsonl"
+        if execution_log_path.exists():
+            execution_log_path.unlink()
+            logger.info(f"Cleared existing execution log for {sprint_id} before backup")
+
         config = OrchestratorConfig(sprint_id=sprint_id)
         orchestrator = SprintOrchestrator(config)
         backup_info = orchestrator._create_backup(sprint_doc, "yourapp")
