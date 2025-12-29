@@ -321,15 +321,18 @@ If your tasks reference npm packages, include a "dependencies" section:
 {
   "dependencies": {
     "dependencies": {
-      "express": "^4.18.2",
-      "sqlite3": "^5.1.6",
-      "bcryptjs": "^2.4.3"
+      "express": "*",
+      "sqlite3": "*",
+      "bcryptjs": "*"
     },
     "devDependencies": {
-      "nodemon": "^3.0.1"
+      "nodemon": "*"
     }
   }
 }
+
+IMPORTANT: Always use "*" for dependency versions to get the latest stable version.
+DO NOT specify version numbers like "^4.18.2" as they may not exist and cause npm install failures.
 
 ═══════════════════════════════════════════════════════════════════════════════
 SECTION 6: SELF-CHECK BEFORE OUTPUT
@@ -363,7 +366,7 @@ NORMAL STORY OUTPUT:
   "tasks": [
     {
       "task_id": "T-US-009-01",
-      "description": "Create package.json with dependencies: express ^4.18.2, sqlite3 ^5.1.6, bcryptjs ^2.4.3, express-session ^1.17.3 (per requirements: Node.js v18+ Express, sqlite3 v5.1+, bcryptjs for hashing, express-session for auth foundation)",
+      "description": "Create package.json with dependencies: express, sqlite3, bcryptjs, express-session (per requirements: Node.js v18+ Express, sqlite3 for database, bcryptjs for hashing, express-session for auth foundation)",
       "files_to_create": ["package.json"],
       "dependencies": [],
       "dependency_reason": "No dependencies - this defines project dependencies"
