@@ -74,18 +74,15 @@ def get_project_name(appdocs_base_path: Path = None) -> str:
 
 def get_project_name_safe(appdocs_base_path: Path = None) -> str:
     """
-    Get project name and convert to safe format for file paths.
-    
-    Converts spaces to underscores and removes special characters.
-    Used for creating project directories and file paths.
-    
+    Get project folder name for file paths.
+
+    Returns fixed 'yourapp' folder - single pipeline, no dynamic naming.
+    All generated apps are written to execution-sandbox/client-projects/yourapp/
+
     Args:
-        appdocs_base_path: Base path to appdocs directory. If None, uses relative path.
-    
+        appdocs_base_path: Unused, kept for backward compatibility.
+
     Returns:
-        Safe project name string (alphanumeric, underscores, hyphens only)
+        Fixed 'yourapp' string
     """
-    project_name = get_project_name(appdocs_base_path)
-    raw = str(project_name).strip().replace(" ", "_")
-    safe = re.sub(r"[^A-Za-z0-9_-]", "", raw)
-    return safe[:50] or "default_project"
+    return "yourapp"
