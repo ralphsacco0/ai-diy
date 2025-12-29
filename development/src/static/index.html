@@ -1577,6 +1577,9 @@
                     alert('Error updating model selection');
                 }
             });
+
+            // Focus on message input when page loads
+            messageInput.focus();
         });
 
         // Handle persona selection
@@ -1584,6 +1587,7 @@
             const personaItem = e.target.closest('.persona-item');
             if (personaItem) {
                 const checkbox = personaItem.querySelector('.persona-checkbox');
+                if (checkbox.disabled) return;
                 checkbox.checked = !checkbox.checked;
                 personaItem.classList.toggle('selected', checkbox.checked);
             }
@@ -1610,6 +1614,13 @@
         function sendMessage() {
             const message = messageInput.value.trim();
             if (!message) return;
+
+            // Check if user typed "end meeting" (case-insensitive) while in a meeting
+            if (currentMeeting && message.toLowerCase() === 'end meeting') {
+                messageInput.value = '';
+                endMeetingByPersona(currentMeeting);
+                return;
+            }
 
             // Check if this is a response to pending meeting transition confirmation
             if (pendingMeetingTransition) {
@@ -3620,13 +3631,19 @@
             
             // Disable other personas (all meetings have solo_mode: true)
             disableOtherPersonas();
-            
+
+            // Disable persona checkboxes during meeting
+            setPersonaCheckboxesEnabled(false);
+
             // Update meeting status
             const displayName = projectName || meetingType.replace(' Meeting', '');
             updateMeetingStatus(displayName, meetingType);
 
             // Update meeting button states
             updateMeetingButtonStates();
+
+            // Focus on message input
+            messageInput.focus();
         }
 
         function endMeetingByPersona(meetingPersona) {
@@ -3669,10 +3686,16 @@
             // Re-enable regulars
             enableRegulars();
 
+            // Re-enable persona checkboxes after meeting
+            setPersonaCheckboxesEnabled(true);
+
             // Update meeting button states
             updateMeetingButtonStates();
+
+            // Focus on message input
+            messageInput.focus();
         }
-        
+
         // Legacy wrapper functions for backward compatibility
         function startVisionMeeting(meetingName) {
             startMeeting('VISION_PM', meetingName, 'Vision Meeting');
@@ -3744,6 +3767,13 @@
                 meetingNameEl.textContent = meetingName;
                 meetingTypeEl.textContent = meetingType;
             }
+        }
+
+        function setPersonaCheckboxesEnabled(enabled) {
+            // Enable or disable all persona checkboxes to prevent changes during meetings
+            document.querySelectorAll('.persona-checkbox').forEach(checkbox => {
+                checkbox.disabled = !enabled;
+            });
         }
 
         function disableOtherPersonas() {
