@@ -2405,6 +2405,10 @@ CREATE TABLE users (
                     "Last_Updated": now,
                 })
                 
+                # Auto-complete related WF- stories when US- story completes successfully
+                if story_id.startswith("US-") and execution_status == "completed":
+                    await self._auto_complete_related_wireframes(story_id, now)
+                
             except Exception as e:
                 logger.error(f"Error executing story {story_id}: {e}", exc_info=True)
                 await self._log_event("story_failed", {
@@ -4371,8 +4375,8 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
 
     async def _update_backlog(self, story_id: str, updates: Dict[str, str]) -> None:
         try:
-            if not story_id.startswith("US-"):
-                return
+            # Update status for all story types (US-, NFR-, STYLE-, WF-, etc.)
+            # No filtering - all stories should have their status tracked
             if not BACKLOG_CSV_PATH.exists():
                 await self._log_event("backlog_update_skipped", {"story_id": story_id, "reason": "missing_csv"})
                 return
@@ -4408,6 +4412,42 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
             await self._log_event("backlog_updated", {"story_id": story_id, "updated_fields": list(updates.keys())})
         except Exception as e:
             await self._log_event("backlog_update_skipped", {"story_id": story_id, "reason": f"error:{str(e)}"})
+
+    async def _auto_complete_related_wireframes(self, us_story_id: str, completion_time: str) -> None:
+        """Auto-complete WF- stories that correspond to a completed US- story."""
+        try:
+            # Extract story number from US-XXX format
+            story_number = us_story_id.split("-")[1] if "-" in us_story_id else None
+            if not story_number:
+                return
+            
+            # Find corresponding WF- story (e.g., US-001 -> WF-001)
+            wf_story_id = f"WF-{story_number}"
+            
+            # Check if WF story exists in backlog
+            backlog_stories = self._load_backlog_stories()
+            if wf_story_id in backlog_stories:
+                wf_story = backlog_stories[wf_story_id]
+                current_status = wf_story.get('Execution_Status', '')
+                
+                # Only auto-complete if WF story is not already completed
+                if current_status not in ['completed', 'completed_with_failures']:
+                    await self._update_backlog(wf_story_id, {
+                        "Execution_Status": "completed",
+                        "Execution_Completed_At": completion_time,
+                        "Last_Event": "auto_completed_with_us_story",
+                        "Last_Updated": completion_time,
+                    })
+                    
+                    await self._log_event("wireframe_auto_completed", {
+                        "wf_story_id": wf_story_id,
+                        "us_story_id": us_story_id,
+                        "reason": "us_story_completed"
+                    })
+                    
+                    logger.info(f"✅ Auto-completed {wf_story_id} when {us_story_id} finished")
+        except Exception as e:
+            logger.warning(f"Could not auto-complete wireframe for {us_story_id}: {e}")
 
     # ============================================================================
     # BACKUP AND ROLLBACK METHODS
