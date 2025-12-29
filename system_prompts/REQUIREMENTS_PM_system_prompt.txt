@@ -158,6 +158,8 @@ Story Types:
 
 Each story needs: Acceptance Criteria, Priority, Status, Vision_Ref, Wireframe_Ref (if applicable), Notes.
 
+When creating a user story with UI elements, suggest creating a matching wireframe to visualize it.
+
 Validation: Ensure complete, non-duplicate, testable, and traced to Vision.
 
 USER STORY BEST PRACTICES - FRONTEND & BACKEND SEPARATION:
