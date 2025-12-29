@@ -3712,24 +3712,52 @@ OUTPUT ONLY VALID JSON NOW:"""
                 brace_count -= 1
                 if brace_count == 0 and start_idx != -1:
                     # Found complete JSON object
+                    json_str = text[start_idx:i+1]
+                    parsed = False
+
+                    # Try direct parse first
                     try:
-                        json_str = text[start_idx:i+1]
                         result = json.loads(json_str)
-                        # Store candidate instead of returning immediately; we'll
-                        # pick the largest valid JSON object after scanning.
                         candidates.append((json_str, result))
+                        parsed = True
                     except json.JSONDecodeError as e:
                         # Log the specific JSON error for debugging
-                        logger.error(f"JSON parse error at position {e.pos}: {e.msg}")
-                        logger.error(
-                            f"Failed JSON substring (chars {max(0, e.pos-50)}:{e.pos+50}): "
-                            f"...{json_str[max(0, e.pos-50):e.pos+50]}..."
-                        )
+                        logger.debug(f"JSON parse error at position {e.pos}: {e.msg}")
                     except Exception as e:
-                        logger.error(f"Unexpected error parsing JSON: {e}")
-                    finally:
-                        # Reset start index so we can look for the next object
-                        start_idx = -1
+                        logger.debug(f"Unexpected error parsing JSON: {e}")
+
+                    # If direct parse failed, try repair strategies immediately
+                    if not parsed:
+                        # Combined repair: fix all common issues at once
+                        # 1. \' -> ' (invalid JSON escape for single quotes)
+                        # 2. ${ -> $\u007B (template literals cause invalid \$ escape)
+                        # 3. }'"> -> }'\"> (unescaped " after JS object in HTML context)
+                        combined_repair = json_str.replace("\\'", "'").replace('${', '$\\u007B').replace('}\">', '}\\\">')
+
+                        repair_attempts = [
+                            # Strategy 1: Combined repair (most likely to work)
+                            combined_repair,
+                            # Strategy 2: Just template literals
+                            json_str.replace('${', '$\\u007B'),
+                            # Strategy 3: Just single quote escapes
+                            json_str.replace("\\'", "'"),
+                        ]
+
+                        for repair_idx, repaired in enumerate(repair_attempts):
+                            try:
+                                result = json.loads(repaired)
+                                logger.warning(f"Successfully parsed JSON after inline repair #{repair_idx+1}")
+                                candidates.append((repaired, result))
+                                parsed = True
+                                break
+                            except:
+                                continue
+
+                    if not parsed:
+                        logger.error(f"Could not parse JSON object ({len(json_str)} chars) even with repairs")
+
+                    # Reset start index so we can look for the next object
+                    start_idx = -1
 
         # If we found any valid JSON objects, return the largest one by length.
         if candidates:
