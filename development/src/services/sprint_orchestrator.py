@@ -1302,31 +1302,12 @@ This pattern prevents "SQLITE_MISUSE: Database is closed" and server startup tim
 
         allowed_deps = set(baseline_deps)
         try:
-            # Method 1: Look for top-level dependencies block (existing logic)
             deps_block = design.get("dependencies") or {}
             if isinstance(deps_block, dict):
                 for key in ("dependencies", "devDependencies"):
                     section = deps_block.get(key) or {}
                     if isinstance(section, dict):
                         allowed_deps.update(section.keys())
-            
-            # Method 2: Extract dependencies from package.json tasks (new logic)
-            tasks = design.get("tasks", []) or []
-            for task in tasks:
-                if not isinstance(task, dict):
-                    continue
-                files_to_create = task.get("files_to_create", []) or []
-                if "package.json" in files_to_create:
-                    # Parse task description for dependency names
-                    description = task.get("description", "")
-                    if description:
-                        # Look for common dependency patterns in task descriptions
-                        import re
-                        # Match patterns like: "dotenv": "^16.3.1", "nodemailer": "^6.9.7"
-                        dep_matches = re.findall(r'"([a-z0-9@/-]+)"\s*:\s*"[^"]*"', description)
-                        for dep_name in dep_matches:
-                            allowed_deps.add(dep_name)
-                            logger.debug(f"Extracted dependency '{dep_name}' from package.json task: {task.get('task_id')}")
         except Exception as e:
             logger.debug(f"Error building dependency surface for arch contract on {story_id}: {e}")
 
