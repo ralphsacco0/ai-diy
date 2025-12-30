@@ -1582,9 +1582,9 @@ async def run_sprint_review_alex_execution_mode(
                             try:
                                 from pathlib import Path
                                 from datetime import datetime
-                                
-                                # Determine project path
-                                execution_sandbox = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
+
+                                # Use consistent path resolution (matches sprint_orchestrator.py pattern)
+                                execution_sandbox = Path("static/appdocs/execution-sandbox/client-projects")
                                 project_path = execution_sandbox / project_name
                                 
                                 if project_path.exists():
@@ -1989,13 +1989,13 @@ async def execute_function_calls(tool_calls: List[Dict], existing_content: str, 
             try:
                 from services.snapshot_manager import list_snapshots
                 from pathlib import Path
-                
+
                 project_name = arguments.get("project_name")
                 if not project_name:
                     raise ValueError("Missing required argument: project_name")
-                
-                # Determine project path
-                execution_sandbox = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
+
+                # Use consistent path resolution (matches sprint_orchestrator.py pattern)
+                execution_sandbox = Path("static/appdocs/execution-sandbox/client-projects")
                 project_path = execution_sandbox / project_name
                 
                 if not project_path.exists():
@@ -2030,16 +2030,16 @@ async def execute_function_calls(tool_calls: List[Dict], existing_content: str, 
             try:
                 from services.snapshot_manager import restore_snapshot
                 from pathlib import Path
-                
+
                 project_name = arguments.get("project_name")
                 snapshot_id = arguments.get("snapshot_id")
                 reason = arguments.get("reason", "User requested rollback")
-                
+
                 if not project_name or not snapshot_id:
                     raise ValueError("Missing required arguments: project_name and snapshot_id")
-                
-                # Determine project path
-                execution_sandbox = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
+
+                # Use consistent path resolution (matches sprint_orchestrator.py pattern)
+                execution_sandbox = Path("static/appdocs/execution-sandbox/client-projects")
                 project_path = execution_sandbox / project_name
                 
                 if not project_path.exists():

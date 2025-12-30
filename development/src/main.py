@@ -197,8 +197,8 @@ async def control_app(request: AppControlRequest):
         # Fixed project folder - single pipeline
         project_name = "yourapp"
 
-        # Project is in execution sandbox
-        sandbox_base = Path(__file__).parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
+        # Use consistent path resolution (matches sprint_orchestrator.py pattern)
+        sandbox_base = Path("static/appdocs/execution-sandbox/client-projects")
         project_dir = sandbox_base / project_name
 
         if not project_dir.exists():

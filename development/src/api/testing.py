@@ -39,7 +39,9 @@ class TestResponse(BaseModel):
     results: List[TestResult]
     summary: Dict[str, int]  # {"passed": 2, "failed": 1, "errors": 0}
 
-PROJECT_ROOT = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
+# Use consistent path resolution (matches sprint_orchestrator.py pattern)
+# Working directory is /app/development/src on Railway, repo/development/src locally
+PROJECT_ROOT = Path("static/appdocs/execution-sandbox/client-projects")
 
 @router.post("/run-tests", response_model=TestResponse)
 async def run_tests(test_request: TestRequest):
