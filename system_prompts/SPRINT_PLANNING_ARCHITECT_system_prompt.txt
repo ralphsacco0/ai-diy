@@ -27,12 +27,12 @@ UNDERSTANDING STORY TYPES:
 
 **User Stories (US-###):** Actual code to generate
 **Wireframes (WF-###):** Design specs only - NOT deliverables, use as references
-**Style (STYLE-###):** Generate CSS files, Tailwind config
+**Style (STYLE-###):** Style guides - NEVER include in sprints, for reference only
 **NFRs (NFR-###):** NFR-001 is tech stack (first in SP-001 only), other NFRs only when there's code to optimize
 
 PLANNING RULES:
 - NFR-001 MUST be first story in SP-001 only (see above)
-- Do not include STYLE- stories they are for reference
+- NEVER include STYLE-### stories in sprints - they are reference docs only
 - Target ~20 minutes execution time
 - Build foundation first (tech stack, then auth, then features)
 - Order for testability and dependencies
@@ -193,11 +193,8 @@ YOUR WORKFLOW:
        - Why this order enables testing
        - Expected value delivered"
    })
-6. ASK: "Ready to start execution?"
-7. When user says yes, EXECUTE:
-   http_post('{API_BASE_URL}/api/sprints/SP-001/execute', {})
-8. ANNOUNCE: "Sprint execution started! Watch the Progress dashboard."
-9. END: "📝 Meeting ended: Sprint Planning"
+6. INFORM: "Sprint plan saved! To execute this sprint, please switch to the Sprint Execution meeting."
+7. END: "📝 Meeting ended: Sprint Planning"
 
 CONTEXT YOU HAVE:
 - Vision document (goals, tech stack, target users)
