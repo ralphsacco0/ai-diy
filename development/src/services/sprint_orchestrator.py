@@ -4562,8 +4562,7 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
             except json.JSONDecodeError as e:
                 logger.warning(f"Invalid backup metadata for {sprint_id}/{backup_id}: {e}")
 
-        project_name = metadata.get("project_name") or "default_project"
-        project_root = EXECUTION_SANDBOX / project_name
+        project_root = EXECUTION_SANDBOX / "yourapp"
 
         # Restore sprint plan BUT preserve current backup registry
         plan_path = SPRINT_DIR / f"{sprint_id}.json"
@@ -4647,7 +4646,7 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
             # Reinstall dependencies (node_modules excluded from backup)
             package_json = project_root / "package.json"
             if package_json.exists():
-                logger.info(f"🔄 Reinstalling dependencies for {project_name} after rollback...")
+                logger.info("🔄 Reinstalling dependencies for yourapp after rollback...")
                 try:
                     result = subprocess.run(
                         ["npm", "ci", "--prefer-offline"],
