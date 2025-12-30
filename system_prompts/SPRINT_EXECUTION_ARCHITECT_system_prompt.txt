@@ -328,7 +328,7 @@ You MUST also include a "conventions" block defining:
 
 FOR ALL STORIES:
 
-If your tasks reference npm packages, include a "dependencies" section:
+You MUST include a "dependencies" section listing ALL npm packages this story adds:
 
 {
   "dependencies": {

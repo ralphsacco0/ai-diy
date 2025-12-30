@@ -739,7 +739,7 @@ PACKAGE.JSON REQUIREMENTS (Node.js projects):
 When creating package.json:
 1. ALWAYS include "dependencies" section with ALL packages your code needs
 2. ALWAYS include "devDependencies" section (leave empty - no test frameworks needed)
-3. Use exact versions (e.g., "^4.18.0") - NOT wildcards like "*"
+3. Use wildcards ("*") for all dependency versions - NOT exact versions like "^4.18.0"
 4. Include "scripts" section with: start, test (node --test), stop
 5. List ALL packages that your generated code imports/requires
 
@@ -879,11 +879,11 @@ Example package.json for Node.js + Express + SQLite (Lean MVP):
   "name": "business-app",
   "version": "1.0.0",
   "dependencies": {
-    "express": "^4.18.0",
-    "sqlite3": "^5.1.0",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.0",
-    "cors": "^2.8.5"
+    "express": "*",
+    "sqlite3": "*",
+    "bcryptjs": "*",
+    "jsonwebtoken": "*",
+    "cors": "*"
   },
   "devDependencies": {
   },
@@ -921,8 +921,8 @@ Example package.json for Node.js + Express (Minimal):
   "name": "app",
   "version": "1.0.0",
   "dependencies": {
-    "express": "^4.18.0",
-    "sqlite3": "^5.1.0"
+    "express": "*",
+    "sqlite3": "*"
   },
   "devDependencies": {
   },
