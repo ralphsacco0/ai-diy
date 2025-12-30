@@ -4509,6 +4509,13 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
             # Capture current project sandbox (even if empty)
             # Exclude node_modules - will be reinstalled on restore
             project_root = EXECUTION_SANDBOX / project_name
+            
+            # SPECIAL RULE: Sprint 1 needs clean yourapp folder to prevent stale ES module files
+            if self.sprint_id == "SP-001":
+                if project_root.exists():
+                    shutil.rmtree(project_root)
+                    logger.info(f"🧹 Cleared yourapp folder for Sprint 1 during backup creation")
+            
             project_backup_dir = backup_root / "project"
             metadata["items"].append("project")
             if project_root.exists():
@@ -4653,7 +4660,7 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
                         cwd=str(project_root),
                         capture_output=True,
                         text=True,
-                        timeout=300  # 5 minutes
+                        timeout=300
                     )
 
                     if result.returncode != 0:
