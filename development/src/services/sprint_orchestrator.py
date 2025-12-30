@@ -4650,6 +4650,13 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
                 shutil.rmtree(project_root)
             shutil.copytree(project_backup, project_root)
 
+            # SPECIAL RULE: Sprint 1 needs clean yourapp folder even after rollback
+            # This prevents restoring contaminated files with "type": "module"
+            if sprint_id == "SP-001":
+                if project_root.exists():
+                    shutil.rmtree(project_root)
+                    logger.info(f"🧹 Cleared yourapp folder for Sprint 1 after rollback (removed stale ES module files)")
+
             # Reinstall dependencies (node_modules excluded from backup)
             package_json = project_root / "package.json"
             if package_json.exists():
