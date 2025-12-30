@@ -427,11 +427,12 @@ const server = app.listen(0);  // Random port, no conflicts
 ```
 
 🚨 CRITICAL - MODULE SYSTEM MATCHING:
-- If NFR-001 specifies CommonJS: use require() and module.exports in tests
-- If NFR-001 specifies ES modules: use import/export in tests
-- NEVER mix module systems - this causes "require is not defined" or "import not found" errors
-- Check package.json: if "type": "module" is present, use ES modules; otherwise use CommonJS
-- For this platform, CommonJS is the default - use require() unless explicitly told otherwise
+- AI-DIY platform uses ONLY CommonJS module system - ALWAYS use require() and module.exports in tests
+- Check Mike's conventions.module_system (source of truth) - will always be "commonjs"
+- IGNORE package.json "type" field - use CommonJS regardless of package.json contents
+- If Alex mistakenly added "type": "module", ignore it and use require() anyway
+- NEVER use import/export in test files - causes "require is not defined" errors
+- Check Section 3 of LLM_ONBOARDING.md for complete specification
 
 TEST LIFECYCLE CHECKLIST (verify before submitting):
 □ Am I using `require('../src/server.js')` NOT `spawn('node', ...)`? YES / NO

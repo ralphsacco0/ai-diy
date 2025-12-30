@@ -66,23 +66,14 @@ You MUST follow his decision EXACTLY.
 CHECK MIKE'S CONVENTIONS:
 Look for "module_system" in the conventions you receive.
 
-IF Mike specifies "module_system": "ES6" or "es6" or "esm":
-✅ Use import/export syntax throughout
-✅ Add "type": "module" to package.json
-✅ For __dirname, use this pattern:
-```javascript
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-```
-
-IF Mike specifies "module_system": "CommonJS" or "commonjs":
-✅ Use require/module.exports syntax throughout
-✅ Do NOT add "type": "module" to package.json
+CRITICAL: AI-DIY platform uses ONLY CommonJS module system.
+✅ ALWAYS use require/module.exports syntax throughout ALL files
+✅ NEVER add "type": "module" to package.json (causes sprint failures)
 ✅ __dirname is available natively (no imports needed)
+✅ Check Section 3 of LLM_ONBOARDING.md for complete specification
+
+NEVER use ES6 modules regardless of any other instructions.
+
 ```javascript
 const express = require('express');
 const db = require('./db');

@@ -120,7 +120,164 @@ These are the mistakes that cause "2 steps forward, 1 step back." **NEVER** do t
 
 ---
 
-## Section 3: Pre-Change Verification Checklist
+## Section 3: SEMINAL SPECIFICATION - Module System & Architecture Decisions
+
+**Status**: CANONICAL - This is the definitive specification  
+**Purpose**: Prevent "sonnet in claude code" conflicts between architecture.json and package.json  
+**Reference this section**: When an LLM wants to go another way on module system decisions  
+
+### The Fundamental Truth
+
+**THE AI-DIY PLATFORM USES ONLY COMMONJS MODULE SYSTEM. PERIOD.**
+
+This is not negotiable, not configurable, not dependent on user preferences. It is hardcoded into the platform architecture for stability and consistency.
+
+### Source of Truth Hierarchy
+
+1. **ULTIMATE SOURCE**: Mike's system prompt (`SPRINT_EXECUTION_ARCHITECT_system_prompt.txt`)
+   - Lines 97-102: "COMMONJS MODULE SYSTEM (MANDATORY)" 
+   - Line 98: "NEVER add 'type': 'module' to package.json"
+   - Line 322: "module_system: 'commonjs'" (for NFR-001)
+
+2. **Generated Artifacts**: architecture.json and package.json are OUTPUTS, not inputs
+   - architecture.json gets `"module_system": "commonjs"` because Mike's prompt mandates it
+   - package.json should NEVER get `"type": "module"` because Mike's prompt forbids it
+
+3. **Downstream Prompts**: Alex and Jordan must align with Mike's decisions
+   - If they don't align → sprint failures occur
+   - If they contradict → "require is not defined in ES module scope" errors
+
+### The Decision Chain (How It Should Work)
+
+```
+Mike's Prompt: "COMMONJS MODULE SYSTEM (MANDATORY)"
+    ↓
+Mike generates: architecture.json with "module_system": "commonjs"
+    ↓  
+Alex receives: Mike's architecture + Alex follows CommonJS rules
+    ↓
+Alex generates: package.json WITHOUT "type": "module"
+    ↓
+Jordan receives: Mike's conventions + Alex's files
+    ↓
+Jordan writes: Tests using require() and module.exports
+    ↓
+Result: Consistent CommonJS throughout entire application
+```
+
+### The Failure Chain (What Happens When Prompts Conflict)
+
+```
+Mike's Prompt: "NEVER add 'type': 'module'"
+    ↓ BUT ↓
+Alex's Prompt: "If ES6: Add 'type': 'module'"  ← CONTRADICTION!
+    ↓
+Alex sometimes adds: "type": "module" to package.json
+    ↓
+Jordan's Prompt: "Check package.json for module type"  ← AMPLIFIES ERROR!
+    ↓
+Jordan writes: Tests using import/export (because package.json says ES modules)
+    ↓
+Node.js: Treats ALL .js files as ES modules
+    ↓
+Mike's/Alex's CommonJS code: Uses require() and module.exports
+    ↓
+FAILURE: "require is not defined in ES module scope"
+```
+
+### Canonical Rules for All Personas
+
+**FOR MIKE (Architect)**:
+- ✅ ALWAYS output `"module_system": "commonjs"` in architecture.json
+- ✅ ALWAYS include the "COMMONJS MODULE SYSTEM (MANDATORY)" rule in task guidance
+- ❌ NEVER allow ES modules, even if user requests them
+
+**FOR ALEX (Developer)**:
+- ✅ ALWAYS use require() and module.exports in ALL .js files
+- ✅ ALWAYS omit "type" field from package.json (CommonJS is default)
+- ❌ NEVER add `"type": "module"` to package.json under ANY circumstances
+- ❌ NEVER use import/export statements in .js files
+- 🚨 IF you see ES module instructions in your prompt: IGNORE THEM and use CommonJS
+
+**FOR JORDAN (QA)**:
+- ✅ ALWAYS use require('node:test') and require('node:assert') in tests
+- ✅ ALWAYS use require() to import app modules: `const app = require('../src/server.js')`
+- ❌ NEVER use import statements in test files
+- 🚨 IF package.json has `"type": "module"`: IGNORE IT and use CommonJS anyway
+
+**FOR SPRINT REVIEW ALEX**:
+- ✅ When fixing bugs, restore code to CommonJS if it diverged
+- ✅ Remove `"type": "module"` from package.json if present
+- ❌ Never "fix" CommonJS code by converting it to ES modules
+
+### Why This Specification Exists
+
+**Historical Problem**: LLMs were receiving contradictory instructions:
+- Mike's prompt: "NEVER add 'type': 'module'"
+- Alex's prompt: "IF ES6: add 'type': 'module'" 
+- Jordan's prompt: "Check package.json for module type"
+
+**Result**: ~30% first-sprint failure rate due to module system conflicts
+
+**Solution**: This specification removes all ambiguity. CommonJS is the only option.
+
+### Troubleshooting Module System Failures
+
+**Symptom**: "require is not defined in ES module scope"
+**Root Cause**: Someone added `"type": "module"` to package.json
+**Fix**: Remove the `"type": "module"` line and restart
+
+**Symptom**: "Cannot use import statement outside a module"  
+**Root Cause**: ES module syntax in .js file with CommonJS package.json
+**Fix**: Convert import/export to require/module.exports
+
+**Symptom**: Tests fail with module errors
+**Root Cause**: Test files mixing module systems  
+**Fix**: Ensure ALL test files use require() for imports
+
+### The 8 Touch Points for Module System Consistency
+
+When auditing or changing module system behavior, these are ALL the files that must align:
+
+| # | Component | File Path | What to Check | Expected Value |
+|---|-----------|-----------|---------------|----------------|
+| 1 | **Vision Prompt** | `system_prompts/VISION_PM_system_prompt.txt` | Lines 51-59: Tech stack specification | Node.js + Express, no mention of ES modules |
+| 2 | **Requirements Prompt** | `system_prompts/REQUIREMENTS_PM_system_prompt.txt` | Lines 255-269: NFR-001 conflict detection | Must flag ES6 modules as conflicts |
+| 3 | **Sprint Orchestrator** | `development/src/services/sprint_orchestrator.py` | Lines 475-478: Export style hints | CommonJS patterns only |
+| 4 | **Mike's Prompt** | `system_prompts/SPRINT_EXECUTION_ARCHITECT_system_prompt.txt` | Lines 97-102: Module system rules | "COMMONJS MODULE SYSTEM (MANDATORY)" |
+| 5 | **Alex's Prompt** | `system_prompts/SPRINT_EXECUTION_DEVELOPER_system_prompt.txt` | Lines 69-80: Module system handling | 🚨 CONFLICTS - remove ES module options |
+| 6 | **Jordan's Prompt** | `system_prompts/SPRINT_EXECUTION_QA_system_prompt.txt` | Line 433: Module system detection | 🚨 CONFLICTS - check architecture, not package.json |
+| 7 | **Sprint Review Alex** | `system_prompts/SPRINT_REVIEW_ALEX_system_prompt.txt` | Lines 232, 244: Architecture compliance | References locked architecture as source |
+| 8 | **Generated Architecture** | `static/appdocs/architecture.json` | Line 6: module_system field | Always "commonjs" (output, not input) |
+
+### Touch Point Audit Checklist
+
+Before making ANY module system changes, verify ALL 8 touch points align:
+
+- [ ] **Vision Prompt**: Specifies Node.js + Express only, no ES module mentions
+- [ ] **Requirements Prompt**: Flags ES6 modules as conflicts in NFR-001 detection
+- [ ] **Sprint Orchestrator**: Uses CommonJS patterns in export hints
+- [ ] **Mike's Prompt**: Enforces "COMMONJS MODULE SYSTEM (MANDATORY)"
+- [ ] **Alex's Prompt**: Uses ONLY CommonJS instructions (no ES module options)
+- [ ] **Jordan's Prompt**: Checks architecture.json, not package.json for module system
+- [ ] **Sprint Review Alex**: References locked architecture as source of truth
+- [ ] **Generated Architecture**: Contains `"module_system": "commonjs"` (result of above)
+
+### Reference for Future LLMs
+
+When working on AI-DIY and you encounter module system decisions:
+
+1. **Read this section first** - Don't rely on other prompts
+2. **Use CommonJS everywhere** - No exceptions, no configurations  
+3. **Check all 8 touch points** - Use the audit checklist above
+4. **Report conflicts** - If your prompt contradicts this spec, flag it to Ralph
+5. **Stay consistent** - One module system, all the time, every sprint
+
+This specification supersedes any conflicting instructions in individual persona prompts.
+
+---
+
+## Section 4: Pre-Change Verification Checklist
 
 **BEFORE making ANY change, complete this checklist:**
 
