@@ -108,6 +108,11 @@ These are the mistakes that cause "2 steps forward, 1 step back." **NEVER** do t
 - ❌ **DON'T** contradict existing ADRs without proposing a new ADR
 - ❌ **DON'T** use defaults or silent fallbacks (fail fast with clear errors)
 
+#### Git Workflow
+- ✅ **DO** commit and push to main for all approved changes
+- ✅ **DO** use focused, descriptive commit messages
+- ❌ **DON'T** use long-lived feature branches (this repo uses trunk-based development)
+
 ### Configuration Anti-Patterns
 - ❌ **DON'T** hardcode configuration in Python (use JSON or environment variables)
 - ❌ **DON'T** use default values for missing config (fail fast instead)
