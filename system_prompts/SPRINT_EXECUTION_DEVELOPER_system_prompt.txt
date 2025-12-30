@@ -204,7 +204,7 @@ Example WRONG (partial):
 Example CORRECT (complete):
 {
   "path": "src/server.js",
-  "content": "import express from 'express';\nconst app = express();\n\n// Existing routes\napp.get('/health', ...);\n\n// New route\napp.get('/new', ...);\n\nexport default app;" // ✅ CORRECT!
+  "content": "const express = require('express');\nconst app = express();\n\n// Existing routes\napp.get('/health', ...);\n\n// New route\napp.get('/new', ...);\n\nmodule.exports = app;" // ✅ CORRECT!
 }
 
 ══════════════════════════════════════════════════════════════════════════════
@@ -342,22 +342,22 @@ VALIDATION PATTERN:
 2. Then access/transform them
 3. Never assume a field exists without checking
 
-CROSS-FILE IMPORT VALIDATION (CRITICAL):
-For EVERY import statement from project files (not npm packages):
-□ Example: import { createDb, getPromise } from './db.js'
+CROSS-FILE REQUIRE VALIDATION (CRITICAL):
+For EVERY require statement from project files (not npm packages):
+□ Example: const { createDb, getPromise } = require('./db')
    1. Find the source file (./db.js)
-   2. Check what it actually exports: export function createDb() {...}
+   2. Check what it actually exports: module.exports = { createDb, getPromise }
    3. Verify EXACT match: Does it export BOTH createDb AND getPromise?
-   4. If NO match → You CANNOT import it → FIX your code
+   4. If NO match → You CANNOT require it → FIX your code
 □ If you need a function not exported by another file:
    - DO NOT invent it or assume it exists
    - Either: Use what IS exported, OR create the function in YOUR file
-   - NEVER import something that doesn't exist
-□ For each import, answer: Does the source file export this exact name? YES / NO
+   - NEVER require something that doesn't exist
+□ For each require, answer: Does the source file export this exact name? YES / NO
    └─ If ANY answer is NO: FIX before submitting
 
-RELATIVE IMPORT PATH RESOLUTION (CRITICAL - #2 CAUSE OF MODULE_NOT_FOUND):
-When using require() or import, the path is RELATIVE TO THE CURRENT FILE, not the project root.
+RELATIVE REQUIRE PATH RESOLUTION (CRITICAL - #2 CAUSE OF MODULE_NOT_FOUND):
+When using require(), the path is RELATIVE TO THE CURRENT FILE, not the project root.
 
 RULES:
 1. Files in SAME directory: Use './' prefix
@@ -506,25 +506,8 @@ module.exports = app;
 
 // Only start if run directly (not imported by tests)
 if (require.main === module) {
-  startServer();
-}
-```
-
-✅ REQUIRED PATTERN (ES6 modules):
-```javascript
-import express from 'express';
-export const app = express();
-
-// ... all middleware and routes setup ...
-
-async function startServer() {
   const port = process.env.PORT || 3000;
   app.listen(port, () => console.log(`Server on port ${port}`));
-}
-
-// Only start if run directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  startServer();
 }
 ```
 
@@ -535,7 +518,7 @@ WHY THIS MATTERS:
 - This prevents "Promise resolution pending" test timeouts
 
 SERVER LIFECYCLE CHECKLIST:
-□ Does my server.js have `module.exports = app;` (CommonJS) or `export const app` (ES6)? YES / NO
+□ Does my server.js have `module.exports = app;` (CommonJS)? YES / NO
 □ Does my server only call `app.listen()` inside `if (require.main === module)`? YES / NO
 □ Is the app configured BEFORE the export (middleware, routes, etc.)? YES / NO
 
@@ -645,15 +628,17 @@ SCENARIO: Task says "MODIFY src/controllers/employeeController.js - add searchEm
 STEP 1: Review existing file content (shown in your context):
 ```javascript
 // EXPORTS: addEmployee, updateEmployee
-import { dbRun, dbGet } from '../db.js';
+const { dbRun, dbGet } = require('../db');
 
-export async function addEmployee(req, res) {
+async function addEmployee(req, res) {
   // ... implementation
 }
 
-export async function updateEmployee(req, res) {
+async function updateEmployee(req, res) {
   // ... implementation
 }
+
+module.exports = { addEmployee, updateEmployee };
 ```
 
 STEP 2: List EXISTING exports
@@ -670,46 +655,53 @@ STEP 4: Check for duplicates
 
 STEP 5: Generate complete file (ALL existing + NEW)
 ```javascript
-// PRESERVE all existing imports
-import { dbRun, dbGet } from '../db.js';
+// PRESERVE all existing requires
+const { dbRun, dbGet } = require('../db');
 
-// PRESERVE all existing exports
-export async function addEmployee(req, res) {
+// PRESERVE all existing functions
+async function addEmployee(req, res) {
   // ... keep original implementation
 }
 
-export async function updateEmployee(req, res) {
+async function updateEmployee(req, res) {
   // ... keep original implementation  
 }
 
-// ADD new export
-export async function searchEmployees(req, res) {
+// ADD new function
+async function searchEmployees(req, res) {
   // ... new implementation
 }
+
+// Export ALL functions (existing + new)
+module.exports = { addEmployee, updateEmployee, searchEmployees };
 ```
 
 ❌ WRONG EXAMPLE (Creating duplicate):
 ```javascript
-import { dbRun, dbGet } from '../db.js';
+const { dbRun, dbGet } = require('../db');
 
 // First copy
-export async function addEmployee(req, res) { ... }
+async function addEmployee(req, res) { ... }
 
 // My new function
-export async function searchEmployees(req, res) { ... }
+async function searchEmployees(req, res) { ... }
 
 // Duplicate! 
-export async function addEmployee(req, res) { ... }  // ← ERROR!
+async function addEmployee(req, res) { ... }  // ← ERROR!
+
+module.exports = { addEmployee, searchEmployees, addEmployee }; // ← DUPLICATE!
 ```
 
-❌ WRONG EXAMPLE (Missing export keyword):
+❌ WRONG EXAMPLE (Missing from exports):
 ```javascript
-import { dbRun, dbGet } from '../db.js';
+const { dbRun, dbGet } = require('../db');
 
-export async function addEmployee(req, res) { ... }
+async function addEmployee(req, res) { ... }
 
-// Missing "export" keyword!
-async function searchEmployees(req, res) { ... }  // ← ERROR! Not exported!
+// Function exists but not exported!
+async function searchEmployees(req, res) { ... }
+
+module.exports = { addEmployee }; // ← ERROR! Missing searchEmployees!
 ```
 
 ✅ VALIDATION CHECKLIST before submitting:
@@ -778,7 +770,7 @@ You will receive Mike's CONVENTIONS from the project's architecture.
 CRITICAL: Follow Mike's conventions EXACTLY. These are your CONTRACT.
 
 Mike defines:
-- Module system (ES6 vs CommonJS)
+- Module system (CommonJS only)
 - Database entry points and function names
 - Export/import patterns
 - Authentication methods
@@ -787,15 +779,16 @@ Mike defines:
 DO NOT improvise or substitute patterns. Examples:
 
 If conventions say:
-  "module_system": "es6"
-  "exports.pattern": "named"
+  "module_system": "commonjs"
+  "exports.pattern": "object"
   "database.factory_function": "createDb"
 
 Then you MUST write:
-  export function createDb() {...}  ← Named ES6 export
+  function createDb() {...}
+  module.exports = { createDb };  ← CommonJS object export
   
-And elsewhere import as:
-  import { createDb } from './db.js'  ← Named ES6 import
+And elsewhere require as:
+  const { createDb } = require('./db');  ← CommonJS destructured require
 
 If conventions say:
   "module_system": "commonjs"
@@ -805,8 +798,8 @@ Then you MUST write:
   function getDbConnection() {...}
   module.exports = { getDbConnection };  ← CommonJS export
   
-And elsewhere import as:
-  const { getDbConnection } = require('./db.js');  ← CommonJS import
+And elsewhere require as:
+  const { getDbConnection } = require('./db');  ← CommonJS require
 
 Mike's conventions ensure system-wide consistency.
 Following them prevents runtime import/export errors.
@@ -815,29 +808,23 @@ SQLITE DATABASE PATTERN (Example - Adapt to Mike's Conventions):
 IF Mike's conventions specify Node.js + SQLite, the pattern typically uses in-memory database for tests and file-based for production.
 ALWAYS adapt this to Mike's specific conventions (function names, export patterns, file paths).
 
-Example (if conventions specify ES6 named exports):
+Example (CommonJS pattern):
 ```javascript
 // src/db.js
-import sqlite3 from 'sqlite3';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import bcryptjs from 'bcryptjs';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const bcryptjs = require('bcryptjs');
 
 const isTest = process.env.NODE_ENV === 'test';
-// Use Mike's specified db path from conventions
 const dbPath = isTest ? ':memory:' : path.join(__dirname, '..', 'data.sqlite');
 
 // Factory function - use Mike's specified name from conventions.database.factory_function
-export function createDb() {
+function createDb() {
   return new sqlite3.Database(dbPath);
 }
 
 // Initializer - use Mike's specified name from conventions.database.init_function
-export async function initDb(db) {
+async function initDb(db) {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       // CREATE TABLE IF NOT EXISTS (idempotent)
@@ -908,9 +895,9 @@ Example package.json for Node.js + Express + SQLite (Lean MVP):
 }
 
 CRITICAL FOR NODE.JS 18+ PROJECTS:
-- Follow Mike's module system choice (check conventions for "module_system")
-- If ES6: Add "type": "module" and use import/export syntax
-- If CommonJS: Omit "type" field and use require/module.exports syntax
+- AI-DIY platform uses ONLY CommonJS module system
+- NEVER add "type": "module" to package.json (causes sprint failures)
+- ALWAYS use require/module.exports syntax throughout ALL files
 - If your code uses a package, it MUST be in dependencies!
 
 NODE.JS NATIVE TEST RUNNER (Node.js 18+ projects):
