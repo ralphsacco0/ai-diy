@@ -122,6 +122,17 @@ These rules cause SPRINT FAILURES if violated:
    rewritten by Caddy. Client-side paths resolve relative to the current URL,
    so they work both locally AND behind the proxy without any code changes.
 
+   API RESPONSES WITH REDIRECT URLS (HYBRID CASE):
+   When an API returns a redirect path in JSON that client JS will use:
+   - The redirect value must be RELATIVE (no leading /) because it flows to client-side JS
+
+   ✅ res.json({ success: true, redirect: 'dashboard' })    // Client does: window.location.href = data.redirect
+   ❌ res.json({ success: true, redirect: '/dashboard' })   // WRONG - breaks behind proxy
+
+   WHY: Even though res.json() is server-side code, the redirect value is consumed
+   by client-side JavaScript (window.location.href = data.redirect), so it must
+   follow CLIENT-SIDE rules (no leading /).
+
 3. BCRYPTJS (NOT BCRYPT)
    - Use bcryptjs for password hashing (NOT bcrypt)
    - bcrypt requires native compilation and fails on Railway

@@ -277,6 +277,17 @@ router.post('/api/auth')        fetch('api/auth')
 app.use('/api')                 window.location.href = 'login'
 ```
 
+API RESPONSES WITH REDIRECT URLS (HYBRID CASE):
+When an API returns a redirect path in JSON that client JS will use:
+- The redirect value must be RELATIVE (no leading /) because it flows to client-side JS
+
+✅ res.json({ success: true, redirect: 'dashboard' })    // Client does: window.location.href = data.redirect
+❌ res.json({ success: true, redirect: '/dashboard' })   // WRONG - breaks behind proxy
+
+WHY: Even though res.json() is server-side code, the redirect value is consumed
+by client-side JavaScript (window.location.href = data.redirect), so it must
+follow CLIENT-SIDE rules (no leading /).
+
 DEBUGGING TIP: If forms/links/fetch fail with 404:
 1. Check for leading / in HTML/JS - if you find any, REMOVE THEM
 2. The fix is simple: REMOVE the leading / to make paths relative
