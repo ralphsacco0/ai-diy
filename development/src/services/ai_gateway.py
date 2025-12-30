@@ -712,8 +712,9 @@ async def call_openrouter_api(messages: List[Dict], model: str, persona_name: st
                                                 from pathlib import Path
                                                 from services.project_context import extract_file_structure, extract_api_endpoints
 
-                                                # Base sandbox path should be under development/src, not one level higher
-                                                execution_sandbox = Path(__file__).parent.parent / "static" / "appdocs" / "execution-sandbox" / "client-projects"
+                                                # Use consistent path resolution (matches sprint_orchestrator.py pattern)
+                                                # Working directory is /app/development/src on Railway, repo/development/src locally
+                                                execution_sandbox = Path("static/appdocs/execution-sandbox/client-projects")
                                                 project_path = execution_sandbox / project_name
                                                 logger.info(f"Project path: {project_path}, exists: {project_path.exists()}", character=persona_key)
 
@@ -721,9 +722,9 @@ async def call_openrouter_api(messages: List[Dict], model: str, persona_name: st
                                                     # Use shared extraction utilities (same as sprint execution)
                                                     file_structure = extract_file_structure(project_path)
                                                     routes_info = "\n\n" + extract_api_endpoints(project_path)
-                                                    
+
                                                     # Check for wireframes
-                                                    wireframe_dir = Path(__file__).parent.parent / "static" / "appdocs" / "backlog" / "wireframes"
+                                                    wireframe_dir = Path("static/appdocs/backlog/wireframes")
                                                     if wireframe_dir.exists():
                                                         wireframes = list(wireframe_dir.glob("*.html"))
                                                         if wireframes:
