@@ -191,6 +191,14 @@ async def save_sprint(request: SprintRequest) -> ApiResponse:
             execution_log_path.unlink()
             logger.info(f"Cleared existing execution log for {sprint_id} before backup")
 
+        # SPECIAL RULE: Sprint 1 needs clean yourapp folder to prevent stale ES module files
+        if sprint_id == "SP-001":
+            import shutil
+            project_root = Path("static/appdocs/execution-sandbox/client-projects/yourapp")
+            if project_root.exists():
+                shutil.rmtree(project_root)
+                logger.info(f"🧹 Cleared yourapp folder for Sprint 1 clean start")
+
         config = OrchestratorConfig(sprint_id=sprint_id)
         orchestrator = SprintOrchestrator(config)
         backup_info = orchestrator._create_backup(sprint_doc, "yourapp")
