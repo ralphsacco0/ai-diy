@@ -12,8 +12,14 @@ echo "Working directory: $(pwd)"
 APP_DIR="/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp"
 
 if [ ! -d "$APP_DIR" ]; then
-    echo "ERROR: App directory not found: $APP_DIR"
-    exit 1
+    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+    LOCAL_DIR="$SCRIPT_DIR/../static/appdocs/execution-sandbox/client-projects/yourapp"
+    if [ -d "$LOCAL_DIR" ]; then
+        APP_DIR="$LOCAL_DIR"
+    else
+        echo "ERROR: App directory not found: $APP_DIR or $LOCAL_DIR"
+        exit 1
+    fi
 fi
 
 echo "Changing to app directory: $APP_DIR"

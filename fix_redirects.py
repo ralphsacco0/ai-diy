@@ -1,7 +1,15 @@
 #!/usr/bin/env python3
 from pathlib import Path
 
-PROJECT_ROOT = Path("/app/development/src/static/appdocs/execution-sandbox/client-projects/BrightHR_Lite_Vision")
+def resolve_project_root() -> Path:
+    railway = Path("/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp")
+    if railway.exists():
+        return railway
+    script_dir = Path(__file__).parent
+    local = script_dir / "development" / "src" / "static" / "appdocs" / "execution-sandbox" / "client-projects" / "yourapp"
+    return local
+
+PROJECT_ROOT = resolve_project_root()
 AUTH_CONTROLLER = PROJECT_ROOT / "src" / "controllers" / "authController.js"
 
 print("Fixing authController.js redirects...")

@@ -3,7 +3,7 @@
 **Status**: Canonical - MUST READ before any work session  
 **Audience**: LLMs working on AI-DIY platform  
 **Purpose**: Prevent "2 steps forward, 1 step back" by ensuring deep understanding  
-**Last Updated**: 2025-12-26
+**Last Updated**: 2025-12-30
 
 ---
 
@@ -71,6 +71,9 @@ These are the mistakes that cause "2 steps forward, 1 step back." **NEVER** do t
 - ❌ **DON'T** create new Backlog files (Backlog is a living document: `Backlog.csv`)
 - ❌ **DON'T** skip rotating backups when saving Backlog or Vision
 - ❌ **DON'T** modify CSV headers or add columns without ADR approval
+ - ❌ Missing `static/appdocs` in execution-sandbox paths (e.g., `development/src/execution-sandbox/...` is wrong)
+ - ❌ Using `project-sandbox` or `client projects` (with a space). Correct: `execution-sandbox/client-projects/`
+ - ❌ Using dynamic or legacy app folder names for generated apps. Folder name is fixed: `yourapp`
 
 ### API Anti-Patterns
 - ❌ **DON'T** create custom response formats (use `api/conventions.py`)
@@ -179,6 +182,8 @@ These are the mistakes that cause "2 steps forward, 1 step back." **NEVER** do t
 | Main entry point | `development/src/main.py` | Single consolidated entry |
 | Logs | `development/src/logs/app.jsonl` | Structured JSONL |
 | Documentation | `architect/` | All canonical docs |
+
+_Generated app sandbox (fixed):_ `static/appdocs/execution-sandbox/client-projects/yourapp/` _(Railway adds `/app` prefix)._ 
 
 ### Key Patterns (Which File to Copy for What)
 
@@ -290,6 +295,43 @@ Generated apps are written to the **execution sandbox** at a fixed path on both 
 |-------------|------------------------|
 | Railway | `/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp/` (mounted volume) |
 | Mac | `development/src/static/appdocs/execution-sandbox/client-projects/yourapp/` (local filesystem) |
+
+**Single source of truth for names**
+
+- `get_project_name_safe()` → returns the fixed folder name `yourapp` for all filesystem paths.
+- `get_project_name()` → returns the human-facing project title from the Vision document; used only for UI/meeting display.
+
+**Script/Test Path Resolver Standard**
+
+- Python example:
+
+```python
+from pathlib import Path
+
+def resolve_project_dir() -> Path:
+    railway = Path("/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp")
+    if railway.exists():
+        return railway
+    # Fallback to repo-relative path (adjust base as needed for the caller)
+    return Path(__file__).resolve().parents[1] / "development" / "src" / "static" / "appdocs" / "execution-sandbox" / "client-projects" / "yourapp"
+```
+
+- Bash example:
+
+```bash
+APP_DIR="/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp"
+if [ ! -d "$APP_DIR" ]; then
+  SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+  LOCAL_DIR="$SCRIPT_DIR/../static/appdocs/execution-sandbox/client-projects/yourapp"
+  APP_DIR="$LOCAL_DIR"
+fi
+```
+
+**Do not:**
+
+- Reference `project-sandbox` or `client projects` (with a space)
+- Omit `static/appdocs` from the sandbox path
+- Use dynamic/legacy folder names (must be `yourapp`)
 
 **Other key data paths (same structure on both platforms):**
 

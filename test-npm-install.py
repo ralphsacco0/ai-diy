@@ -9,12 +9,22 @@ import os
 import sys
 from pathlib import Path
 
+def resolve_project_dir() -> Path:
+    """Resolve project directory for Railway or Mac.
+    Tries Railway absolute path first, then local repo-relative path.
+    """
+    railway = Path("/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp")
+    if railway.exists():
+        return railway
+    script_dir = Path(__file__).parent
+    local = script_dir / "development" / "src" / "static" / "appdocs" / "execution-sandbox" / "client-projects" / "yourapp"
+    return local
+
 def test_npm_install():
     print("=== NPM INSTALL TEST ===")
     
     # Get the project directory (same logic as main app)
-    script_dir = Path(__file__).parent
-    project_dir = script_dir / "development/src/static/appdocs/execution-sandbox/client-projects/BrightHR_Lite_Vision"
+    project_dir = resolve_project_dir()
     
     print(f"Project directory: {project_dir}")
     print(f"Project exists: {project_dir.exists()}")

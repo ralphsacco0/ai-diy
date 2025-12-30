@@ -6,7 +6,15 @@ Run this on Railway to fix the deployed app.
 from pathlib import Path
 
 # Railway paths
-PROJECT_ROOT = Path("/app/development/src/static/appdocs/execution-sandbox/client-projects/BrightHR_Lite_Vision")
+def resolve_project_root() -> Path:
+    railway = Path("/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp")
+    if railway.exists():
+        return railway
+    script_dir = Path(__file__).parent
+    local = script_dir / "development" / "src" / "static" / "appdocs" / "execution-sandbox" / "client-projects" / "yourapp"
+    return local
+
+PROJECT_ROOT = resolve_project_root()
 LOGIN_HTML = PROJECT_ROOT / "public" / "login.html"
 AUTH_CONTROLLER = PROJECT_ROOT / "src" / "controllers" / "authController.js"
 

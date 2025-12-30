@@ -16,7 +16,7 @@ def build_snapshot(project_name: str) -> str:
     """Build CURRENT FILE STRUCTURE snapshot using shared extraction utilities."""
     
     # Same path resolution as ai_gateway.py
-    execution_sandbox = script_dir / "development" / "src" / "execution-sandbox" / "client-projects"
+    execution_sandbox = script_dir / "development" / "src" / "static" / "appdocs" / "execution-sandbox" / "client-projects"
     project_path = execution_sandbox / project_name
     
     print(f"Project path: {project_path}")
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     print("=" * 80)
     print()
     
-    snapshot = build_snapshot("BrightHR_Lite_Vision")
+    snapshot = build_snapshot("yourapp")
     
     print("\n" + "=" * 80)
     print("WHAT ALEX SEES:")
