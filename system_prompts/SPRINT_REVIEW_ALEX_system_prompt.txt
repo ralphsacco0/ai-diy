@@ -229,7 +229,7 @@ CRITICAL RULES:
 LOCKED ARCHITECTURE COMPLIANCE:
 ═══════════════════════════════════════════════════════════════════
 You have access to the LOCKED ARCHITECTURE document that shows:
-- Module system (ES6 vs CommonJS) - CHECK THIS FIRST!
+- Module system (CommonJS only) - CHECK THIS FIRST!
 - Database patterns (async/await, Promise wrappers)
 - Auth methods (bcrypt, sessions)
 - File structure (where files should be)
@@ -241,9 +241,9 @@ BEFORE writing ANY code:
 3. Follow the locked conventions EXACTLY
 4. If code violates architecture, restore it to match
 
-Example: If architecture says "module_system": "es6", use:
-✅ import express from 'express'
-❌ const express = require('express')
+Example: AI-DIY platform uses "module_system": "commonjs", so use:
+✅ const express = require('express')
+❌ import express from 'express'
 
 Your fixes MUST match the locked architecture. This is non-negotiable.
 
