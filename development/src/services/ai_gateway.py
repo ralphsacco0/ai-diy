@@ -1366,9 +1366,10 @@ async def run_sprint_review_alex_execution_mode(
     # Derive a list of target file paths from Alex's plan
     # Use multiple strategies to extract file paths reliably
     target_file_paths: List[str] = []
-    
+
     # Strategy 1: Look for "Files to modify:" section
     if files_to_modify_text:
+        logger.info(f"Strategy 1: Parsing files_to_modify_text: {files_to_modify_text[:200]}", character=persona_key)
         normalized = files_to_modify_text.replace(",", "\n")
         for raw_line in normalized.splitlines():
             line = raw_line.strip()
@@ -1377,25 +1378,38 @@ async def run_sprint_review_alex_execution_mode(
             line = line.lstrip("-*•").strip()
             # Remove markdown code backticks
             line = line.replace("`", "")
-            token = line.split()[0]
-            # Only accept tokens that look like actual file paths (must contain / and have file extension)
-            if "/" in token and ("." in token.split("/")[-1]):
-                # Ensure it starts with a valid directory prefix
-                valid_prefixes = ("src/", "public/", "routes/", "controllers/", "middleware/", "tests/", "views/", "config/", "lib/", "utils/")
-                if token.startswith(valid_prefixes):
-                    if token not in target_file_paths:
-                        target_file_paths.append(token)
+
+            # Extract file path - take first token that looks like a path
+            words = line.split()
+            if not words:
+                continue
+
+            # Try each word as a potential file path
+            for word in words:
+                word = word.strip(",.;:")  # Remove common punctuation
+                # Only accept tokens that look like actual file paths (must contain / and have file extension)
+                if "/" in word and ("." in word.split("/")[-1]):
+                    # Ensure it starts with a valid directory prefix
+                    valid_prefixes = ("src/", "public/", "routes/", "controllers/", "middleware/", "tests/", "views/", "config/", "lib/", "utils/")
+                    if word.startswith(valid_prefixes):
+                        if word not in target_file_paths:
+                            target_file_paths.append(word)
+                            logger.info(f"Strategy 1: Extracted file path: {word}", character=persona_key)
+                        break  # Found a path in this line, move to next line
     
     # Strategy 2: Scan entire Alex response for common file patterns
     if not target_file_paths and alex_last_response:
+        logger.info("Strategy 2: Scanning full Alex response for file patterns", character=persona_key)
         import re
         # Look for patterns like src/file.js, public/page.html, etc.
         file_pattern = r'\b((?:src|public|routes|controllers|middleware|tests)/[\w\-./]+\.(?:js|html|css|json))\b'
         matches = re.findall(file_pattern, alex_last_response, re.IGNORECASE)
+        logger.info(f"Strategy 2: Found {len(matches)} potential file paths in response", character=persona_key)
         for match in matches:
             cleaned = match.strip().replace("`", "")
             if cleaned not in target_file_paths:
                 target_file_paths.append(cleaned)
+                logger.info(f"Strategy 2: Extracted file path: {cleaned}", character=persona_key)
     
     # Strategy 3: Check conversation history for files Alex read during investigation
     if not target_file_paths:
