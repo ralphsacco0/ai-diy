@@ -4684,6 +4684,12 @@ Generated based on Tech Stack NFR: {tech_stack.get('story_id')}
                 shutil.rmtree(project_root)
             project_root.mkdir(parents=True, exist_ok=True)
 
+        # Clear Mike's breakdown files for this sprint to force fresh analysis
+        mike_breakdown_dir = SPRINT_DIR / "mike_breakdowns" / sprint_id
+        if mike_breakdown_dir.exists():
+            shutil.rmtree(mike_breakdown_dir)
+            logger.info(f"✅ Cleared Mike breakdowns for {sprint_id} during rollback")
+
         pruned_sprints = cls._prune_future_artifacts(sprint_id)
 
         # Backup registry already preserved above - no merge needed
