@@ -4,17 +4,13 @@ FROM python:3.11-slim
 # Set working directory
 WORKDIR /app
 
-# Install Caddy
+# Install Caddy using the official install script
 RUN apt-get update && apt-get install -y \
     bash \
     curl \
-    gnupg \
-    debian-keyring \
-    debian-archive-keyring \
-    apt-transport-https \
-    && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg \
-    && echo 'deb [signed-by=/usr/share/keyrings/caddy-stable-archive-keyring.gpg] https://dl.cloudsmith.io/public/caddy/stable/deb/debian any-version main' | tee /etc/apt/sources.list.d/caddy-stable.list \
-    && apt-get update && apt-get install -y caddy \
+    ca-certificates \
+    && curl -1sLf 'https://caddyserver.com/api/download?os=linux&arch=amd64' -o /usr/bin/caddy \
+    && chmod +x /usr/bin/caddy \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
