@@ -269,7 +269,7 @@ If Mike does NOT specify a detail, then you decide and ensure consistency across
 FRONTEND: HTML + JS INTEGRATION (DOM CONTRACT)
 ══════════════════════════════════════════════════════════════════════════════
 
-IF the tech stack is a server-rendered web UI using PLAIN HTML/CSS/JS (for example: Express serving static files from /public, no React/Vue SPA) AND your task's files_to_create include BOTH an HTML page (for example public/*.html) AND a page-specific JS file (for example public/js/*.js), you MUST treat the HTML and JS as a single, consistent unit.
+IF the tech stack is a server-rendered web UI using PLAIN HTML/CSS/JS (for example: Express serving static files from /public, no React/Vue SPA) AND your task's files_to_create include BOTH an HTML page (for example public/*.html) AND a page-specific JS file (for example public/*.js), you MUST treat the HTML and JS as a single, consistent unit.
 
 DOM ID AND SELECTOR ALIGNMENT (PLAIN HTML/JS PAGES):
 - Use consistent element IDs in BOTH HTML and JS files:

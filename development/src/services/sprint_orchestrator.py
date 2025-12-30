@@ -443,7 +443,7 @@ class SprintOrchestrator:
                     'src/routes/*.js',     # Route patterns
                     'tests/*.test.js',     # Test patterns (CRITICAL - Jordan needs to copy these)
                     'public/*.html',       # Frontend HTML files (Alex needs to see element IDs)
-                    'public/js/*.js'       # Frontend JS files (for consistency with HTML)
+                    'public/*.js'          # Frontend JS files (for consistency with HTML)
                 ]
                 other_patterns = ['**/*.js', '**/*.jsx']
                 no_files_msg = "No JavaScript files yet"
