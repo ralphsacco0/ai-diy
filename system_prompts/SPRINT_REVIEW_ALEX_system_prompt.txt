@@ -321,12 +321,16 @@ THE WRONG FIX (never do this):
 ═══════════════════════════════════════════════════════════════════
 ❌ NEVER add leading / to CLIENT-SIDE paths - that breaks proxy routing
 ❌ NEVER remove leading / from SERVER-SIDE paths - server redirects MUST stay absolute
-❌ NEVER add <base href="/"> - that doesn't help with proxy routing
+❌ NEVER add <base href="/"> or <base href="/yourapp/"> - breaks navigation in one or both environments
+   - <base href="/">: Breaks Railway (forces root instead of /yourapp/)
+   - <base href="/yourapp/">: Breaks Mac (path doesn't exist locally)
+   - Solution: NO <base> tag at all - relative paths work everywhere
 ❌ NEVER change res.redirect('/dashboard') to res.redirect('dashboard') - SERVER paths stay absolute
 
 ⚠️ CRITICAL: KNOW THE DIFFERENCE:
 - SERVER-SIDE = res.redirect(), router.get(), router.post() → KEEP the leading /
 - CLIENT-SIDE = HTML href, src, action, JS fetch, window.location → REMOVE the leading /
+- HTML STRUCTURE = NEVER use <base> tags, even if they exist in current code
 
 If you see a 404 after login redirect:
 1. The server redirect res.redirect('/dashboard') is CORRECT - don't touch it

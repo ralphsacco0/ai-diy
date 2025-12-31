@@ -100,6 +100,8 @@ These are the mistakes that cause "2 steps forward, 1 step back." **NEVER** do t
 - ❌ **DON'T** let Jordan use `spawn/exec/fork` in tests (use direct imports)
 - ❌ **DON'T** let Jordan forget `res.resume()` in HTTP tests (causes 120s timeout)
 - ❌ **DON'T** skip NFR-001 as the first story (sprint will fail)
+- ❌ **DON'T** add `<base href="/">` or any `<base>` tag to HTML files (breaks navigation on Railway)
+- ❌ **DON'T** let Mike specify `<base>` tags in technical notes (contradicts platform requirements)
 
 ### Governance Anti-Patterns
 - ❌ **DON'T** make changes without explaining them first
@@ -384,6 +386,7 @@ _Generated app sandbox (fixed):_ `static/appdocs/execution-sandbox/client-projec
 9. **Personas live in config** - Not in Python code
 10. **API responses use conventions.py** - Not custom formats
 11. **Files go in static/appdocs/** - Not anywhere else
+12. **NEVER use `<base>` tag in HTML** - Breaks navigation on Railway; relative paths work without it
 
 ### The 5 Standard API Actions
 
@@ -518,31 +521,83 @@ fi
 
 ### Reverse Proxy Path Handling
 
-Generated apps run behind a Caddy reverse proxy at `/yourapp/`. The proxy handles all path rewriting automatically.
+Generated apps run behind a Caddy reverse proxy at `/yourapp/` on Railway. On Mac (local dev), apps are accessed directly at `http://localhost:3000/`. The same code works in both environments.
 
 **How it works:**
-- Generated apps use standard **absolute paths** with leading `/` (e.g., `/dashboard`, `/api/auth/login`)
-- Caddy routes `/yourapp/*` requests to the generated app on port 3000
-- No special code needed in generated apps
-- Caddy handles health checks and connection management
+- **Railway**: Caddy routes `/yourapp/*` → generated app on port 3000
+- **Mac**: Direct access to `http://localhost:3000/` (no proxy)
+- Generated apps use standard **absolute paths** with leading `/` for server-side routes (e.g., `router.get('/dashboard', ...)`)
+- Generated apps use **relative paths without leading /** for client-side navigation (e.g., `href="dashboard"`)
 
 **Architecture:**
+
+Railway (Production):
 ```
 Internet → Caddy (:$PORT/8000) → FastAPI (127.0.0.1:8001)
                               → Generated Apps (127.0.0.1:3000) via /yourapp/*
+```
+
+Mac (Local Dev):
+```
+localhost:8000 → FastAPI
+localhost:3000 → Generated App (direct access, no proxy)
 ```
 
 **Code patterns (standard Express):**
 
 | Context | Pattern | Why |
 |---------|---------|-----|
-| Routes | `router.get('/login', ...)` | Absolute - Caddy strips prefix |
-| Redirects | `res.redirect('/dashboard')` | Absolute - Caddy rewrites Location header |
+| Routes | `router.get('/login', ...)` | Absolute - Caddy strips prefix on Railway, works directly on Mac |
+| Redirects | `res.redirect('/dashboard')` | Absolute - Caddy rewrites Location header on Railway |
 | Form actions | `<form action="api/auth/login">` | **Relative** - no leading `/` |
 | Links | `<a href="dashboard">` | **Relative** - no leading `/` |
 | Fetch | `fetch('api/user')` | **Relative** - no leading `/` |
 
 **IMPORTANT**: HTML paths (forms, links, fetch) must be **relative** (no leading `/`) so they resolve relative to the current URL. Server-side redirects use absolute paths because Caddy rewrites the `Location` header.
+
+**CRITICAL - DO NOT USE `<base>` TAG:**
+```html
+❌ <base href="/">           <!-- NEVER use this - breaks navigation on Railway -->
+❌ <base href="/yourapp/">   <!-- NEVER use this - breaks navigation on Mac -->
+✅ (no base tag)             <!-- Correct - relative paths work in both environments -->
+```
+
+**Why the `<base>` tag breaks navigation:**
+- With `<base href="/">`: Forces all URLs to resolve from root
+  - Railway: At `/yourapp/dashboard`, clicking `href="employees"` → `/employees` (404, should be `/yourapp/employees`)
+  - Mac: At `/dashboard`, clicking `href="employees"` → `/employees` (works by accident)
+- Without `<base>` tag: URLs resolve relative to current path
+  - Railway: At `/yourapp/dashboard`, clicking `href="employees"` → `/yourapp/employees` ✅
+  - Mac: At `/dashboard`, clicking `href="employees"` → `/employees` ✅
+
+**Example - Correct navigation HTML:**
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <!-- NO <base> tag -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <nav>
+        <a href="dashboard">Dashboard</a>          <!-- Relative, no leading / -->
+        <a href="employees">Employees</a>          <!-- Relative, no leading / -->
+        <button onclick="logout()">Logout</button>
+    </nav>
+    <script>
+        function logout() {
+            fetch('api/auth/logout', { method: 'POST' })  // Relative, no leading /
+                .then(res => res.json())
+                .then(data => {
+                    window.location.href = data.redirect;  // Server returns 'login' (relative)
+                });
+        }
+    </script>
+</body>
+</html>
+```
 
 **Cross-platform requirements:**
 - Use `process.env.PORT || 3000`

@@ -131,6 +131,56 @@ by client-side JavaScript (window.location.href = data.redirect), so it must
 follow CLIENT-SIDE rules (no leading /).
 
 ══════════════════════════════════════════════════════════════════════════════
+🚨 CRITICAL: HTML BASE TAG IS FORBIDDEN
+══════════════════════════════════════════════════════════════════════════════
+
+NEVER add <base href="..."> tags to HTML files, even if Mike specifies them in his task description.
+
+❌ FORBIDDEN PATTERNS:
+```html
+<base href="/">           <!-- NEVER - breaks Railway proxy routing -->
+<base href="/yourapp/">   <!-- NEVER - breaks Mac local development -->
+<base href="">            <!-- NEVER - no base tags at all -->
+```
+
+✅ CORRECT PATTERN (NO base tag):
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <!-- NO <base> tag here -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <nav>
+        <a href="dashboard">Dashboard</a>      <!-- Relative paths work without <base> -->
+        <a href="employees">Employees</a>
+    </nav>
+</body>
+</html>
+```
+
+WHY NO BASE TAGS:
+- Railway: Apps run at /yourapp/, but <base href="/"> forces URLs to root /
+  - Result: href="employees" → /employees (404, should be /yourapp/employees)
+- Mac: Apps run at /, <base href="/yourapp/"> doesn't exist
+  - Result: href="employees" → /yourapp/employees (404, should be /employees)
+- Without <base>: Relative paths resolve from current URL location
+  - Railway: /yourapp/dashboard + href="employees" → /yourapp/employees ✅
+  - Mac: /dashboard + href="employees" → /employees ✅
+
+ARCHITECTURAL CONTRACT VIOLATION:
+If Mike's task description includes <base> tags, this is a mistake in Mike's breakdown.
+YOU MUST SKIP the <base> tag regardless of Mike's instructions.
+The LLM_ONBOARDING.md documentation explicitly forbids <base> tags (Section 5.3).
+
+PRE-SUBMISSION CHECK:
+□ Does my HTML contain ANY <base> tag? (Answer must be NO)
+□ If Mike mentioned <base> in his task description, did I skip it? (Answer must be YES)
+
+══════════════════════════════════════════════════════════════════════════════
 
 🚨 CRITICAL: HTML FILES MUST INCLUDE THEIR JAVASCRIPT FILES 🚨
 ══════════════════════════════════════════════════════════════════════════════
@@ -227,6 +277,10 @@ JSON OUTPUT SAFETY (CRITICAL):
 
 STOP. Before generating your JSON response, answer YES or NO to each question.
 If ANY answer is NO, FIX IT NOW before submitting.
+
+HTML STRUCTURE (if creating HTML files):
+□ Does ANY HTML file contain a <base> tag? YES / NO
+   └─ If YES: REMOVE IT NOW - <base> tags are forbidden
 
 DATABASE INITIALIZATION (if creating database/init code):
 □ Does CREATE TABLE run BEFORE any INSERT statements? YES / NO
