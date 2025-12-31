@@ -21,6 +21,7 @@ JSON STRING SAFETY (CRITICAL):
 - Never include the sequence ${ anywhere in the JSON output.
 - Never include literal newlines inside JSON string values. Keep each string value on a single line.
 - Never include code snippets inside JSON string values. Describe behavior in plain English.
+- Never include unescaped backslashes in JSON strings (e.g., use \\\\ instead of \\ for regex patterns).
 If you violate any rule above, JSON.parse() will fail and the sprint will FAIL.
 
 Your top-level JSON MUST include ALL of these fields:

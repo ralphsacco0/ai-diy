@@ -20,6 +20,13 @@ If you are an LLM starting work on AI-DIY:
 
 ---
 
+## CRITICAL: MAC AND RAILWAY ARE SEPARATE SYSTEMS
+
+⚠️ ⚠️ ⚠️ MAC AND RAILWAY ARE 2 DIFFERENT SYSTEMS WITH THE SAME CODEBASE 
+⚠️ THERE IS NO EXPECTATION THAT THEY SHOULD BE IN SYNC ⚠️
+
+---
+
 ## Section 1: Comprehension Quiz
 
 Answer these questions to prove you've read the core documentation. If you cannot answer these without looking them up, **STOP and read the docs first**.
