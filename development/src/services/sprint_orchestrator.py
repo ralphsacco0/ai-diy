@@ -3734,7 +3734,9 @@ OUTPUT ONLY VALID JSON NOW:"""
                         # 1. \' -> ' (invalid JSON escape for single quotes)
                         # 2. ${ -> $\u007B (template literals cause invalid \$ escape)
                         # 3. }'"> -> }'\"> (unescaped " after JS object in HTML context)
-                        combined_repair = json_str.replace("\\'", "'").replace('${', '$\\u007B').replace('}\">', '}\\\">')
+                        # 4. \/ -> / (regex slashes)
+                        # 5. \d -> \d, \w -> \w (regex patterns)
+                        combined_repair = json_str.replace("\\'", "'").replace('${', '$\\u007B').replace('}\">', '}\\\">').replace('\\/', '/').replace('\\d', '\d').replace('\\w', '\w')
 
                         repair_attempts = [
                             # Strategy 1: Combined repair (most likely to work)
@@ -3743,6 +3745,8 @@ OUTPUT ONLY VALID JSON NOW:"""
                             json_str.replace('${', '$\\u007B'),
                             # Strategy 3: Just single quote escapes
                             json_str.replace("\\'", "'"),
+                            # Strategy 4: Regex escapes
+                            json_str.replace('\\/', '/').replace('\\d', '\d').replace('\\w', '\w'),
                         ]
 
                         for repair_idx, repaired in enumerate(repair_attempts):
@@ -3790,7 +3794,7 @@ OUTPUT ONLY VALID JSON NOW:"""
                         # Strategy 1: Original (no changes)
                         json_str,
                         # Strategy 2: Fix common escape issues in strings
-                        json_str.replace("\\'", "'").replace('\\"', '"'),
+                        json_str.replace("\\'", "'").replace('\\"', '"').replace('\\/', '/').replace('\\d', '\d').replace('\\w', '\w'),
                         # Strategy 3: Try to fix unescaped quotes by escaping them
                         re.sub(r'(?<!\\)"(?=.*":)', r'\\"', json_str),
                         # Strategy 4: Fix template literal escape issues (${...} causes invalid \escape)
