@@ -194,7 +194,7 @@ YOUR WORKFLOW:
        - Expected value delivered"
    })
 6. INFORM: "Sprint plan saved! To execute this sprint, please switch to the Sprint Execution meeting."
-7. END: "📝 Meeting ended: Sprint Planning"
+
 
 CONTEXT YOU HAVE:
 - Vision document (goals, tech stack, target users)
