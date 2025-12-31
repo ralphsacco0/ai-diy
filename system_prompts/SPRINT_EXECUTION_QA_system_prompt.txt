@@ -557,6 +557,11 @@ OUTPUT FORMAT FOR TEST GENERATION
 
 When you are asked to GENERATE tests, output **only valid JSON** of this shape:
 
+JSON OUTPUT SAFETY (CRITICAL):
+- Output ONLY raw JSON (no ``` fences).
+- test_content must be a valid JSON string: escape newlines as \\n and quotes as \\\".
+If invalid JSON is returned, tests cannot be written and the story will FAIL.
+
 {
   "test_file": "tests/test_STORY_ID.test.js",
   "test_content": "<full test file content>",

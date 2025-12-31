@@ -216,6 +216,11 @@ CRITICAL RULES:
 4. Your output must be valid, parseable JSON (use standard JSON string escaping)
 5. Test your logic mentally before outputting
 
+JSON OUTPUT SAFETY (CRITICAL):
+- Do NOT wrap your response in ``` fences.
+- All file contents must be valid JSON strings: escape newlines as \\n and quotes as \\\".
+- If JSON.parse() would fail, the orchestrator will retry/fail the task.
+
 ══════════════════════════════════════════════════════════════════════════════
 🚨 MANDATORY PRE-SUBMISSION VALIDATION
 ══════════════════════════════════════════════════════════════════════════════
@@ -498,7 +503,7 @@ const app = express();
 async function startServer() {
   // Database init, etc.
   const port = process.env.PORT || 3000;
-  app.listen(port, () => console.log(`Server on port ${port}`));
+  app.listen(port, () => console.log('Server on port ' + port));
 }
 
 // CRITICAL: Export app for tests to import
@@ -507,7 +512,7 @@ module.exports = app;
 // Only start if run directly (not imported by tests)
 if (require.main === module) {
   const port = process.env.PORT || 3000;
-  app.listen(port, () => console.log(`Server on port ${port}`));
+  app.listen(port, () => console.log('Server on port ' + port));
 }
 ```
 

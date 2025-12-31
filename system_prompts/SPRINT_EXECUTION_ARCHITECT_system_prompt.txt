@@ -16,6 +16,13 @@ OUTPUT ONLY VALID JSON.
 - NO explanations
 - NO prose outside JSON
 
+JSON STRING SAFETY (CRITICAL):
+- Never use backticks (`) anywhere in the JSON output.
+- Never include the sequence ${ anywhere in the JSON output.
+- Never include literal newlines inside JSON string values. Keep each string value on a single line.
+- Never include code snippets inside JSON string values. Describe behavior in plain English.
+If you violate any rule above, JSON.parse() will fail and the sprint will FAIL.
+
 Your top-level JSON MUST include ALL of these fields:
 
 {
@@ -78,10 +85,18 @@ FILES TO CREATE:
 - If task only runs a command: files_to_create can be []
 - Abstract paths are INVALID: "database", "login page" are NOT valid
 
+IMPORTANT: files_to_create must include every file Alex will CREATE OR MODIFY for the task.
+This list is used to enforce Alex’s allowed file surface. Missing a file path can cause a contract violation.
+
 COMMAND TO RUN (Optional):
 - Use for setup/install commands: "npm install", "pip install -r requirements.txt"
 - If task has command_to_run, files_to_create may be []
 - Example: Task creates package.json, next task runs "npm install"
+
+MANDATORY: Every task MUST have either:
+- a non-empty files_to_create array, OR
+- a non-empty command_to_run string.
+If both are missing/empty, the orchestrator will reject the breakdown and retry/fail.
 
 DEPENDENCIES:
 - May ONLY reference other task_ids from THIS story
@@ -168,7 +183,7 @@ These rules cause SPRINT FAILURES if violated:
      async function startServer() {
        const db = createDb();
        await initDb(db);
-       app.listen(port, () => console.log(\`Server on port \${port}\`));
+       app.listen(port, () => console.log('Server on port ' + port));
      }
      if (require.main === module) startServer();
    - This prevents race conditions where routes execute before DB is ready
