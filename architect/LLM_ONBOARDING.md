@@ -535,7 +535,7 @@ Generated apps run behind a Caddy reverse proxy at `/yourapp/` on Railway. On Ma
 - **Mac**: Direct access to `http://localhost:3000/` (no proxy)
 - Generated apps use standard **absolute paths** with leading `/` for server-side routes (e.g., `router.get('/dashboard', ...)`)
 - Generated apps use **relative paths without leading /** for client-side navigation (e.g., `href="dashboard"`)
-**Assumption:** This guidance assumes all application pages are **flat, top-level routes only** (e.g., `/dashboard`, `/employees`); nested page paths are out of scope.
+**Nested URLs:** Apps can use nested URLs (e.g., `/employees/4/edit`). For cross-depth navigation (nested → parent), use server-side POST redirects, not client-side links.
 
 **Architecture:**
 
@@ -562,6 +562,27 @@ localhost:3000 → Generated App (direct access, no proxy)
 | Fetch | `fetch('api/user')` | **Relative** - no leading `/` |
 
 **IMPORTANT**: HTML paths (forms, links, fetch) must be **relative** (no leading `/`) so they resolve relative to the current URL. Server-side redirects use absolute paths because Caddy rewrites the `Location` header.
+
+**Cross-Depth Navigation (Nested URLs):**
+
+For navigation between different URL depths, use server-side redirects via POST endpoints:
+
+```html
+<!-- Cancel button in employees-edit.html -->
+<form action="cancel-edit" method="POST" style="display:inline">
+  <button type="submit">Cancel</button>
+</form>
+```
+
+```javascript
+// In server.js or routes file
+router.post('/employees/:id/cancel-edit', (req, res) => {
+  res.redirect('/employees');
+});
+```
+
+❌ NEVER use `../` paths (href="../employees") - violates architecture
+✅ Use POST endpoints that redirect with absolute server paths
 
 **CRITICAL - DO NOT USE `<base>` TAG:**
 ```html

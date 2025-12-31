@@ -215,6 +215,15 @@ These rules cause SPRINT FAILURES if violated:
    - In routes/auth.js task: "router.post('/login', ...)" (WITHOUT /api/auth prefix)
    - In technical_notes: "Backend exposes POST /api/auth/login (mount: app.use('/api/auth', authRouter), route: router.post('/login'))"
 
+CROSS-DEPTH NAVIGATION (NESTED URLS):
+When designing nested pages (e.g., /employees/:id/edit):
+- Navigation back to parent pages MUST use server-side POST redirects
+- Specify in task: "Add cancel button: <form action='cancel-edit' method='POST'><button>Cancel</button></form>"
+- Specify route: "POST /employees/:id/cancel-edit redirects to /employees"
+- In technical_notes: "Cancel: POST /employees/:id/cancel-edit → res.redirect('/employees')"
+❌ NEVER specify client links for cross-depth (href="employees" from nested pages stacks incorrectly)
+❌ NEVER specify ../ paths (href="../employees" violates architecture)
+
 6. REQUEST BODY PARSING
    - HTML forms require: app.use(express.urlencoded({ extended: true }))
    - JSON APIs require: app.use(express.json())

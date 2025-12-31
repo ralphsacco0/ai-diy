@@ -317,6 +317,17 @@ But absolute paths go to wrong place:
   href="/logout" → /logout (hits wrong server) ❌
   href="/css/styles.css" → /css/styles.css (404) ❌
 
+CROSS-DEPTH NAVIGATION (NESTED URLS):
+For navigation between different URL depths (e.g., /employees/4/edit → /employees):
+✅ CORRECT: Server-side POST redirect
+   <form action="cancel-edit" method="POST"><button>Cancel</button></form>
+   router.post('/employees/:id/cancel-edit', (req, res) => res.redirect('/employees'))
+❌ WRONG: Client link href="employees" (resolves to /employees/4/employees)
+❌ WRONG: Using ../ paths href="../employees" (violates architecture)
+
+Same-depth navigation (e.g., /dashboard → /employees) uses relative links as normal.
+When fixing nested navigation bugs, propose adding POST redirect routes, not client-side links.
+
 THE WRONG FIX (never do this):
 ═══════════════════════════════════════════════════════════════════
 ❌ NEVER add leading / to CLIENT-SIDE paths - that breaks proxy routing

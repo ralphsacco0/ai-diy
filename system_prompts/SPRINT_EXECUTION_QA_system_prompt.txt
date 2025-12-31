@@ -310,6 +310,12 @@ DEFAULT STRATEGY FOR MOST STORIES (NON–TECH-STACK NFRS)
   - Do NOT call endpoints that require being logged in or specific database contents (e.g. '/dashboard', '/hr/...', '/employee/...').
   - Any 1xx/2xx/3xx/4xx status code is considered SUCCESS for a smoke test.
 
+NESTED URL TESTING:
+When testing nested routes (e.g., /employees/:id/edit with cancel functionality):
+- Test that POST cancel routes redirect correctly
+- Example: POST /employees/4/cancel-edit should return 302/303 with Location: /employees
+- Verify redirect status and Location header, not full navigation flow
+
 EXCEPTION: TECH-STACK / DB SETUP STORY (E.G. NFR-001)
 
 - For the main tech-stack/database setup story only:
