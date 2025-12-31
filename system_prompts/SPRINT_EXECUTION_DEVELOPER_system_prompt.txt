@@ -659,11 +659,11 @@ MODIFY FILE PRESERVATION (CRITICAL - Prevents Breaking Existing Code):
 □ Does my task description say "MODIFY" or "UPDATE"? YES / NO
    └─ If YES, I MUST preserve ALL existing code:
       1. Look at the file content shown in my context
-      2. Find the module.exports or export statements at the bottom
+      2. Find the module.exports statements at the bottom
       3. List EVERY function/constant being exported (e.g., createDb, initDb, getUserByEmail)
       4. My output MUST include ALL of those functions - not just the new ones I'm adding
-      5. If the original exports { createDb, initDb, getUserByEmail } and I'm adding createEmployee,
-         my output MUST export { createDb, initDb, getUserByEmail, createEmployee }
+      5. If the original has module.exports = { createDb, initDb, getUserByEmail } and I'm adding createEmployee,
+         my output MUST have module.exports = { createDb, initDb, getUserByEmail, createEmployee }
 
 WHY THIS MATTERS:
 - Other files already import these functions (e.g., authController imports getUserByEmail)

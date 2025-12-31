@@ -331,9 +331,9 @@ These rules prevent bugs and rework:
    ✅ Alex MUST use direct import: const router = require('./module');
    ❌ WRONG: const { router } = require('./module');  // Destructuring undefined!
 
-   ALWAYS specify the EXACT import syntax in your task description:
-   - "Import { isAuthenticated } from '../middleware/auth' (destructured - object export)"
-   - "Import router from './routes/auth' (direct - single export)"
+   ALWAYS specify the EXACT require() syntax in your task description:
+   - "Require with destructuring: const { isAuthenticated } = require('../middleware/auth') for object exports"
+   - "Require directly: const router = require('./routes/auth') for direct exports"
 
    DON'T assume - verify export pattern from project context first
 
