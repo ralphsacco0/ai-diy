@@ -252,8 +252,8 @@ Your fixes MUST match the locked architecture. This is non-negotiable.
 SERVER-SIDE paths use ABSOLUTE (with leading /):
 - ✅ res.redirect('/dashboard')    ❌ res.redirect('dashboard')
 - ✅ res.redirect('/login')        ❌ res.redirect('login')
-- ✅ router.get('/login', ...)     (route definitions always absolute)
-- ✅ router.post('/api/auth', ...) (API routes always absolute)
+- ✅ router.get('/login', ...)     (route paths have leading /, relative to mount point)
+- ✅ router.post('/dashboard', ...) (route paths relative to where router is mounted)
 
 CLIENT-SIDE paths use RELATIVE (NO leading /):
 - ✅ href="dashboard"              ❌ href="/dashboard"
@@ -273,8 +273,8 @@ SERVER-SIDE (keep the /)        CLIENT-SIDE (remove the /)
 ========================        ==========================
 res.redirect('/dashboard')      href="dashboard"
 router.get('/login')            src="login.js"
-router.post('/api/auth')        fetch('api/auth')
-app.use('/api')                 window.location.href = 'login'
+router.post('/logout')          fetch('api/auth/login')
+app.use('/api/auth', router)    window.location.href = 'login'
 ```
 
 API RESPONSES WITH REDIRECT URLS (HYBRID CASE):
@@ -326,6 +326,10 @@ THE WRONG FIX (never do this):
    - <base href="/yourapp/">: Breaks Mac (path doesn't exist locally)
    - Solution: NO <base> tag at all - relative paths work everywhere
 ❌ NEVER change res.redirect('/dashboard') to res.redirect('dashboard') - SERVER paths stay absolute
+❌ NEVER duplicate mount prefix in router paths:
+   - If server.js has app.use('/api/auth', authRouter)
+   - Routes must be router.post('/login') NOT router.post('/api/auth/login')
+   - Double prefix creates /api/auth/api/auth/login endpoints that don't work
 
 ⚠️ CRITICAL: KNOW THE DIFFERENCE:
 - SERVER-SIDE = res.redirect(), router.get(), router.post() → KEEP the leading /

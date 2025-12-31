@@ -91,8 +91,8 @@ CRITICAL: Never mix module systems. Follow Mike's choice consistently across ALL
 SERVER-SIDE paths use ABSOLUTE (with leading /):
 - ✅ res.redirect('/dashboard')    ❌ res.redirect('dashboard')
 - ✅ res.redirect('/login')        ❌ res.redirect('login')
-- ✅ router.get('/login', ...)     (route definitions always absolute)
-- ✅ router.post('/api/auth', ...) (API routes always absolute)
+- ✅ router.get('/login', ...)     (route definitions have leading /, relative to mount point)
+- ✅ router.post('/dashboard', ...) (route paths start with /, relative to where router is mounted)
 
 CLIENT-SIDE paths use RELATIVE (NO leading /):
 - ✅ href="dashboard"              ❌ href="/dashboard"
@@ -115,8 +115,8 @@ SERVER-SIDE (keep the /)        CLIENT-SIDE (remove the /)
 ========================        ==========================
 res.redirect('/dashboard')      href="dashboard"
 router.get('/login')            src="login.js"
-router.post('/api/auth')        fetch('api/auth')
-app.use('/api')                 window.location.href = 'login'
+router.post('/logout')          fetch('api/auth/login')
+app.use('/api/auth', router)    window.location.href = 'login'
 ```
 
 API RESPONSES WITH REDIRECT URLS (HYBRID CASE):
@@ -129,6 +129,49 @@ When an API returns a redirect path in JSON that client JS will use:
 WHY: Even though res.json() is server-side code, the redirect value is consumed
 by client-side JavaScript (window.location.href = data.redirect), so it must
 follow CLIENT-SIDE rules (no leading /).
+
+══════════════════════════════════════════════════════════════════════════════
+🚨 CRITICAL: EXPRESS ROUTER MOUNTING - AVOID DOUBLE PREFIX
+══════════════════════════════════════════════════════════════════════════════
+
+When implementing Express routers, route paths are RELATIVE to their mount point in server.js.
+
+COMMON BUG - Double prefix:
+If Mike's technical_notes says "Backend exposes POST /api/auth/login", this means:
+- server.js: app.use('/api/auth', authRouter)
+- routes/auth.js: router.post('/login', ...)  ← NOT router.post('/api/auth/login', ...)
+
+❌ WRONG (creates /api/auth/api/auth/login):
+```javascript
+// server.js
+app.use('/api/auth', authRouter);
+
+// routes/auth.js
+router.post('/api/auth/login', ...)  // ❌ Duplicates /api/auth prefix
+```
+
+✅ CORRECT:
+```javascript
+// server.js
+app.use('/api/auth', authRouter);  // Mount point
+
+// routes/auth.js
+router.post('/login', ...)         // ✅ Route path relative to mount
+// Final endpoint: /api/auth/login
+```
+
+RULE: Extract the mount point from Mike's server.js task, then define routes WITHOUT that prefix.
+
+Example from Mike's breakdown:
+- Mike says in server.js task: "app.use('/api/auth', authRouter)"
+- Mike says in technical_notes: "POST /api/auth/login"
+- Your route file: router.post('/login', ...) ✅
+- NOT: router.post('/api/auth/login', ...) ❌
+
+PRE-SUBMISSION CHECK:
+□ Did Mike specify a mount point in server.js (e.g., app.use('/api/auth', ...))? YES / NO
+  └─ If YES: Are my router.* paths relative to that mount (WITHOUT the mount prefix)? YES / NO
+□ Example: If mounted at '/api/auth', is my route router.post('/login') not router.post('/api/auth/login')? YES / NO
 
 ══════════════════════════════════════════════════════════════════════════════
 🚨 CRITICAL: HTML BASE TAG IS FORBIDDEN
