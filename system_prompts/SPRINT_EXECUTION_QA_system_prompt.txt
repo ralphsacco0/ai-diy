@@ -305,7 +305,7 @@ DEFAULT STRATEGY FOR MOST STORIES (NON–TECH-STACK NFRS)
   - Use only simple GET requests for smoke tests (no POST/PUT/PATCH/DELETE).
   - ONLY:
     - Start the HTTP server (or import the app and wrap it in an HTTP server).
-    - Send 1–2 simple GET requests to safe, public endpoints for this story (typically '/', '/login', or an equivalent public page).
+    - Send 1–2 simple GET requests to the actual endpoints Mike specified in conventions (e.g., if Mike says "GET /api/user", test that exact path to verify it exists and isn't 404).
     - Assert that the response status code is NOT 5xx.
   - Do NOT call endpoints that require being logged in or specific database contents (e.g. '/dashboard', '/hr/...', '/employee/...').
   - Any 1xx/2xx/3xx/4xx status code is considered SUCCESS for a smoke test.

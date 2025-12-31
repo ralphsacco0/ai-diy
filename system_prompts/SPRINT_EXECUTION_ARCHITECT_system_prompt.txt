@@ -213,7 +213,7 @@ These rules cause SPRINT FAILURES if violated:
    YOUR TASK DESCRIPTIONS MUST SPECIFY:
    - In server.js task: "app.use('/api/auth', authRouter)"
    - In routes/auth.js task: "router.post('/login', ...)" (WITHOUT /api/auth prefix)
-   - In technical_notes: "Backend exposes POST /api/auth/login (via app.use('/api/auth', authRouter) + router.post('/login'))"
+   - In technical_notes: "Backend exposes POST /api/auth/login (mount: app.use('/api/auth', authRouter), route: router.post('/login'))"
 
 6. REQUEST BODY PARSING
    - HTML forms require: app.use(express.urlencoded({ extended: true }))

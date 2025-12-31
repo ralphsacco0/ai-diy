@@ -160,13 +160,14 @@ router.post('/login', ...)         // ✅ Route path relative to mount
 // Final endpoint: /api/auth/login
 ```
 
-RULE: Extract the mount point from Mike's server.js task, then define routes WITHOUT that prefix.
+RULE: Calculate route path by subtracting mount point from final endpoint. If Mike says "GET /api/user via app.use('/api', ...)", your route is /api/user minus /api = /user.
 
 Example from Mike's breakdown:
 - Mike says in server.js task: "app.use('/api/auth', authRouter)"
-- Mike says in technical_notes: "POST /api/auth/login"
+- Mike says in technical_notes: "POST /api/auth/login (mount: app.use('/api/auth', ...))"
+- Calculate: /api/auth/login minus /api/auth = /login
 - Your route file: router.post('/login', ...) ✅
-- NOT: router.post('/api/auth/login', ...) ❌
+- NOT: router.post('/api/auth/login', ...) ❌ (creates double prefix /api/auth/api/auth/login)
 
 PRE-SUBMISSION CHECK:
 □ Did Mike specify a mount point in server.js (e.g., app.use('/api/auth', ...))? YES / NO

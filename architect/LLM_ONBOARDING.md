@@ -461,7 +461,7 @@ AI-DIY was originally built to run locally on Mac. It is now being migrated to a
 
 ### Generated App Output Path
 
-Generated apps are written to the **execution sandbox** at a fixed path on both platforms (single pipeline - folder is always `yourapp`):
+Generated apps are written to the **execution sandbox** at a fixed path on both platforms (folder is always `yourapp`, files accumulate across sprints):
 
 | Environment | Generated app location |
 |-------------|------------------------|
@@ -535,6 +535,7 @@ Generated apps run behind a Caddy reverse proxy at `/yourapp/` on Railway. On Ma
 - **Mac**: Direct access to `http://localhost:3000/` (no proxy)
 - Generated apps use standard **absolute paths** with leading `/` for server-side routes (e.g., `router.get('/dashboard', ...)`)
 - Generated apps use **relative paths without leading /** for client-side navigation (e.g., `href="dashboard"`)
+**Assumption:** This guidance assumes all application pages are **flat, top-level routes only** (e.g., `/dashboard`, `/employees`); nested page paths are out of scope.
 
 **Architecture:**
 
