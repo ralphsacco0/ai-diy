@@ -2,7 +2,10 @@
 
 ## Executive Summary
 
-After extensive testing and debugging of the AI-DIY platform's routing system, we've identified the correct patterns for generating applications that work in both local development (Mac) and production (Railway) environments.
+**Status**: IMPLEMENTED - Option A (Pure Caddy Rewriting)
+**Date**: January 1, 2026
+
+After extensive testing and debugging, we've implemented a simple routing solution: **Caddy handles ALL path rewriting**. Generated apps use standard paths with NO environment detection, NO template injection, and NO special variables.
 
 ## The Core Problem
 
@@ -10,36 +13,44 @@ Generated apps need to work in two different environments:
 - **Local Mac**: Direct access at `http://localhost:3000/`
 - **Railway**: Proxied access at `https://app.railway.app/yourapp/`
 
-The challenge is making the same code work in both contexts without modification.
+## The Solution: Pure Caddy Rewriting
 
-## What We Discovered
+**Key Insight**: Caddy's `handle_path /yourapp/*` directive strips the `/yourapp/` prefix BEFORE forwarding to Express. This means:
+- Express app NEVER sees `/yourapp/` in any request
+- Same paths work in both environments
+- No code changes needed between environments
 
-### 1. The "All Relative" Approach Was Wrong
+## Implementation: Option A (Pure Caddy Rewriting)
 
-**Initial hypothesis**: All client-side paths should be relative (no leading `/`)
+### What We Removed
 
-**What broke**: API calls from nested pages
-- From `/dashboard`: `fetch('api/employees')` → `/api/employees` ✅ works
-- From `/employees`: `fetch('api/employees')` → `/employees/api/employees` ❌ 404 error
+**From system prompts:**
+- ❌ Environment detection code (`process.env.RAILWAY_ENVIRONMENT`)
+- ❌ Template injection middleware (`res.locals.apiPrefix`)
+- ❌ API prefix variables (`apiPrefix`, `API_PREFIX`)
+- ❌ Template helper functions (`apiCall()`)
 
-**Root cause**: Relative paths resolve relative to the current URL, not the app root.
+**Why**: These added complexity without benefit. Caddy strips the prefix automatically.
 
-### 2. The "All Absolute" Approach Was Wrong
+### The Final Pattern (Simple)
 
-**Initial hypothesis**: All paths should use leading `/`
+**API calls**: Use absolute paths (`fetch('/api/employees')`)
+- Works from any page depth
+- Railway: Browser sends `/yourapp/api/employees` → Caddy strips `/yourapp/` → Express receives `/api/employees`
+- Local: Browser sends `/api/employees` → Express receives `/api/employees`
 
-**What broke**: Proxy routing on Railway
-- Caddy proxy at `/yourapp/` expects relative navigation
-- Absolute paths like `href="/dashboard"` bypass the `/yourapp/` prefix
-- Result: 404 errors on Railway
+**Navigation**: Use relative paths (`href="dashboard"`)
+- Resolves relative to current URL
+- Railway: At `/yourapp/employees`, clicking `href="dashboard"` → `/yourapp/dashboard`
+- Local: At `/employees`, clicking `href="dashboard"` → `/dashboard`
 
-### 3. The Hybrid Solution Works
+**Forms**: Use relative paths (`action="api/auth/login"`)
+- Submits relative to current page
+- Works consistently in both environments
 
-**Final working pattern**:
-- **API calls**: Use absolute paths (`fetch('/api/employees')`)
-- **Navigation**: Use relative paths (`href="dashboard"`)
-- **Forms**: Use relative paths (`action="api/auth/login"`)
-- **Server-side redirects**: Use absolute paths (`res.redirect('/dashboard')`)
+**Server redirects**: Use absolute paths (`res.redirect('/dashboard')`)
+- Railway: Caddy rewrites Location header from `/dashboard` to `/yourapp/dashboard`
+- Local: Browser receives `/dashboard` directly
 
 ## The Technical Reason This Works
 
@@ -66,30 +77,37 @@ fetch('/api/employees')  // Works from ANY page depth
 - Submits relative to current page
 - Works consistently in both environments
 
-## What We Fixed
+## Changes Made (January 1, 2026)
 
 ### 1. Updated System Prompts
 
 **Files changed**:
 - `system_prompts/SPRINT_EXECUTION_ARCHITECT_system_prompt.txt`
+  - Removed environment detection requirements
+  - Removed template injection patterns
+  - Added clear "DO NOT" statements
+  - Emphasized: API calls use absolute paths, navigation uses relative paths
+
 - `system_prompts/SPRINT_EXECUTION_DEVELOPER_system_prompt.txt`
+  - Removed apiPrefix variable usage
+  - Removed environment detection code
+  - Simplified to: fetch('/api/user') for API calls, href="dashboard" for navigation
+
 - `architect/LLM_ONBOARDING.md`
+  - Added explicit statement that Caddy strips prefix before forwarding
+  - Added "DO NOT add" section listing what NOT to generate
+  - Clarified that Express never sees /yourapp/ in requests
 
-**Key changes**:
-- Clarified that API calls must use absolute paths
-- Maintained that navigation stays relative
-- Fixed contradictory examples in form submission code
+### 2. Caddy Configuration (Already Correct)
 
-### 2. Caddy Configuration
-
-**Issue**: Redirect loop from `/yourapp/login` → `/yourapp/login`
-
-**Root cause**: Overly broad Location header rewrite rule
-
-**Fix**: Updated Caddyfile to use negative lookahead pattern
+The Caddyfile at `/Users/ralph/AI-DIY/ai-diy/Caddyfile` uses:
 ```caddy
-header_down Location "^/((?!yourapp/).*)" "/yourapp/$1"
+handle_path /yourapp/* {
+    reverse_proxy 127.0.0.1:3000
+}
 ```
+
+The `handle_path` directive automatically strips `/yourapp/` before forwarding. No changes needed.
 
 ## Testing Checklist
 
@@ -159,20 +177,30 @@ fetch('api/employees')   // Relative - wrong for API calls
 
 ## Key Takeaways
 
-1. **Hybrid approach is necessary** - no single path strategy works for both environments
-2. **API calls need absolute paths** - they must work from any page depth
-3. **Navigation needs relative paths** - to maintain proxy compatibility
-4. **Test both environments** - what works locally might break on Railway
-5. **Browser dev tools are essential** - network tab reveals most routing issues
+1. **Caddy does the heavy lifting** - `handle_path` strips prefix automatically
+2. **No environment detection needed** - same code works everywhere
+3. **API calls need absolute paths** - they must work from any page depth
+4. **Navigation needs relative paths** - to maintain proxy compatibility
+5. **Keep it simple** - no variables, no template injection, no complexity
 
 ## Quick Reference
 
-| Context | Pattern | Example |
-|---------|---------|---------|
-| API calls | Absolute | `fetch('/api/user')` |
-| Navigation links | Relative | `href="dashboard"` |
-| Form actions | Relative | `action="api/auth/login"` |
-| Server redirects | Absolute | `res.redirect('/dashboard')` |
-| Client redirects | Relative | `window.location.href = 'login'` |
+| Context | Pattern | Example | Why |
+|---------|---------|---------|-----|
+| API calls | Absolute | `fetch('/api/user')` | Works from any page depth |
+| Navigation links | Relative | `href="dashboard"` | Resolves relative to current URL |
+| Form actions | Relative | `action="api/auth/login"` | Submits relative to current page |
+| Server redirects | Absolute | `res.redirect('/dashboard')` | Caddy rewrites Location header |
+| Client redirects | Relative | `window.location.href = 'login'` | Resolves relative to current URL |
 
-Follow this pattern and your generated apps will work consistently in both development and production environments.
+**DO NOT add to generated code:**
+- ❌ `const isRailway = process.env.RAILWAY_ENVIRONMENT === 'production'`
+- ❌ `const apiPrefix = isRailway ? '/yourapp' : ''`
+- ❌ `res.locals.apiPrefix = apiPrefix`
+- ❌ `const API_PREFIX = '{{apiPrefix}}'`
+- ❌ `fetch(\`\${apiPrefix}/api/user\`)`
+
+**DO use in generated code:**
+- ✅ `fetch('/api/user')` - simple absolute path
+- ✅ `href="dashboard"` - simple relative path
+- ✅ `res.redirect('/dashboard')` - simple absolute path

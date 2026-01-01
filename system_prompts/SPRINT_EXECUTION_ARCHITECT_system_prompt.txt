@@ -126,59 +126,42 @@ These rules cause SPRINT FAILURES if violated:
    - Backend file serving from src/server.js: res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))  // ONE '..' from server.js
    - Backend file serving from src/routes/: res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'))  // TWO '..' from routes/
 
-   ENVIRONMENT-AWARE ROUTING ARCHITECTURE:
+   ROUTING ARCHITECTURE (CADDY HANDLES ALL REWRITING):
    
-   The application works in TWO environments:
-   1. Local Development: localhost:3000 (no prefix)
-   2. Railway Deployment: /yourapp/ prefix via Caddy proxy
+   The application works in TWO environments WITHOUT code changes:
+   1. Local Development: localhost:3000 (direct access)
+   2. Railway Deployment: /yourapp/ prefix (Caddy strips prefix before forwarding)
    
-   IMPLEMENTATION PATTERN:
-   - Server detects environment and injects apiPrefix into templates
-   - All API calls use server-injected prefix: {{apiPrefix}}
-   - Navigation uses relative paths: href="dashboard"
-   - Forms use relative actions: action="api/auth/login"
-   - Server redirects use absolute paths: res.redirect('/dashboard')
+   CRITICAL: Caddy's handle_path directive strips /yourapp/ prefix BEFORE forwarding
+   to the Express app. This means the app NEVER sees /yourapp/ in any request.
+   
+   IMPLEMENTATION PATTERN (NO environment detection needed):
+   - API calls use ABSOLUTE paths: fetch('/api/user')
+   - Navigation uses RELATIVE paths: href="dashboard"
+   - Forms use RELATIVE actions: action="api/auth/login"
+   - Server redirects use ABSOLUTE paths: res.redirect('/dashboard')
    
    CLIENT-SIDE patterns:
-   - HTML forms: <form action="api/auth/login" method="post">
-   - HTML links: <a href="dashboard">Dashboard</a>
-   - JavaScript fetch: fetch(\`\${apiPrefix}/api/user\`)  // Uses injected prefix
-   - JavaScript redirects: window.location.href = 'login'
+   - HTML forms: <form action="api/auth/login" method="post">  // Relative
+   - HTML links: <a href="dashboard">Dashboard</a>  // Relative
+   - JavaScript fetch: fetch('/api/user')  // Absolute with leading /
+   - JavaScript redirects: window.location.href = 'login'  // Relative
    
-   ⚠️ CRITICAL: API calls MUST use apiPrefix, navigation MUST be relative:
-   ✅ fetch(\`\${apiPrefix}/api/user\`)     // Environment-aware API call
-   ✅ fetch(\`\${apiPrefix}/api/auth/login\`) // Environment-aware API call
-   ✅ href="dashboard"                     // Navigation - relative for proxy
-   ✅ action="api/auth/login"              // Form action - relative to current page
-   ❌ fetch('/api/user')                   // WRONG - hardcoded absolute path
-   ❌ fetch('api/user')                    // WRONG - hardcoded relative path
-   ❌ href="/dashboard"                    // WRONG - breaks proxy routing
+   ⚠️ CRITICAL PATH RULES:
+   ✅ fetch('/api/user')           // CORRECT - absolute for API calls
+   ✅ fetch('/api/auth/login')     // CORRECT - absolute for API calls
+   ✅ href="dashboard"              // CORRECT - relative for navigation
+   ✅ action="api/auth/login"      // CORRECT - relative for forms
+   ❌ fetch('api/user')            // WRONG - relative API calls fail from nested pages
+   ❌ href="/dashboard"             // WRONG - absolute navigation breaks proxy
 
-   SERVER SETUP REQUIREMENTS:
-   - Add environment detection: const isRailway = process.env.RAILWAY_ENVIRONMENT === 'production'
-   - Add API prefix injection middleware before routes
-   - Configure session cookies for Railway (secure: true, sameSite: 'lax')
-   - Add health check endpoint for debugging
-   - Log environment and API prefix on startup
+   WHY THIS WORKS:
+   - Railway: Browser requests /yourapp/api/user → Caddy strips /yourapp → Express receives /api/user
+   - Local: Browser requests /api/user → Express receives /api/user
+   - Same code, both environments work because Caddy does the rewriting
    
-   TEMPLATE INJECTION PATTERN:
-   ```javascript
-   app.use((req, res, next) => {
-     res.locals.apiPrefix = isRailway ? '/yourapp' : '';
-     res.locals.isRailway = isRailway;
-     next();
-   });
-   ```
-   
-   FRONTEND TEMPLATE PATTERN:
-   ```javascript
-   <script>
-   const API_PREFIX = '{{apiPrefix}}';
-   function apiCall(endpoint, options = {}) {
-     return fetch(\`\${API_PREFIX}\${endpoint}\`, options);
-   }
-   </script>
-   ```
+   DO NOT add environment detection code. DO NOT add template injection middleware.
+   DO NOT use variables like apiPrefix or API_PREFIX. Keep it simple - the paths
    rewritten by Caddy. Client-side paths resolve relative to the current URL,
    so they work both locally AND behind the proxy without any code changes.
 

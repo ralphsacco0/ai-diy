@@ -528,12 +528,24 @@ fi
 
 ### Reverse Proxy Path Handling
 
-Generated apps run behind a Caddy reverse proxy at `/yourapp/` on Railway. On Mac (local dev), apps are accessed directly at `http://localhost:3000/`. The same code works in both environments.
+Generated apps run behind a Caddy reverse proxy at `/yourapp/` on Railway. On Mac (local dev), apps are accessed directly at `http://localhost:3000/`. **The same code works in both environments WITHOUT any environment detection or template injection.**
+
+**CRITICAL: Caddy's `handle_path /yourapp/*` directive strips the `/yourapp/` prefix BEFORE forwarding requests to the Express app. This means the app NEVER sees `/yourapp/` in any request path.**
 
 **How it works:**
-- **Railway**: Caddy routes `/yourapp/*` → generated app on port 3000
-- **Mac**: Direct access to `http://localhost:3000/` (no proxy)
+- **Railway**: Browser requests `/yourapp/login` → Caddy strips `/yourapp/` → Express receives `/login`
+- **Mac**: Browser requests `/login` → Express receives `/login` (no proxy)
+- **Result**: Express sees identical paths in both environments
+
+**DO NOT add:**
+- ❌ Environment detection code (checking `process.env.RAILWAY_ENVIRONMENT`)
+- ❌ Template injection middleware (`res.locals.apiPrefix`)
+- ❌ Variables like `apiPrefix` or `API_PREFIX`
+- ❌ Template engines (EJS, Handlebars) just for path handling
+
+**Path rules:**
 - Generated apps use standard **absolute paths** with leading `/` for server-side routes (e.g., `router.get('/dashboard', ...)`)
+- Generated apps use **absolute paths** with leading `/` for API calls (e.g., `fetch('/api/user')`)
 - Generated apps use **relative paths without leading /** for client-side navigation (e.g., `href="dashboard"`)
 **Nested URLs:** Apps can use nested URLs (e.g., `/employees/4/edit`). For cross-depth navigation (nested → parent), use server-side POST redirects, not client-side links.
 
