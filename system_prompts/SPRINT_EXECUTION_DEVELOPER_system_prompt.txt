@@ -111,23 +111,30 @@ CLIENT-SIDE paths use RELATIVE (NO leading /):
 - ✅ href="css/styles.css"         ❌ href="/css/styles.css"
 - ✅ src="login.js"                ❌ src="/login.js"
 - ✅ action="api/auth/login"       ❌ action="/api/auth/login"
-- ✅ fetch('api/user')             ❌ fetch('/api/user')
+- ✅ fetch('/api/user')            ✅ fetch('/api/user')        // API calls use ABSOLUTE
+- ✅ fetch('/api/auth/login')      ✅ fetch('/api/auth/login')  // API calls use ABSOLUTE
 - ✅ window.location.href = 'dashboard'  ❌ window.location.href = '/dashboard'
 
-⚠️ CRITICAL: NEVER put a leading / in ANY client-side path (fetch, form action, href, src, window.location).
-This causes 404 errors when the app runs behind the Caddy proxy.
+⚠️ CRITICAL: API calls MUST use leading /, navigation MUST NOT:
+✅ fetch('/api/user')           // API call - works from any page depth
+✅ fetch('/api/auth/login')     // API call - works from any page depth
+✅ href="dashboard"             // Navigation - relative for proxy compatibility
+✅ action="api/auth/login"      // Form action - relative to current page
+❌ fetch('api/user')            // WRONG - breaks from /employees page (becomes /employees/api/user)
+❌ href="/dashboard"             // WRONG - breaks proxy routing
 
 WHY: Apps run behind a Caddy proxy at /yourapp/. Server redirects get rewritten
 by Caddy. Client paths resolve relative to current URL, working everywhere.
 
 QUICK REFERENCE:
 ```
-SERVER-SIDE (keep the /)        CLIENT-SIDE (remove the /)
-========================        ==========================
-res.redirect('/dashboard')      href="dashboard"
-router.get('/login')            src="login.js"
-router.post('/logout')          fetch('api/auth/login')
-app.use('/api/auth', router)    window.location.href = 'login'
+SERVER-SIDE (keep the /)        CLIENT-SIDE (mixed rules)
+========================        ========================
+res.redirect('/dashboard')      href="dashboard"        // Navigation: relative
+router.get('/login')            src="login.js"          // Scripts: relative
+router.post('/logout')          action="api/auth/login" // Forms: relative
+app.use('/api/auth', router)    fetch('/api/user')      // API calls: ABSOLUTE
+                              window.location.href = 'dashboard' // Redirects: relative
 ```
 
 API RESPONSES WITH REDIRECT URLS (HYBRID CASE):
@@ -148,7 +155,7 @@ Match client-side encoding with server-side parsing middleware:
    Client: Use URLSearchParams with urlencoded Content-Type
    ```javascript
    const formData = new FormData(form);
-   fetch('api/auth/login', {
+   fetch('/api/auth/login', {
      method: 'POST',
      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
      body: new URLSearchParams(formData)

@@ -559,9 +559,43 @@ localhost:3000 → Generated App (direct access, no proxy)
 | Redirects | `res.redirect('/dashboard')` | Absolute - Caddy rewrites Location header on Railway |
 | Form actions | `<form action="api/auth/login">` | **Relative** - no leading `/` |
 | Links | `<a href="dashboard">` | **Relative** - no leading `/` |
-| Fetch | `fetch('api/user')` | **Relative** - no leading `/` |
+| Fetch | `fetch('/api/user')` | **Absolute** - with leading `/` |
 
-**IMPORTANT**: HTML paths (forms, links, fetch) must be **relative** (no leading `/`) so they resolve relative to the current URL. Server-side redirects use absolute paths because Caddy rewrites the `Location` header.
+**IMPORTANT**: API calls (fetch) must use **absolute** paths to work from any page depth. HTML paths (forms, links) must be **relative** (no leading `/`) so they resolve relative to the current URL. Server-side redirects use absolute paths because Caddy rewrites the `Location` header.
+
+### ⚠️ CRITICAL: Caddy Location Header Rewrite Anti-Pattern
+
+**THE PROBLEM:** When using `header_down Location "^/(.*)" "/yourapp/$1"` in Caddyfile, it can cause infinite redirect loops if the upstream app already includes the `/yourapp` prefix in its redirects.
+
+**SYMPTOMS:**
+- Browser shows "too many redirects" error
+- curl shows repeated `302 location: /yourapp/login` responses
+- Loop only occurs through Railway proxy, not direct port 3000 access
+
+**THE FIX:** Use a guarded rewrite rule that prevents double-rewriting:
+```caddy
+# ❌ WRONG - causes double prefixing
+header_down Location "^/(.*)" "/yourapp/$1"
+
+# ✅ CORRECT - rewrites absolute paths but prevents double prefixing
+header_down Location "^/yourapp/(.*)" "/yourapp/$1"
+```
+
+**ALTERNATIVE APPROACH:** If the above doesn't work (because Node.js app generates `/login` not `/yourapp/login`), use negative lookahead:
+```caddy
+# ✅ ALTERNATIVE - rewrites /login to /yourapp/login but not /yourapp/login to /yourapp/yourapp/login
+header_down Location "^/((?!yourapp/).*)" "/yourapp/$1"
+```
+
+**WHY THIS WORKS:**
+- Node.js app generates redirects like `/login` → Caddy rewrites to `/yourapp/login`
+- If Location header already has `/yourapp/`, don't add it again
+- Prevents `/yourapp/login` → `/yourapp/yourapp/login` loops
+
+**DIAGNOSIS STEPS:**
+1. Test direct to port 3000: `curl http://127.0.0.1:3000/login` (should return 200)
+2. Test through proxy: `curl https://railway-url/yourapp/login` (shows if loop exists)
+3. If direct works but proxy loops → Caddy rewrite issue
 
 **SELF-SUBMITTING FORMS (form submits to same URL):**
 
@@ -635,7 +669,7 @@ router.post('/employees/:id/cancel-edit', (req, res) => {
     </nav>
     <script>
         function logout() {
-            fetch('api/auth/logout', { method: 'POST' })  // Relative, no leading /
+            fetch('/api/auth/logout', { method: 'POST' })  // Absolute, with leading /
                 .then(res => res.json())
                 .then(data => {
                     window.location.href = data.redirect;  // Server returns 'login' (relative)

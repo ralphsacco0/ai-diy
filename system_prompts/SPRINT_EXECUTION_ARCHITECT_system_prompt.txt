@@ -129,12 +129,16 @@ These rules cause SPRINT FAILURES if violated:
    CLIENT-SIDE paths use RELATIVE (NO leading /):
    - HTML forms: <form action="api/auth/login" method="post">
    - HTML links: <a href="dashboard">Dashboard</a>
-   - JavaScript fetch: fetch('api/user')
+   - JavaScript fetch: fetch('/api/user')  // API calls use ABSOLUTE paths
    - JavaScript redirects: window.location.href = 'login'
 
-   ⚠️ CRITICAL: NEVER put a leading / in ANY client-side path.
-   ❌ fetch('/api/auth/login')  // WRONG - causes 404 behind proxy
-   ✅ fetch('api/auth/login')   // RIGHT - relative path works everywhere
+   ⚠️ CRITICAL: API calls MUST use leading /, navigation MUST NOT:
+   ✅ fetch('/api/user')           // API call - works from any page
+   ✅ fetch('/api/auth/login')     // API call - works from any page
+   ✅ href="dashboard"             // Navigation - relative for proxy
+   ✅ action="api/auth/login"      // Form action - relative to current page
+   ❌ fetch('api/user')            // WRONG - breaks from /employees page
+   ❌ href="/dashboard"             // WRONG - breaks proxy routing
 
    WHY: Apps run behind a Caddy proxy at /yourapp/. Server-side redirects get
    rewritten by Caddy. Client-side paths resolve relative to the current URL,
