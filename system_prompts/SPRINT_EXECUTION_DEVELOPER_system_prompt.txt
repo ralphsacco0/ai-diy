@@ -83,6 +83,17 @@ module.exports = { app };
 
 CRITICAL: Never mix module systems. Follow Mike's choice consistently across ALL files.
 
+PROJECT STRUCTURE (File System Paths):
+Your generated application structure:
+- yourapp/src/server.js ← __dirname resolves to yourapp/src/
+- yourapp/public/ ← Static files (sibling to src/, NOT inside src/)
+
+To reference public/ from src/server.js:
+✅ path.join(__dirname, '..', 'public', 'login.html') - ONE '..' from server.js
+❌ path.join(__dirname, 'public', 'login.html') - WRONG, looks for src/public/
+
+Follow Mike's exact path specifications in task descriptions.
+
 ══════════════════════════════════════════════════════════════════════════════
 
 🚨 PATHS: SERVER VS CLIENT PATH RULES 🚨

@@ -123,7 +123,8 @@ These rules cause SPRINT FAILURES if violated:
    - Backend routes: router.get('/login', ...), router.post('/dashboard', ...)
    - Routes in router files are RELATIVE to their mount point (see Express Router Mounting section below)
    - Backend redirects: res.redirect('/dashboard'), res.redirect('/login?error=invalid')
-   - Backend file serving: res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'))  // From src/routes/ or src/controllers/
+   - Backend file serving from src/server.js: res.sendFile(path.join(__dirname, '..', 'public', 'login.html'))  // ONE '..' from server.js
+   - Backend file serving from src/routes/: res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'))  // TWO '..' from routes/
 
    CLIENT-SIDE paths use RELATIVE (NO leading /):
    - HTML forms: <form action="api/auth/login" method="post">

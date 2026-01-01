@@ -652,6 +652,42 @@ router.post('/employees/:id/cancel-edit', (req, res) => {
 - CommonJS module system (`require`/`module.exports`)
 - Database sharing via `app.locals.db`
 
+**FILE SYSTEM PATH RESOLUTION (Backend Code):**
+
+Generated applications have this structure:
+```
+yourapp/                    ← Project root
+├── package.json
+├── src/                   ← Backend code
+│   ├── server.js         ← __dirname = yourapp/src/
+│   ├── db.js
+│   ├── routes/           ← __dirname = yourapp/src/routes/
+│   └── middleware/
+├── public/               ← Static files (sibling to src/)
+│   ├── *.html
+│   └── *.js
+└── tests/
+```
+
+**Path resolution from backend code:**
+
+From `src/server.js` (__dirname = `yourapp/src/`):
+- ✅ `path.join(__dirname, '..', 'public', 'login.html')` - ONE '..' to reach project root
+- ✅ `app.use(express.static(path.join(__dirname, '..', 'public')))`
+- ❌ `path.join(__dirname, 'public', 'login.html')` - WRONG, looks for src/public/
+
+From `src/routes/auth.js` (__dirname = `yourapp/src/routes/`):
+- ✅ `path.join(__dirname, '..', '..', 'public', 'login.html')` - TWO '..' to reach project root
+- ❌ `path.join(__dirname, '..', 'public', 'login.html')` - WRONG, only reaches src/
+
+**FOR MIKE (Architect):**
+- In task descriptions, specify the correct number of '..' based on file location
+- Example: "In src/server.js: app.use(express.static(path.join(__dirname, '..', 'public')))"
+
+**FOR ALEX (Developer):**
+- Follow Mike's exact path specifications in task descriptions
+- Never create src/public/ (wrong location - public/ is sibling to src/)
+
 **When making changes:**
 - Avoid Mac-specific paths or shell scripts
 - Use `Path()` for cross-platform file paths

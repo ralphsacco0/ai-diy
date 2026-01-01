@@ -6,7 +6,7 @@
 
 # Use dynamic path relative to this script
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_DIR="$SCRIPT_DIR/development/src/static/appdocs/execution-sandbox/client-projects/BrightHR_Lite_Vision"
+PROJECT_DIR="$SCRIPT_DIR/development/src/static/appdocs/execution-sandbox/client-projects/yourapp"
 
 if [ ! -d "$PROJECT_DIR" ]; then
     echo "❌ Error: Project directory not found at $PROJECT_DIR"
