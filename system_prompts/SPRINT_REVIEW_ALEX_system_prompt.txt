@@ -261,20 +261,27 @@ CLIENT-SIDE paths use RELATIVE (NO leading /):
 - ✅ href="css/styles.css"         ❌ href="/css/styles.css"
 - ✅ src="login.js"                ❌ src="/login.js"
 - ✅ action="api/auth/login"       ❌ action="/api/auth/login"
-- ✅ fetch('api/user')             ❌ fetch('/api/user')
+- ✅ fetch('/api/user')            // API calls use ABSOLUTE
+- ✅ fetch('/api/auth/login')      // API calls use ABSOLUTE
 - ✅ window.location.href = 'dashboard'  ❌ window.location.href = '/dashboard'
+
+⚠️ CRITICAL: API calls MUST use leading /, navigation MUST NOT:
+✅ fetch('/api/user')           // API call - works from any page depth
+✅ fetch('/api/auth/login')     // API call - works from any page depth
+❌ fetch('api/user')            // WRONG - breaks from /employees page
 
 WHY: Apps run behind Caddy proxy at /yourapp/. Server redirects get rewritten.
 Client paths resolve relative to current URL, working locally AND behind proxy.
 
 QUICK REFERENCE:
 ```
-SERVER-SIDE (keep the /)        CLIENT-SIDE (remove the /)
-========================        ==========================
-res.redirect('/dashboard')      href="dashboard"
-router.get('/login')            src="login.js"
-router.post('/logout')          fetch('api/auth/login')
-app.use('/api/auth', router)    window.location.href = 'login'
+SERVER-SIDE (keep the /)        CLIENT-SIDE (mixed rules)
+========================        ========================
+res.redirect('/dashboard')      href="dashboard"        // Navigation: relative
+router.get('/login')            src="login.js"          // Scripts: relative
+router.post('/logout')          action="api/auth/login" // Forms: relative
+app.use('/api/auth', router)    fetch('/api/user')      // API calls: ABSOLUTE
+                              window.location.href = 'dashboard' // Redirects: relative
 ```
 
 API RESPONSES WITH REDIRECT URLS (HYBRID CASE):
@@ -324,8 +331,8 @@ In HTML files, change:
   ❌ action="/api/auth/login"   → ✅ action="api/auth/login"
 
 In JavaScript files, change:
-  ❌ fetch('/api/auth/login')              → ✅ fetch('api/auth/login')
-  ❌ fetch('/api/user')                    → ✅ fetch('api/user')
+  ❌ fetch('/api/auth/login')              → ✅ fetch('/api/auth/login')  // Keep absolute for API calls
+  ❌ fetch('/api/user')                    → ✅ fetch('/api/user')        // Keep absolute for API calls
   ❌ window.location.href = '/dashboard'   → ✅ window.location.href = 'dashboard'
 
 WHY THIS WORKS:
@@ -365,7 +372,8 @@ THE WRONG FIX (never do this):
 
 ⚠️ CRITICAL: KNOW THE DIFFERENCE:
 - SERVER-SIDE = res.redirect(), router.get(), router.post() → KEEP the leading /
-- CLIENT-SIDE = HTML href, src, action, JS fetch, window.location → REMOVE the leading /
+- CLIENT-SIDE = HTML href, src, action, window.location → REMOVE the leading /
+- CLIENT-SIDE API CALLS = fetch() → KEEP the leading / (absolute paths work from any page depth)
 - HTML STRUCTURE = NEVER use <base> tags, even if they exist in current code
 
 If you see a 404 after login redirect:
