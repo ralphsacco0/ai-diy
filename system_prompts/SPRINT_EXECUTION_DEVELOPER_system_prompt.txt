@@ -105,23 +105,33 @@ SERVER-SIDE paths use ABSOLUTE (with leading /):
 - ✅ router.get('/login', ...)     (route definitions have leading /, relative to mount point)
 - ✅ router.post('/dashboard', ...) (route paths start with /, relative to where router is mounted)
 
-CLIENT-SIDE paths use RELATIVE (NO leading /):
-- ✅ href="dashboard"              ❌ href="/dashboard"
-- ✅ href="logout"                 ❌ href="/logout"
-- ✅ href="css/styles.css"         ❌ href="/css/styles.css"
-- ✅ src="login.js"                ❌ src="/login.js"
-- ✅ action="api/auth/login"       ❌ action="/api/auth/login"
-- ✅ fetch('/api/user')            ✅ fetch('/api/user')        // API calls use ABSOLUTE
-- ✅ fetch('/api/auth/login')      ✅ fetch('/api/auth/login')  // API calls use ABSOLUTE
-- ✅ window.location.href = 'dashboard'  ❌ window.location.href = '/dashboard'
-
-⚠️ CRITICAL: API calls MUST use leading /, navigation MUST NOT:
-✅ fetch('/api/user')           // API call - works from any page depth
-✅ fetch('/api/auth/login')     // API call - works from any page depth
-✅ href="dashboard"             // Navigation - relative for proxy compatibility
-✅ action="api/auth/login"      // Form action - relative to current page
-❌ fetch('api/user')            // WRONG - breaks from /employees page (becomes /employees/api/user)
-❌ href="/dashboard"             // WRONG - breaks proxy routing
+ENVIRONMENT-AWARE ROUTING IMPLEMENTATION:
+   
+   ENVIRONMENTS:
+   - Local: localhost:3000 → apiPrefix = ''
+   - Railway: /yourapp/ → apiPrefix = '/yourapp'
+   
+   IMPLEMENTATION REQUIREMENTS:
+   1. Server MUST detect environment and inject apiPrefix into templates
+   2. All API calls MUST use apiPrefix variable (not hardcoded paths)
+   3. Navigation MUST use relative paths
+   4. Forms MUST use relative actions
+   5. Server redirects MUST use absolute paths
+   
+   CLIENT-SIDE patterns:
+   - HTML forms: <form action="api/auth/login" method="post">
+   - HTML links: <a href="dashboard">Dashboard</a>
+   - JavaScript fetch: fetch(\`\${apiPrefix}/api/user\`)  // Uses injected prefix
+   - JavaScript redirects: window.location.href = 'login'
+   
+   ⚠️ CRITICAL: API calls MUST use apiPrefix, navigation MUST be relative:
+   ✅ fetch(\`\${apiPrefix}/api/user\`)     // Environment-aware API call
+   ✅ fetch(\`\${apiPrefix}/api/auth/login\`) // Environment-aware API call
+   ✅ href="dashboard"                     // Navigation - relative for proxy
+   ✅ action="api/auth/login"              // Form action - relative to current page
+   ❌ fetch('/api/user')                   // WRONG - hardcoded absolute path
+   ❌ fetch('api/user')                    // WRONG - hardcoded relative path
+   ❌ href="/dashboard"                    // WRONG - breaks proxy routing
 
 WHY: Apps run behind a Caddy proxy at /yourapp/. Server redirects get rewritten
 by Caddy. Client paths resolve relative to current URL, working everywhere.
@@ -152,13 +162,12 @@ FORM DATA ENCODING:
 Match client-side encoding with server-side parsing middleware:
 
 1. SIMPLE FORMS (login, text fields only):
-   Client: Use URLSearchParams with urlencoded Content-Type
+   Client: Use apiCall() helper with JSON Content-Type
    ```javascript
    const formData = new FormData(form);
-   fetch('/api/auth/login', {
+   await apiCall('/api/auth/login', {
      method: 'POST',
-     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-     body: new URLSearchParams(formData)
+     body: JSON.stringify(Object.fromEntries(formData))
    });
    ```
    Server: express.urlencoded({ extended: true })
