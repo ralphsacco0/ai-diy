@@ -288,6 +288,26 @@ WHY: Even though res.json() is server-side code, the redirect value is consumed
 by client-side JavaScript (window.location.href = data.redirect), so it must
 follow CLIENT-SIDE rules (no leading /).
 
+SELF-SUBMITTING FORMS (form submits to same URL):
+When diagnosing form submission issues, check if the form submits to the same URL:
+
+✅ CORRECT - Form at /login that POSTs to /login:
+<form action="#" method="POST">
+
+❌ WRONG - Creates /login/login (404):
+<form action="login" method="POST">
+
+COMMON BUG: If user reports "Cannot POST /path/path" (duplicate path), check for:
+- Form at /path with action="path" (should be action="#")
+- This creates /path + path = /path/path (404)
+
+FIX: Change action="path" to action="#" or action="."
+
+Examples of self-submitting forms:
+- Login form at /login → action="#"
+- Search form at /employee-search → action="#"  
+- Profile update at /profile/edit → action="#"
+
 DEBUGGING TIP: If forms/links/fetch fail with 404:
 1. Check for leading / in HTML/JS - if you find any, REMOVE THEM
 2. The fix is simple: REMOVE the leading / to make paths relative

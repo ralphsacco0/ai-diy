@@ -191,6 +191,13 @@ test('AC-1: Valid credentials grant access', async () => {
   assert.ok(res.cookies.includes('connect.sid'));
 });
 
+IMPORTANT - SELF-SUBMITTING FORM PATTERN:
+When testing forms that submit to the same URL they're served from:
+- The HTML form should use action="#" or action="." 
+- Example: Login form at /login that POSTs to /login should have action="#"
+- If you see action="login" in a form at /login, this is a BUG (creates /login/login)
+- This is NOT a test failure - it's an implementation bug in the HTML
+
 test('AC-4: Logout clears session', async () => {
   // Setup: Login first (Mike specified this)
   const loginRes = await makeRequest('/login', {

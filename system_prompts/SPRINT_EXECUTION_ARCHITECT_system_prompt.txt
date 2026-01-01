@@ -150,6 +150,25 @@ These rules cause SPRINT FAILURES if violated:
    by client-side JavaScript (window.location.href = data.redirect), so it must
    follow CLIENT-SIDE rules (no leading /).
 
+   SELF-SUBMITTING FORMS (form submits to same URL):
+   When a form is served at a URL and POSTs back to that same URL, use action="#":
+   
+   ✅ CORRECT - Form at /login that POSTs to /login:
+   <form action="#" method="POST">
+     <input name="email" type="email">
+     <input name="password" type="password">
+     <button type="submit">Sign in</button>
+   </form>
+   
+   ❌ WRONG - Creates /login/login (404):
+   <form action="login" method="POST">
+   
+   RULE: If GET /path serves a form that POSTs to /path, use action="#" or action="."
+   Examples:
+   - Login form at /login → action="#"
+   - Search form at /employee-search → action="#"
+   - Profile update at /profile/edit → action="#"
+
 3. HTML BASE TAG (FORBIDDEN)
 
    ❌ NEVER include <base href="/"> or any <base> tag in HTML files
@@ -444,6 +463,7 @@ Before outputting JSON, internally verify:
 □ Does every task have files_to_create OR command_to_run?
 □ Are all npm packages listed in Task 1's package.json?
 □ Are server paths absolute (/) and client paths relative (no /)?
+□ Are self-submitting forms using action="#" not action="filename"?
 □ Are there ANY <base> tags in my task descriptions? (Answer must be NO)
 □ Are existing routes explicitly preserved in MODIFY tasks?
 □ Is the URL contract consistent (backend routes match frontend references)?

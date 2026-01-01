@@ -563,6 +563,24 @@ localhost:3000 → Generated App (direct access, no proxy)
 
 **IMPORTANT**: HTML paths (forms, links, fetch) must be **relative** (no leading `/`) so they resolve relative to the current URL. Server-side redirects use absolute paths because Caddy rewrites the `Location` header.
 
+**SELF-SUBMITTING FORMS (form submits to same URL):**
+
+When a form is served at a URL and submits back to that same URL:
+- ✅ `<form action="#" method="POST">`     // Submits to current URL
+- ✅ `<form action="." method="POST">`      // Submits to current URL  
+- ❌ `<form action="login" method="POST">`  // At /login, creates /login/login (404)
+
+**Example:** Login form served at GET /login that POSTs to /login:
+```html
+<form action="#" method="POST">
+  <input name="email" type="email" required>
+  <input name="password" type="password" required>
+  <button type="submit">Sign in</button>
+</form>
+```
+
+**Why:** Using `action="#"` or `action="."` submits to the current URL. Using `action="login"` creates a relative path that appends to the current URL (e.g., /login + login = /login/login).
+
 **Cross-Depth Navigation (Nested URLs):**
 
 For navigation between different URL depths, use server-side redirects via POST endpoints:

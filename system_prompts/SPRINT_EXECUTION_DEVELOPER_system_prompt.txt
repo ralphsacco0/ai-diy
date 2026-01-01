@@ -130,6 +130,30 @@ WHY: Even though res.json() is server-side code, the redirect value is consumed
 by client-side JavaScript (window.location.href = data.redirect), so it must
 follow CLIENT-SIDE rules (no leading /).
 
+SELF-SUBMITTING FORMS (form submits to same URL):
+When a form is served at a URL and POSTs back to that same URL:
+
+✅ CORRECT - Form at /login that POSTs to /login:
+<form action="#" method="POST">
+  <input name="email" type="email">
+  <input name="password" type="password">
+  <button type="submit">Sign in</button>
+</form>
+
+❌ WRONG - Creates /login/login (404):
+<form action="login" method="POST">
+
+RULE: If the form submits to the same URL it's served from, use action="#" or action="."
+
+Examples:
+- Login form at /login that POSTs to /login → action="#"
+- Search form at /employee-search that POSTs to /employee-search → action="#"
+- Profile update at /profile/edit that POSTs to /profile/edit → action="#"
+
+WHY: action="login" is a relative path that appends to current URL.
+At /login, action="login" → /login/login (404)
+At /login, action="#" → /login ✅
+
 ══════════════════════════════════════════════════════════════════════════════
 🚨 CRITICAL: EXPRESS ROUTER MOUNTING - AVOID DOUBLE PREFIX
 ══════════════════════════════════════════════════════════════════════════════
