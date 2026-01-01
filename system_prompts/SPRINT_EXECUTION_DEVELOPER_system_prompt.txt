@@ -117,23 +117,26 @@ ROUTING IMPLEMENTATION (CADDY HANDLES ALL REWRITING):
    IMPLEMENTATION REQUIREMENTS:
    1. API calls MUST use ABSOLUTE paths: fetch('/api/user')
    2. Navigation MUST use RELATIVE paths: href="dashboard"
-   3. Forms MUST use RELATIVE actions: action="api/auth/login"
+   3. Forms MUST use RELATIVE actions: action="#" (self-submit) or action="api/endpoint" (relative)
    4. Server redirects MUST use ABSOLUTE paths: res.redirect('/dashboard')
    5. DO NOT add environment detection code
    6. DO NOT add template injection middleware
    7. DO NOT use apiPrefix or API_PREFIX variables
+   8. CRITICAL: Use the EXACT routes Mike specifies in technical_notes, not example routes from this prompt
    
    CLIENT-SIDE patterns:
-   - HTML forms: <form action="api/auth/login" method="post">  // Relative
+   - HTML forms (self-submit): <form action="#" method="post">  // Self-submitting form
+   - HTML forms (to endpoint): <form action="api/endpoint" method="post">  // Relative to endpoint
    - HTML links: <a href="dashboard">Dashboard</a>  // Relative
    - JavaScript fetch: fetch('/api/user')  // Absolute with leading /
    - JavaScript redirects: window.location.href = 'login'  // Relative
    
    ⚠️ CRITICAL PATH RULES:
    ✅ fetch('/api/user')           // CORRECT - absolute for API calls
-   ✅ fetch('/api/auth/login')     // CORRECT - absolute for API calls
+   ✅ fetch('/api/employees')      // CORRECT - absolute for API calls
    ✅ href="dashboard"              // CORRECT - relative for navigation
-   ✅ action="api/auth/login"      // CORRECT - relative for forms
+   ✅ action="#"                    // CORRECT - self-submitting form
+   ✅ action="api/endpoint"        // CORRECT - relative for forms to different endpoint
    ❌ fetch('api/user')            // WRONG - relative API calls fail from nested pages
    ❌ href="/dashboard"             // WRONG - absolute navigation breaks proxy
 
@@ -147,8 +150,8 @@ SERVER-SIDE (keep the /)        CLIENT-SIDE (mixed rules)
 ========================        ========================
 res.redirect('/dashboard')      href="dashboard"        // Navigation: relative
 router.get('/login')            src="login.js"          // Scripts: relative
-router.post('/logout')          action="api/auth/login" // Forms: relative
-app.use('/api/auth', router)    fetch('/api/user')      // API calls: ABSOLUTE with /
+router.post('/logout')          action="#"              // Forms: self-submit
+app.use('/api', router)         fetch('/api/user')      // API calls: ABSOLUTE with /
                               window.location.href = 'dashboard' // Redirects: relative
 ```
 
@@ -172,7 +175,7 @@ Match client-side encoding with server-side parsing middleware:
    Client: Use fetch() with JSON Content-Type
    ```javascript
    const formData = new FormData(form);
-   await fetch('/api/auth/login', {
+   await fetch('/api/endpoint', {  // Use EXACT route from Mike's technical_notes
      method: 'POST',
      headers: { 'Content-Type': 'application/json' },
      body: JSON.stringify(Object.fromEntries(formData))
@@ -225,6 +228,11 @@ COMMON BUG - Double prefix:
 If Mike's technical_notes says "Backend exposes POST /api/auth/login", this means:
 - server.js: app.use('/api/auth', authRouter)
 - routes/auth.js: router.post('/login', ...)  ← NOT router.post('/api/auth/login', ...)
+
+CRITICAL: When Mike specifies routes in technical_notes, use those EXACT paths in your frontend code.
+If Mike says POST /login, your frontend calls fetch('/login').
+If Mike says POST /api/auth/login, your frontend calls fetch('/api/auth/login').
+Do NOT use example routes from this prompt - use Mike's actual specification.
 
 ❌ WRONG (creates /api/auth/api/auth/login):
 ```javascript

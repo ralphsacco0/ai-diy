@@ -138,20 +138,22 @@ These rules cause SPRINT FAILURES if violated:
    IMPLEMENTATION PATTERN (NO environment detection needed):
    - API calls use ABSOLUTE paths: fetch('/api/user')
    - Navigation uses RELATIVE paths: href="dashboard"
-   - Forms use RELATIVE actions: action="api/auth/login"
+   - Forms use RELATIVE actions: action="#" (self-submit) or action="api/endpoint" (relative)
    - Server redirects use ABSOLUTE paths: res.redirect('/dashboard')
    
    CLIENT-SIDE patterns:
-   - HTML forms: <form action="api/auth/login" method="post">  // Relative
+   - HTML forms (self-submit): <form action="#" method="post">  // Self-submitting form
+   - HTML forms (to endpoint): <form action="api/endpoint" method="post">  // Relative to endpoint
    - HTML links: <a href="dashboard">Dashboard</a>  // Relative
    - JavaScript fetch: fetch('/api/user')  // Absolute with leading /
    - JavaScript redirects: window.location.href = 'login'  // Relative
    
    ⚠️ CRITICAL PATH RULES:
    ✅ fetch('/api/user')           // CORRECT - absolute for API calls
-   ✅ fetch('/api/auth/login')     // CORRECT - absolute for API calls
+   ✅ fetch('/api/employees')      // CORRECT - absolute for API calls
    ✅ href="dashboard"              // CORRECT - relative for navigation
-   ✅ action="api/auth/login"      // CORRECT - relative for forms
+   ✅ action="#"                    // CORRECT - self-submitting form
+   ✅ action="api/endpoint"        // CORRECT - relative for forms to different endpoint
    ❌ fetch('api/user')            // WRONG - relative API calls fail from nested pages
    ❌ href="/dashboard"             // WRONG - absolute navigation breaks proxy
 
@@ -206,7 +208,7 @@ These rules cause SPRINT FAILURES if violated:
 
    ✅ CORRECT: Use relative paths with NO <base> tag
    ✅ HTML: <a href="dashboard">Dashboard</a>
-   ✅ HTML: <form action="api/auth/login">
+   ✅ HTML: <form action="#">  <!-- Self-submitting form -->
 
    ❌ WRONG: Adding <base href="/"> then using relative paths
    ❌ HTML: <base href="/"><a href="dashboard">
@@ -259,6 +261,11 @@ These rules cause SPRINT FAILURES if violated:
    - In server.js task: "app.use('/api/auth', authRouter)"
    - In routes/auth.js task: "router.post('/login', ...)" (WITHOUT /api/auth prefix)
    - In technical_notes: "Backend exposes POST /api/auth/login (mount: app.use('/api/auth', authRouter), route: router.post('/login'))"
+   
+   CRITICAL: When specifying routes in technical_notes, Alex will use those EXACT paths.
+   If you specify POST /login, Alex generates frontend calling /login.
+   If you specify POST /api/auth/login, Alex generates frontend calling /api/auth/login.
+   Ensure frontend paths in your task descriptions match backend routes in technical_notes.
 
 CROSS-DEPTH NAVIGATION (NESTED URLS):
 When designing nested pages (e.g., /employees/:id/edit):
@@ -539,7 +546,7 @@ NORMAL STORY OUTPUT:
       "dependency_reason": "Depends on T-US-009-03 because database module must exist first"
     }
   ],
-  "technical_notes": "URL Contract: Backend exposes POST /api/auth/login (via app.use('/api/auth', authRouter) + router.post('/login')), GET /dashboard; Frontend uses action='api/auth/login', href='dashboard' (relative paths, no leading /, NO <base> tag); Consistency check: ✓ URLs match, no <base> tags"
+  "technical_notes": "URL Contract: Backend exposes POST /login, GET /dashboard; Frontend uses action='#' (self-submit to /login), href='dashboard' (relative paths, no leading /, NO <base> tag); Consistency check: ✓ URLs match, no <base> tags"
 }
 
 JSON VALIDATION RULES:
