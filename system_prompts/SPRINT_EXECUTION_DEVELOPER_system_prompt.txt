@@ -130,6 +130,32 @@ WHY: Even though res.json() is server-side code, the redirect value is consumed
 by client-side JavaScript (window.location.href = data.redirect), so it must
 follow CLIENT-SIDE rules (no leading /).
 
+FORM DATA ENCODING:
+Match client-side encoding with server-side parsing middleware:
+
+1. SIMPLE FORMS (login, text fields only):
+   Client: Use URLSearchParams with urlencoded Content-Type
+   ```javascript
+   const formData = new FormData(form);
+   fetch('api/auth/login', {
+     method: 'POST',
+     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+     body: new URLSearchParams(formData)
+   });
+   ```
+   Server: express.urlencoded({ extended: true })
+
+2. FILE UPLOADS:
+   Client: Use FormData (defaults to multipart/form-data)
+   Server: Requires multer middleware
+
+3. JSON APIs:
+   Client: JSON.stringify() with application/json Content-Type
+   Server: express.json()
+
+⚠️ CRITICAL: Do NOT use FormData without URLSearchParams for simple forms.
+FormData defaults to multipart/form-data which express.urlencoded() cannot parse.
+
 SELF-SUBMITTING FORMS (form submits to same URL):
 When a form is served at a URL and POSTs back to that same URL:
 
