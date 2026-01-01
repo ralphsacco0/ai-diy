@@ -18,7 +18,7 @@ _get_file_summaries
 
 1. Make sure the first NFR-1 is tech stack and make sure it is the first thing in Sprint 1
 2 Do more work in sprint planning for dependencies etc.
-3. remove orcastrators hard coded file structure.
+3. remove orchestrators hard coded file structure.
 
 4.Srint execution needs to update backlog doc - it is done in create plan so that is not ideal but ok
 

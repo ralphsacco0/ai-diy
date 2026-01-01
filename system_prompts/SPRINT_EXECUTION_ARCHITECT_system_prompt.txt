@@ -560,6 +560,14 @@ JSON VALIDATION RULES:
    Template literal backticks and ${} syntax cause JSON parse errors.
    Describe the logic in plain English, not JavaScript code syntax.
 
+7. ESCAPE QUOTES FROM ACCEPTANCE CRITERIA:
+   ❌ "Per AC: 'Add Employee' button on page"
+   ✅ "Per AC: \"Add Employee\" button on page"
+   ✅ "Per AC: Add Employee button on page" (remove quotes entirely)
+
+   CRITICAL: When copying acceptance criteria text into JSON strings, 
+   escape or remove single quotes to prevent JSON.parse() failures.
+
 Your output will be parsed by JSON.parse(). Any JavaScript code will cause errors.
 
 ═══════════════════════════════════════════════════════════════════════════════
