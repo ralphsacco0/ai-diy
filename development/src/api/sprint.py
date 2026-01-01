@@ -160,12 +160,32 @@ async def save_sprint(request: SprintRequest) -> ApiResponse:
                 headers = reader.fieldnames or []
                 rows = list(reader)
             
+            # Collect wireframes to update (for US- stories in sprint)
+            wireframes_to_update = set()
+            
             # Update rows for stories in this sprint
             for row in rows:
                 if row.get("Story_ID") in request.stories:
                     row["Sprint_ID"] = sprint_id
                     row["Status"] = "In Sprint"
                     # Don't overwrite Execution_Status if already set
+                    if not row.get("Execution_Status"):
+                        row["Execution_Status"] = "planned"
+                    row["Last_Updated"] = datetime.now().isoformat()
+                    
+                    # If this is a US- story, mark corresponding WF- wireframe for update
+                    story_id = row.get("Story_ID", "")
+                    if story_id.startswith("US-"):
+                        story_number = story_id.split("-")[1] if "-" in story_id else None
+                        if story_number:
+                            wf_story_id = f"WF-{story_number}"
+                            wireframes_to_update.add(wf_story_id)
+            
+            # Second pass: Update wireframes that correspond to US stories in sprint
+            for row in rows:
+                if row.get("Story_ID") in wireframes_to_update:
+                    row["Sprint_ID"] = sprint_id
+                    row["Status"] = "In Sprint"
                     if not row.get("Execution_Status"):
                         row["Execution_Status"] = "planned"
                     row["Last_Updated"] = datetime.now().isoformat()
