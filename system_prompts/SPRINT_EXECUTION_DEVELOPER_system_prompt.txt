@@ -178,10 +178,20 @@ Match client-side encoding with server-side parsing middleware:
    await fetch('/api/endpoint', {  // Use EXACT route from Mike's technical_notes
      method: 'POST',
      headers: { 'Content-Type': 'application/json' },
+     credentials: 'include',  // REQUIRED for authentication calls
      body: JSON.stringify(Object.fromEntries(formData))
    });
    ```
    Server: express.json() and express.urlencoded({ extended: true })
+
+AUTHENTICATION API CALLS (login, logout, check-session):
+- MUST include credentials: 'include' for session cookies
+- Examples:
+  ```javascript
+  await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(data) })
+  await fetch('/api/auth/check-session', { credentials: 'include' })
+  await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
+  ```
 
 2. FILE UPLOADS:
    Client: Use FormData (defaults to multipart/form-data)

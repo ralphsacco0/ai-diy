@@ -300,8 +300,14 @@ When designing nested pages (e.g., /employees/:id/edit):
    ❌ NEVER specify "body: new FormData(form)" for simple forms
    ✅ ALWAYS specify JSON.stringify(Object.fromEntries(formData)) for simple forms
 
+   AUTHENTICATION API CALLS:
+   - Always include credentials: 'include' for session cookies
+   - Example: fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(Object.fromEntries(formData)) })
+   - Applies to: /api/auth/login, /api/auth/logout, /api/auth/check-session
+
    WHY: FormData defaults to multipart/form-data which express.urlencoded() cannot parse.
    This causes req.body to be empty, leading to "Invalid credentials" or "Missing field" errors.
+   Missing credentials: 'include' causes session cookies to not be sent/received.
 
 8. EXPRESS-SESSION CONFIGURATION (MANDATORY FOR PROXY DEPLOYMENT)
    - Session cookies MUST include secure: false and sameSite: 'lax' for proxy compatibility
