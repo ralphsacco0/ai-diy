@@ -7,11 +7,14 @@ import os
 import json
 import shutil
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Optional
 import logging
 
 logger = logging.getLogger(__name__)
+
+# EST timezone (UTC-5)
+EST_TZ = timezone(timedelta(hours=-5))
 
 # Directories/files to exclude from snapshots
 EXCLUDE_PATTERNS = [
@@ -54,8 +57,8 @@ def create_snapshot(
         snapshots_dir = project_path / ".snapshots"
         snapshots_dir.mkdir(exist_ok=True)
         
-        # Generate timestamp for snapshot folder
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        # Generate timestamp for snapshot folder in EST timezone
+        timestamp = datetime.now(EST_TZ).strftime("%Y%m%d_%H%M%S")
         snapshot_dir = snapshots_dir / timestamp
         
         logger.info(f"Creating snapshot: {snapshot_dir}")
