@@ -38,6 +38,42 @@ This single principle ensures compatibility across both environments without env
 - Browser requests: `fetch('login')` from `/yourapp/login` → `/yourapp/login` → Caddy strips `/yourapp/` → Node.js receives `/login` ✅
 - Node.js responds: `res.redirect('/dashboard')` → Caddy rewrites to `/yourapp/dashboard` → Browser receives `/yourapp/dashboard`
 
+**🚨 CRITICAL DISCOVERY: Caddy Location Header Rewriting**
+
+**Problem Discovered:**
+When users visited `/yourapp/login` while already logged in, they were redirected to `/dashboard` instead of `/yourapp/dashboard`, causing a 404 error from FastAPI.
+
+**Root Cause:**
+- Generated app sends: `res.redirect('/dashboard')` → Location header: `/dashboard`
+- Original Caddy config: `header_down Location "^/yourapp/(.*)" "/yourapp/$1"`
+- Pattern `/yourapp/(.*)` did NOT match `/dashboard` (no prefix)
+- Caddy passed through unchanged: `Location: /dashboard`
+- Browser went to `/dashboard` → FastAPI → 404
+
+**Solution Implemented:**
+Smart Caddy configuration that distinguishes between applications:
+
+```caddy
+handle_path /yourapp/* {
+    reverse_proxy 127.0.0.1:3000 {
+        # Rewrite ALL Location headers from generated app
+        header_down Location "^/(.*)" "/yourapp/$1"
+    }
+}
+
+handle {
+    reverse_proxy 127.0.0.1:8001 {
+        # Don't rewrite Location headers from AI-DIY platform
+    }
+}
+```
+
+**Why This Works:**
+- Generated app (port 3000): `Location: /dashboard` → rewritten to `Location: /yourapp/dashboard` ✅
+- AI-DIY platform (port 8001): `Location: /dashboard` → unchanged ✅
+- Clean separation between two applications
+- Generated app stays simple (no environment detection needed)
+
 **CRITICAL: API calls MUST be relative to go through Caddy proxy**
 - `fetch('login')` → Through Caddy → Node.js ✅  
 - `fetch('/api/auth/login')` → Bypasses Caddy → FastAPI → 404 ❌
@@ -540,16 +576,22 @@ reverse_proxy localhost:8001
    - Verify auth router is mounted at root: `app.use('/', authRouter)`
    - Check if generated app is running on port 3000
 
-3. **Redirect loops**
+3. **Redirect loops or redirects go to wrong domain**
    - Check session cookie settings
-   - Verify Caddy Location header rewriting
+   - Verify Caddy Location header rewriting (see CRITICAL DISCOVERY section)
    - Check for conflicting middleware
 
-4. **Navigation links go to wrong pages**
+4. **Login redirects to /dashboard instead of /yourapp/dashboard**
+   - This is the Caddy Location header rewriting issue
+   - Generated app sends `Location: /dashboard` 
+   - Caddy must rewrite to `Location: /yourapp/dashboard`
+   - Check Caddyfile uses: `header_down Location "^/(.*)" "/yourapp/$1"` for generated app
+
+5. **Navigation links go to wrong pages**
    - Ensure links use relative paths: `href="dashboard"`
    - Check for absolute paths in HTML
 
-5. **Pages load then redirect to 404**
+6. **Pages load then redirect to 404**
    - Check session check API calls use relative paths: `fetch('check-session')`
    - Verify session check includes credentials: 'include'
 
