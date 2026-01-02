@@ -256,31 +256,33 @@ SERVER-SIDE paths use ABSOLUTE (with leading /):
 - ✅ router.post('/dashboard', ...) (route paths relative to where router is mounted)
 
 IMPLEMENTATION REQUIREMENTS (NO ENVIRONMENT DETECTION NEEDED):
-   1. API calls MUST use RELATIVE paths: fetch('api/user')
+   1. API calls MUST use RELATIVE paths: fetch('user'), fetch('login'), fetch('employees')
    2. Navigation MUST use RELATIVE paths: href="dashboard"
-   3. Forms MUST use relative actions: action="#" (self-submit) or action="api/endpoint" (relative)
+   3. Forms MUST use relative actions: action="#" (self-submit) or action="login" (relative)
    4. Server redirects MUST use ABSOLUTE paths: res.redirect('/dashboard')
    5. DO NOT add environment detection code
    6. DO NOT add template injection middleware
    7. DO NOT use apiPrefix or API_PREFIX variables
    
    CLIENT-SIDE patterns:
-   - HTML forms: <form action="api/auth/login" method="post">
+   - HTML forms: <form action="login" method="post">
    - HTML links: <a href="dashboard">Dashboard</a>
-   - JavaScript fetch: fetch('api/user')  // Relative paths go through Caddy
+   - JavaScript fetch: fetch('employees')  // Relative paths go through Caddy
    - JavaScript redirects: window.location.href = 'login'
    
    AUTHENTICATION API CALLS:
    - MUST include credentials: 'include' for session cookies
-   - Examples: fetch('api/auth/login', { credentials: 'include', ... })
-   - Applies to: api/auth/login, api/auth/logout, api/auth/check-session
+   - Examples: fetch('login', { credentials: 'include', ... })
+   - Applies to: login, logout, check-session
    
    ⚠️ CRITICAL: API calls MUST be relative, navigation MUST be relative:
-   ✅ fetch('api/user')                   // Relative - goes through Caddy to Node.js
-   ✅ fetch('api/auth/login')             // Relative - goes through Caddy to Node.js
+   ✅ fetch('login')                       // Relative - goes through Caddy to Node.js
+   ✅ fetch('employees')                   // Relative - goes through Caddy to Node.js
+   ✅ fetch('check-session')               // Relative - goes through Caddy to Node.js
    ✅ href="dashboard"                     // Navigation - relative for proxy
-   ✅ action="api/auth/login"              // Form action - relative to current page
-   ❌ fetch('/api/user')                   // WRONG - absolute bypasses Caddy and hits FastAPI
+   ✅ action="login"                      // Form action - relative to current page
+   ❌ fetch('/api/auth/login')             // WRONG - absolute bypasses Caddy and hits FastAPI
+   ❌ fetch('api/employees')               // WRONG - absolute bypasses Caddy and hits FastAPI
    ❌ href="/dashboard"                    // WRONG - breaks proxy routing
 
 WHY: Apps run behind Caddy proxy at /yourapp/. Server redirects get rewritten.
@@ -292,8 +294,8 @@ SERVER-SIDE (keep the /)        CLIENT-SIDE (all relative)
 ========================        ========================
 res.redirect('/dashboard')      href="dashboard"        // Navigation: relative
 router.get('/login')            src="login.js"          // Scripts: relative
-router.post('/logout')          action="api/auth/login" // Forms: relative
-app.use('/api/auth', router)    fetch('api/user')       // API calls: RELATIVE
+router.post('/logout')          action="login"          // Forms: relative
+app.use('/', authRouter)        fetch('login')          // API calls: RELATIVE
                               window.location.href = 'dashboard' // Redirects: relative
 ```
 
@@ -341,11 +343,13 @@ In HTML files, change:
   ❌ href="/css/styles.css"     → ✅ href="css/styles.css"
   ❌ src="/login.js"            → ✅ src="login.js"
   ❌ href="/employee-directory" → ✅ href="employee-directory"
-  ❌ action="/api/auth/login"   → ✅ action="api/auth/login"
+  ❌ action="/api/auth/login"   → ✅ action="login"
 
 In JavaScript files, change:
-  ❌ fetch('/api/auth/login')              → ✅ fetch('api/auth/login')  // Use relative for API calls
-  ❌ fetch('/api/user')                    → ✅ fetch('api/user')        // Use relative for API calls
+  ❌ fetch('/api/auth/login')              → ✅ fetch('login')           // Use relative for auth calls
+  ❌ fetch('/api/user')                    → ✅ fetch('user')             // Use relative for API calls
+  ❌ fetch('/api/employees')               → ✅ fetch('employees')        // Use relative for API calls
+  ❌ fetch('/api/auth/check-session')      → ✅ fetch('check-session')    // Use relative for session calls
   ❌ window.location.href = '/dashboard'   → ✅ window.location.href = 'dashboard'
 
 WHY THIS WORKS:

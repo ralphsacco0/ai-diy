@@ -115,9 +115,9 @@ ROUTING IMPLEMENTATION (CADDY HANDLES ALL REWRITING):
    The app NEVER sees /yourapp/ in any request.
    
    IMPLEMENTATION REQUIREMENTS:
-   1. API calls MUST use RELATIVE paths: fetch('api/user')
+   1. API calls MUST use RELATIVE paths: fetch('user'), fetch('login'), fetch('employees')
    2. Navigation MUST use RELATIVE paths: href="dashboard"
-   3. Forms MUST use RELATIVE actions: action="#" (self-submit) or action="api/endpoint" (relative)
+   3. Forms MUST use RELATIVE actions: action="#" (self-submit) or action="login" (relative)
    4. Server redirects MUST use ABSOLUTE paths: res.redirect('/dashboard')
    5. DO NOT add environment detection code
    6. DO NOT add template injection middleware
@@ -126,18 +126,20 @@ ROUTING IMPLEMENTATION (CADDY HANDLES ALL REWRITING):
    
    CLIENT-SIDE patterns:
    - HTML forms (self-submit): <form action="#" method="post">  // Self-submitting form
-   - HTML forms (to endpoint): <form action="api/endpoint" method="post">  // Relative to endpoint
+   - HTML forms (to endpoint): <form action="login" method="post">  // Relative to endpoint
    - HTML links: <a href="dashboard">Dashboard</a>  // Relative
-   - JavaScript fetch: fetch('api/user')  // Relative paths go through Caddy
+   - JavaScript fetch: fetch('employees')  // Relative paths go through Caddy
    - JavaScript redirects: window.location.href = 'login'  // Relative
    
    ⚠️ CRITICAL PATH RULES:
-   ✅ fetch('api/user')            // CORRECT - relative for API calls (goes through Caddy)
-   ✅ fetch('api/employees')       // CORRECT - relative for API calls (goes through Caddy)
+   ✅ fetch('login')               // CORRECT - relative for auth calls (goes through Caddy)
+   ✅ fetch('employees')           // CORRECT - relative for data calls (goes through Caddy)
+   ✅ fetch('check-session')       // CORRECT - relative for session calls (goes through Caddy)
    ✅ href="dashboard"              // CORRECT - relative for navigation
    ✅ action="#"                    // CORRECT - self-submitting form
-   ✅ action="api/endpoint"        // CORRECT - relative for forms to different endpoint
-   ❌ fetch('/api/user')           // WRONG - absolute bypasses Caddy and hits FastAPI
+   ✅ action="login"                // CORRECT - relative for forms to auth endpoint
+   ❌ fetch('/api/auth/login')      // WRONG - absolute bypasses Caddy and hits FastAPI
+   ❌ fetch('api/employees')        // WRONG - absolute bypasses Caddy and hits FastAPI
    ❌ href="/dashboard"             // WRONG - absolute navigation breaks proxy
 
 WHY: Caddy strips /yourapp/ before forwarding, so Express sees the same paths
@@ -146,12 +148,12 @@ resolve relative to current URL, working everywhere.
 
 QUICK REFERENCE:
 ```
-SERVER-SIDE (keep the /)        CLIENT-SIDE (mixed rules)
+SERVER-SIDE (keep the /)        CLIENT-SIDE (all relative)
 ========================        ========================
 res.redirect('/dashboard')      href="dashboard"        // Navigation: relative
 router.get('/login')            src="login.js"          // Scripts: relative
 router.post('/logout')          action="#"              // Forms: self-submit
-app.use('/api', router)         fetch('/api/user')      // API calls: ABSOLUTE with /
+app.use('/', authRouter)        fetch('login')          // API calls: RELATIVE
                               window.location.href = 'dashboard' // Redirects: relative
 ```
 
@@ -175,7 +177,7 @@ Match client-side encoding with server-side parsing middleware:
    Client: Use fetch() with JSON Content-Type
    ```javascript
    const formData = new FormData(form);
-   await fetch('api/endpoint', {  // Use EXACT route from Mike's technical_notes
+   await fetch('endpoint', {  // Use EXACT route from Mike's technical_notes
      method: 'POST',
      headers: { 'Content-Type': 'application/json' },
      credentials: 'include',  // REQUIRED for authentication calls
@@ -188,9 +190,9 @@ AUTHENTICATION API CALLS (login, logout, check-session):
 - MUST include credentials: 'include' for session cookies
 - Examples:
   ```javascript
-  await fetch('api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(data) })
-  await fetch('api/auth/check-session', { credentials: 'include' })
-  await fetch('api/auth/logout', { method: 'POST', credentials: 'include' })
+  await fetch('login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(data) })
+  await fetch('check-session', { credentials: 'include' })
+  await fetch('logout', { method: 'POST', credentials: 'include' })
   ```
 
 2. FILE UPLOADS:
