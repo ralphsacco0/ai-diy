@@ -31,7 +31,7 @@ GENERATED_APP_PATH="/app/development/src/static/appdocs/execution-sandbox/client
 if [ -f "${GENERATED_APP_PATH}/src/server.js" ]; then
     echo "Starting generated Node.js app on 127.0.0.1:3000..."
     cd "${GENERATED_APP_PATH}"
-    node src/server.js > /tmp/yourapp.log 2>&1 &
+    PORT=3000 node src/server.js > /tmp/yourapp.log 2>&1 &
     NODEJS_PID=$!
     echo "Generated app started with PID ${NODEJS_PID}"
     cd /app/development/src
