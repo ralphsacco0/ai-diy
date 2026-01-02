@@ -74,8 +74,14 @@ handle {
 - Clean separation between two applications
 - Generated app stays simple (no environment detection needed)
 
+**🚨 CRITICAL CONSTRAINT: Generated App Redirect Rules**
+Generated apps MUST follow these redirect rules:
+- ✅ **ALWAYS emit**: `res.redirect('/dashboard')` (no /yourapp prefix)
+- ❌ **NEVER emit**: `res.redirect('/yourapp/dashboard')` (causes double-prefixing)
+- Caddy handles adding the /yourapp prefix automatically
+
 **CRITICAL: API calls MUST be relative to go through Caddy proxy**
-- `fetch('login')` → Through Caddy → Node.js ✅  
+- `fetch('api/login')` → Through Caddy → Node.js ✅  
 - `fetch('/api/auth/login')` → Bypasses Caddy → FastAPI → 404 ❌
 
 ## Complete Routing Specifications
@@ -85,19 +91,23 @@ handle {
 **✅ CORRECT Pattern:**
 ```javascript
 // Relative paths - go through Caddy proxy to Node.js
-fetch('login')                     // For authentication
-fetch('logout')                    // For logout  
-fetch('check-session')             // For session validation
-fetch('employees')                 // For data retrieval
-fetch('employees/123')             // For specific resource
+fetch('api/login')                   // For authentication
+fetch('api/logout')                  // For logout  
+fetch('api/check-session')           // For session validation
+fetch('api/employees')               // For data retrieval
+fetch('api/employees/123')           // For specific resource
 ```
 
 **❌ WRONG Patterns:**
 ```javascript
 // Absolute paths - bypass Caddy and hit FastAPI (404 errors)
-fetch('/api/auth/login')           // Goes to FastAPI → 404
-fetch('/api/employees')            // Goes to FastAPI → 404
-fetch('/api/auth/logout')          // Goes to FastAPI → 404
+fetch('/api/auth/login')             // Goes to FastAPI → 404
+fetch('/api/employees')              // Goes to FastAPI → 404
+fetch('/api/auth/logout')            // Goes to FastAPI → 404
+
+// Un-namespaced relative paths - collide with page routes
+fetch('employees')                   // Collides with /employees page route
+fetch('login')                       // Collides with /login page route
 ```
 
 **Implementation Requirements:**
@@ -107,7 +117,7 @@ fetch('/api/auth/logout')          // Goes to FastAPI → 404
 
 **Example:**
 ```javascript
-const response = await fetch('login', {
+const response = await fetch('api/login', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -140,6 +150,17 @@ const response = await fetch('login', {
 - **Mac**: At `/employees` → `href="dashboard"` → `/dashboard` ✅
 - **Railway**: At `/yourapp/employees` → `href="dashboard"` → `/yourapp/dashboard` ✅
 
+**🚨 CRITICAL CONSTRAINT: No Nested Page URLs**
+Generated apps MUST use single-segment page routes only:
+- ✅ **Pages**: `/dashboard`, `/employees`, `/login`, `/leaves` (single segment)
+- ✅ **API**: `/api/employees`, `/api/employees/123` (can be nested)
+- ❌ **Forbidden**: `/employees/123/edit`, `/dashboard/settings/profile` (nested pages)
+
+**Why This Constraint:**
+- Prevents relative link resolution errors from nested depths
+- Avoids complex cross-depth navigation issues
+- Maintains simplicity without requiring server-side POST redirects
+
 ### 3. Form Actions (Client-side HTML)
 
 **✅ CORRECT Patterns:**
@@ -156,7 +177,7 @@ const response = await fetch('login', {
 **Forms submitting to authentication endpoints:**
 ```html
 <!-- Forms submitting to authentication endpoints -->
-<form action="login" method="POST">
+<form action="api/login" method="POST">
     <input name="email" type="email">
     <input name="password" type="password">
     <button type="submit">Login</button>
@@ -165,7 +186,7 @@ const response = await fetch('login', {
 
 **Forms submitting to API endpoints:**
 ```html
-<form action="employees" method="POST">
+<form action="api/employees" method="POST">
     <input name="name" type="text">
     <input name="email" type="email">
     <button type="submit">Add Employee</button>
@@ -184,7 +205,7 @@ const response = await fetch('login', {
 **CORRECT for Simple Forms (login, text fields):**
 ```javascript
 const formData = new FormData(form);
-await fetch('login', {
+await fetch('api/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -195,7 +216,7 @@ await fetch('login', {
 **✅ CORRECT for File Uploads:**
 ```javascript
 const formData = new FormData(form);
-await fetch('upload', {
+await fetch('api/upload', {
     method: 'POST',
     credentials: 'include',
     body: formData  // multipart/form-data
@@ -209,31 +230,55 @@ await fetch('/api/login', {
     method: 'POST',
     body: formData  // WRONG - causes 404 on FastAPI
 });
+
+// Un-namespaced relative paths collide with page routes
+await fetch('login', {
+    method: 'POST',
+    body: formData  // WRONG - collides with /login page
+});
 ```
 
 ### 5. Server-side Routes (Node.js/Express)
 
 **✅ CORRECT Pattern:**
 ```javascript
-// Absolute paths - server-side routes
+// Page routes - serve HTML
 app.get('/login', (req, res) => { ... });
 app.get('/dashboard', isAuthenticated, (req, res) => { ... });
 app.get('/employees', isAuthenticated, (req, res) => { ... });
 
+// API routes - serve JSON
+app.get('/api/employees', isAuthenticated, (req, res) => { ... });
+app.post('/api/login', (req, res) => { ... });
+app.get('/api/employees/123', isAuthenticated, (req, res) => { ... });
+
 // Router mounting at ROOT (critical for API endpoints)
 const authRouter = require('./routes/auth');
 app.use('/', authRouter);  // Routes in auth.js become /login, /logout, /check-session
+
+const apiRouter = require('./routes/api');
+app.use('/api', apiRouter);  // API routes get /api prefix
 ```
 
 **Router Export Pattern:**
 ```javascript
-// routes/auth.js
+// routes/auth.js - handles page-level auth
 const express = require('express');
 const router = express.Router();
 
 router.post('/login', (req, res) => { ... });  // Becomes /login when mounted at root
 router.post('/logout', (req, res) => { ... });  // Becomes /logout when mounted at root
 router.get('/check-session', (req, res) => { ... });  // Becomes /check-session
+
+module.exports = router;
+
+// routes/api.js - handles API endpoints
+const express = require('express');
+const router = express.Router();
+
+router.get('/employees', (req, res) => { ... });  // Becomes /api/employees when mounted at /api
+router.post('/employees', (req, res) => { ... });  // Becomes /api/employees when mounted at /api
+router.get('/employees/:id', (req, res) => { ... });  // Becomes /api/employees/:id
 
 module.exports = router;
 ```
@@ -477,7 +522,7 @@ def validate_routing_patterns(generated_code):
 // Test API calls work from different page depths
 test('API call from nested page', async () => {
     // Simulate being at /yourapp/employees/departments
-    const response = await fetch('employees');
+    const response = await fetch('api/employees');
     assert(response.ok);
 });
 
@@ -486,7 +531,7 @@ test('Navigation link resolution', () => {
     // At /yourapp/employees, href="dashboard" should go to /yourapp/dashboard
     const currentPath = '/yourapp/employees';
     const linkHref = 'dashboard';
-    const resolved = new URL(linkHref, currentPath).href;
+    const resolved = new URL(linkHref, 'https://example.com' + currentPath + '/').pathname;
     assert(resolved.endsWith('/yourapp/dashboard'));
 });
 ```
@@ -500,7 +545,7 @@ test('Complete login flow', async () => {
     assert(loginPage.ok);
     
     // 2. Submit login form
-    const response = await app.request('/login', {
+    const response = await app.request('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: 'test@test.com', password: 'test' })
@@ -539,9 +584,15 @@ test('Complete login flow', async () => {
 ### 2. Environment Variables
 
 **Railway Environment:**
-- `PORT=3000` (for generated app)
+- `PORT=3000` (for generated app - internal port)
 - `SESSION_SECRET` (for session encryption)
 - `NODE_ENV=production` (optional)
+
+**🚨 IMPORTANT: Railway PORT Clarification**
+- Railway provides `$PORT` for the public-facing service (Caddy)
+- Generated Node.js app listens on fixed internal port 3000
+- FastAPI listens on fixed internal port 8001
+- Do NOT override Railway's $PORT unless you know what you're doing
 
 ### 3. File Structure
 
