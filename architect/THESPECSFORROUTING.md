@@ -304,14 +304,14 @@ app.use(session({
 
 **CLIENT-SIDE (HTML/JavaScript) - Use RELATIVE paths:**
 - Navigation links: <a href="dashboard">Dashboard</a>
-- Form actions: <form action="api/auth/login" method="POST">
-- API calls: fetch('/api/employees') (ABSOLUTE for API calls)
+- Form actions: <form action="login" method="POST">
+- API calls: fetch('employees') (RELATIVE for API calls)
 - Client redirects: window.location.href = 'dashboard'
 
 **SERVER-SIDE (Express) - Use ABSOLUTE paths:**
 - Routes: app.get('/dashboard', ...)
 - Redirects: res.redirect('/dashboard')
-- Router mounting: app.use('/api', apiRouter)
+- Router mounting: app.use('/', authRouter)
 
 ### Form Data Encoding Rules
 
@@ -333,9 +333,9 @@ app.use(session({
 ## RAILWAY ROUTING IMPLEMENTATION
 
 ### Path Handling Rules
-- API calls: Use absolute paths fetch('/api/employees')
+- API calls: Use relative paths fetch('employees')
 - Navigation: Use relative paths href="dashboard"
-- Forms: Use relative paths action="api/auth/login"
+- Forms: Use relative paths action="login"
 - Server redirects: Use absolute paths res.redirect('/dashboard')
 
 ### Session Configuration
@@ -352,7 +352,7 @@ app.use(session({
 
 ### Form Submission Pattern
 const formData = new FormData(form);
-await fetch('/api/endpoint', {
+await fetch('endpoint', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -376,7 +376,7 @@ document.querySelector('form').addEventListener('submit', async (e) => {
     const formData = new FormData(e.target);
     
     try {
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch('login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -403,7 +403,7 @@ document.querySelector('form').addEventListener('submit', async (e) => {
     <a href="employees">Employees</a>
     <a href="leaves">Leaves</a>
     <a href="documents">Documents</a>
-    <form action="/api/auth/logout" method="POST" style="display: inline;">
+    <form action="logout" method="POST" style="display: inline;">
         <button type="submit">Logout</button>
     </form>
 </nav>
@@ -413,7 +413,7 @@ document.querySelector('form').addEventListener('submit', async (e) => {
 ```javascript
 window.addEventListener('load', async () => {
     try {
-        const response = await fetch('/api/auth/check-session', {
+        const response = await fetch('check-session', {
             credentials: 'include'
         });
         const data = await response.json();
@@ -500,7 +500,7 @@ test('Complete login flow', async () => {
     assert(loginPage.ok);
     
     // 2. Submit login form
-    const response = await app.request('/api/auth/login', {
+    const response = await app.request('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: 'test@test.com', password: 'test' })
@@ -519,20 +519,21 @@ test('Complete login flow', async () => {
 
 **Required Caddyfile:**
 ```caddy
-{
-    email your-email@example.com
-}
+:{$PORT} {
+    handle_path /yourapp/* {
+        reverse_proxy 127.0.0.1:3000 {
+            header_up X-Forwarded-Prefix /yourapp
+            # Rewrite ALL Location headers from generated app to include /yourapp prefix
+            header_down Location "^/(.*)" "/yourapp/$1"
+        }
+    }
 
-# Handle generated app requests
-handle /yourapp/* {
-    reverse_proxy localhost:3000
-    
-    # Critical: Rewrite Location headers to prevent double-prefixing
-    header_down Location "^/((?!yourapp/).*)" "/yourapp/$1"
+    handle {
+        reverse_proxy 127.0.0.1:8001 {
+            # Don't rewrite Location headers from AI-DIY platform
+        }
+    }
 }
-
-# Handle main AI-DIY application
-reverse_proxy localhost:8001
 ```
 
 ### 2. Environment Variables
@@ -625,6 +626,7 @@ curl -b cookies.txt https://app.railway.app/yourapp/check-session
 
 2. **JavaScript Files:**
    - Replace `fetch('/api/auth/login')` with `fetch('login')` (use relative for API)
+   - Replace `fetch('/api/employees')` with `fetch('employees')`
    - Replace `fetch('/api/auth/check-session')` with `fetch('check-session')`
    - Replace `window.location.href = '/page'` with `window.location.href = 'page'`
 
