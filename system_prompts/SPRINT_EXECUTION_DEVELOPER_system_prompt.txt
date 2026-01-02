@@ -115,7 +115,7 @@ ROUTING IMPLEMENTATION (CADDY HANDLES ALL REWRITING):
    The app NEVER sees /yourapp/ in any request.
    
    IMPLEMENTATION REQUIREMENTS:
-   1. API calls MUST use ABSOLUTE paths: fetch('/api/user')
+   1. API calls MUST use RELATIVE paths: fetch('api/user')
    2. Navigation MUST use RELATIVE paths: href="dashboard"
    3. Forms MUST use RELATIVE actions: action="#" (self-submit) or action="api/endpoint" (relative)
    4. Server redirects MUST use ABSOLUTE paths: res.redirect('/dashboard')
@@ -128,16 +128,16 @@ ROUTING IMPLEMENTATION (CADDY HANDLES ALL REWRITING):
    - HTML forms (self-submit): <form action="#" method="post">  // Self-submitting form
    - HTML forms (to endpoint): <form action="api/endpoint" method="post">  // Relative to endpoint
    - HTML links: <a href="dashboard">Dashboard</a>  // Relative
-   - JavaScript fetch: fetch('/api/user')  // Absolute with leading /
+   - JavaScript fetch: fetch('api/user')  // Relative paths go through Caddy
    - JavaScript redirects: window.location.href = 'login'  // Relative
    
    ⚠️ CRITICAL PATH RULES:
-   ✅ fetch('/api/user')           // CORRECT - absolute for API calls
-   ✅ fetch('/api/employees')      // CORRECT - absolute for API calls
+   ✅ fetch('api/user')            // CORRECT - relative for API calls (goes through Caddy)
+   ✅ fetch('api/employees')       // CORRECT - relative for API calls (goes through Caddy)
    ✅ href="dashboard"              // CORRECT - relative for navigation
    ✅ action="#"                    // CORRECT - self-submitting form
    ✅ action="api/endpoint"        // CORRECT - relative for forms to different endpoint
-   ❌ fetch('api/user')            // WRONG - relative API calls fail from nested pages
+   ❌ fetch('/api/user')           // WRONG - absolute bypasses Caddy and hits FastAPI
    ❌ href="/dashboard"             // WRONG - absolute navigation breaks proxy
 
 WHY: Caddy strips /yourapp/ before forwarding, so Express sees the same paths
@@ -175,7 +175,7 @@ Match client-side encoding with server-side parsing middleware:
    Client: Use fetch() with JSON Content-Type
    ```javascript
    const formData = new FormData(form);
-   await fetch('/api/endpoint', {  // Use EXACT route from Mike's technical_notes
+   await fetch('api/endpoint', {  // Use EXACT route from Mike's technical_notes
      method: 'POST',
      headers: { 'Content-Type': 'application/json' },
      credentials: 'include',  // REQUIRED for authentication calls
@@ -188,9 +188,9 @@ AUTHENTICATION API CALLS (login, logout, check-session):
 - MUST include credentials: 'include' for session cookies
 - Examples:
   ```javascript
-  await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(data) })
-  await fetch('/api/auth/check-session', { credentials: 'include' })
-  await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
+  await fetch('api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(data) })
+  await fetch('api/auth/check-session', { credentials: 'include' })
+  await fetch('api/auth/logout', { method: 'POST', credentials: 'include' })
   ```
 
 2. FILE UPLOADS:

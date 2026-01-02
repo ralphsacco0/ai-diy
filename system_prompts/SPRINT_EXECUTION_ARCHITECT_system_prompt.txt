@@ -136,7 +136,7 @@ These rules cause SPRINT FAILURES if violated:
    to the Express app. This means the app NEVER sees /yourapp/ in any request.
    
    IMPLEMENTATION PATTERN (NO environment detection needed):
-   - API calls use ABSOLUTE paths: fetch('/api/user')
+   - API calls use RELATIVE paths: fetch('api/user')
    - Navigation uses RELATIVE paths: href="dashboard"
    - Forms use RELATIVE actions: action="#" (self-submit) or action="api/endpoint" (relative)
    - Server redirects use ABSOLUTE paths: res.redirect('/dashboard')
@@ -145,22 +145,23 @@ These rules cause SPRINT FAILURES if violated:
    - HTML forms (self-submit): <form action="#" method="post">  // Self-submitting form
    - HTML forms (to endpoint): <form action="api/endpoint" method="post">  // Relative to endpoint
    - HTML links: <a href="dashboard">Dashboard</a>  // Relative
-   - JavaScript fetch: fetch('/api/user')  // Absolute with leading /
+   - JavaScript fetch: fetch('api/user')  // Relative paths go through Caddy
    - JavaScript redirects: window.location.href = 'login'  // Relative
    
    ⚠️ CRITICAL PATH RULES:
-   ✅ fetch('/api/user')           // CORRECT - absolute for API calls
-   ✅ fetch('/api/employees')      // CORRECT - absolute for API calls
+   ✅ fetch('api/user')            // CORRECT - relative for API calls (goes through Caddy)
+   ✅ fetch('api/employees')       // CORRECT - relative for API calls (goes through Caddy)
    ✅ href="dashboard"              // CORRECT - relative for navigation
    ✅ action="#"                    // CORRECT - self-submitting form
    ✅ action="api/endpoint"        // CORRECT - relative for forms to different endpoint
-   ❌ fetch('api/user')            // WRONG - relative API calls fail from nested pages
+   ❌ fetch('/api/user')           // WRONG - absolute bypasses Caddy and hits FastAPI
    ❌ href="/dashboard"             // WRONG - absolute navigation breaks proxy
 
    WHY THIS WORKS:
-   - Railway: Browser requests /yourapp/api/user → Caddy strips /yourapp → Express receives /api/user
-   - Local: Browser requests /api/user → Express receives /api/user
-   - Same code, both environments work because Caddy does the rewriting
+   - Railway: Browser requests api/user from /yourapp/login → /yourapp/api/user → Caddy strips /yourapp → Express receives /api/user
+   - Local: Browser requests api/user from /login → /api/user → Express receives /api/user
+   - Same code, both environments work because relative paths resolve correctly and Caddy handles rewriting
+   - ABSOLUTE API calls (/api/user) bypass Caddy and hit FastAPI, causing 404 errors
    
    DO NOT add environment detection code. DO NOT add template injection middleware.
    DO NOT use variables like apiPrefix or API_PREFIX. Keep it simple - the paths
@@ -288,7 +289,7 @@ When designing nested pages (e.g., /employees/:id/edit):
 
    SIMPLE FORMS (login, text-only fields):
    - Specify: JSON.stringify(Object.fromEntries(formData)) with Content-Type: application/json
-   - Example task instruction: "ADD script: const formData = new FormData(form); await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.fromEntries(formData)) });"
+   - Example task instruction: "ADD script: const formData = new FormData(form); await fetch('api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(Object.fromEntries(formData)) });"
    - Backend: express.json() and express.urlencoded({ extended: true })
 
    FILE UPLOADS:
@@ -302,8 +303,8 @@ When designing nested pages (e.g., /employees/:id/edit):
 
    AUTHENTICATION API CALLS:
    - Always include credentials: 'include' for session cookies
-   - Example: fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(Object.fromEntries(formData)) })
-   - Applies to: /api/auth/login, /api/auth/logout, /api/auth/check-session
+   - Example: fetch('api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(Object.fromEntries(formData)) })
+   - Applies to: api/auth/login, api/auth/logout, api/auth/check-session
 
    WHY: FormData defaults to multipart/form-data which express.urlencoded() cannot parse.
    This causes req.body to be empty, leading to "Invalid credentials" or "Missing field" errors.
