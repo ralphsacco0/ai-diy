@@ -282,7 +282,28 @@ When designing nested pages (e.g., /employees/:id/edit):
    - Order: express.json() THEN express.urlencoded() BEFORE routes
    - Missing middleware = empty req.body = "Missing credentials" errors
 
-7. EXPRESS-SESSION CONFIGURATION (MANDATORY FOR PROXY DEPLOYMENT)
+7. FORM SUBMISSION PATTERNS (When specifying JavaScript in task descriptions)
+
+   When your task description includes JavaScript code for form submission, you MUST specify the correct encoding pattern:
+
+   SIMPLE FORMS (login, text-only fields):
+   - Specify: JSON.stringify(Object.fromEntries(formData)) with Content-Type: application/json
+   - Example task instruction: "ADD script: const formData = new FormData(form); await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.fromEntries(formData)) });"
+   - Backend: express.json() and express.urlencoded({ extended: true })
+
+   FILE UPLOADS:
+   - Specify: body: formData (multipart/form-data)
+   - Note in technical_notes: "Requires multer middleware on backend"
+   - Backend: Requires multer middleware
+
+   ❌ NEVER specify "body: formData" for simple login/text forms
+   ❌ NEVER specify "body: new FormData(form)" for simple forms
+   ✅ ALWAYS specify JSON.stringify(Object.fromEntries(formData)) for simple forms
+
+   WHY: FormData defaults to multipart/form-data which express.urlencoded() cannot parse.
+   This causes req.body to be empty, leading to "Invalid credentials" or "Missing field" errors.
+
+8. EXPRESS-SESSION CONFIGURATION (MANDATORY FOR PROXY DEPLOYMENT)
    - Session cookies MUST include secure: false and sameSite: 'lax' for proxy compatibility
    - Pattern:
      app.use(session({
