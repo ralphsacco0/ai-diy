@@ -148,15 +148,16 @@ These rules cause SPRINT FAILURES if violated:
    - JavaScript fetch: fetch('employees')  // Relative paths go through Caddy
    - JavaScript redirects: window.location.href = 'login'  // Relative
    
-   ⚠️ CRITICAL PATH RULES:
-   ✅ fetch('login')               // CORRECT - relative for auth calls (goes through Caddy)
-   ✅ fetch('employees')           // CORRECT - relative for data calls (goes through Caddy)
-   ✅ fetch('check-session')       // CORRECT - relative for session calls (goes through Caddy)
+   ⚠️ CRITICAL PATH RULES (HYBRID APPROACH - PROVEN):
+   ✅ fetch('login')               // CORRECT - auth endpoints use simple pattern
+   ✅ fetch('logout')               // CORRECT - auth endpoints use simple pattern  
+   ✅ fetch('check-session')       // CORRECT - auth endpoints use simple pattern
+   ✅ fetch('api/employees')       // CORRECT - data endpoints use /api/ namespace
+   ✅ fetch('api/leaves')           // CORRECT - data endpoints use /api/ namespace
    ✅ href="dashboard"              // CORRECT - relative for navigation
    ✅ action="#"                    // CORRECT - self-submitting form
-   ✅ action="login"                // CORRECT - relative for forms to auth endpoint
-   ❌ fetch('/api/auth/login')      // WRONG - absolute bypasses Caddy and hits FastAPI
-   ❌ fetch('api/employees')        // WRONG - absolute bypasses Caddy and hits FastAPI
+   ❌ fetch('/login')               // WRONG - absolute bypasses Caddy and hits FastAPI
+   ❌ fetch('/api/employees')       // WRONG - absolute bypasses Caddy and hits FastAPI
    ❌ href="/dashboard"             // WRONG - absolute navigation breaks proxy
 
    WHY THIS WORKS:
@@ -169,6 +170,12 @@ These rules cause SPRINT FAILURES if violated:
    DO NOT use variables like apiPrefix or API_PREFIX. Keep it simple - the paths
    rewritten by Caddy. Client-side paths resolve relative to the current URL,
    so they work both locally AND behind the proxy without any code changes.
+
+   HYBRID API APPROACH (PROVEN WORKING PATTERN):
+   - Authentication endpoints: Simple paths (login, logout, check-session) - NO /api/ prefix
+   - Data endpoints: Namespaced paths (api/employees, api/leaves) - WITH /api/ prefix
+   - Rationale: Auth is universal and simple, data needs namespace separation to prevent collisions
+   - This pattern is PROVEN to work in the deployed POC application
 
    API RESPONSES WITH REDIRECT URLS (HYBRID CASE):
    When an API returns a redirect path in JSON that client JS will use:
@@ -232,7 +239,7 @@ These rules cause SPRINT FAILURES if violated:
    - bcrypt requires native compilation and fails on Railway
    - Example: bcryptjs.hashSync(password, 12)
 
-5. EXPRESS ROUTER MOUNTING (CRITICAL - PREVENTS DOUBLE PREFIX BUGS)
+5. EXPRESS ROUTER MOUNTING (CRITICAL - HYBRID PATTERN PROVEN)
 
    When using Express routers, routes are defined RELATIVE to their mount point.
 
@@ -245,39 +252,46 @@ These rules cause SPRINT FAILURES if violated:
    router.post('/api/auth/login', ...)  // ❌ WRONG - final route: /api/auth/api/auth/login
    ```
 
-   ✅ CORRECT - Routes relative to mount point:
+   ✅ CORRECT - HYBRID PATTERN (PROVEN IN WORKING POC):
    ```javascript
+   // AUTH ROUTES (Proven Pattern):
    // server.js
-   app.use('/api/auth', authRouter);  // Mounts at /api/auth
+   app.use('/', authRouter);          // Mount at root for simple auth
 
    // routes/auth.js
-   router.post('/login', ...)         // ✅ CORRECT - final route: /api/auth/login
-   router.post('/logout', ...)        // ✅ CORRECT - final route: /api/auth/logout
+   router.post('/login', ...)         // Final route: /login (not /api/auth/login)
+   router.post('/logout', ...)        // Final route: /logout
+   router.get('/check-session', ...)  // Final route: /check-session
+
+   // DATA ROUTES (Namespaced Pattern):
+   // server.js  
+   app.use('/api', dataRouter);       // Mount at /api for data endpoints
+
+   // routes/data.js
+   router.get('/employees', ...)      // Final route: /api/employees
+   router.post('/employees', ...)     // Final route: /api/employees
    ```
 
    RULE: Router paths are added to the mount point path.
-   - Mount point: '/api/auth'
-   - Router path: '/login'
-   - Final endpoint: '/api/auth/login'
+   - Auth mount point: '/' + Router path: '/login' = Final endpoint: '/login'
+   - Data mount point: '/api' + Router path: '/employees' = Final endpoint: '/api/employees'
 
-   YOUR TASK DESCRIPTIONS MUST SPECIFY:
-   - In server.js task: "app.use('/api/auth', authRouter)"
-   - In routes/auth.js task: "router.post('/login', ...)" (WITHOUT /api/auth prefix)
-   - In technical_notes: "Backend exposes POST /api/auth/login (mount: app.use('/api/auth', authRouter), route: router.post('/login'))"
-   
-   CRITICAL: When specifying routes in technical_notes, Alex will use those EXACT paths.
-   If you specify POST /login, Alex generates frontend calling /login.
-   If you specify POST /api/auth/login, Alex generates frontend calling /api/auth/login.
-   Ensure frontend paths in your task descriptions match backend routes in technical_notes.
+   YOUR TASK DESCRIPTIONS MUST SPECIFY (HYBRID PATTERN):
+   - AUTH routes: "app.use('/', authRouter)" + "router.post('/login', ...)" → Final: /login
+   - DATA routes: "app.use('/api', dataRouter)" + "router.get('/employees', ...)" → Final: /api/employees
+   - In technical_notes: "Backend exposes POST /login (auth) and GET /api/employees (data)"
+   - CRITICAL: Frontend calls must match: fetch('login') for auth, fetch('api/employees') for data
+   - Ensure frontend paths in task descriptions match backend routes in technical_notes
 
-CROSS-DEPTH NAVIGATION (NESTED URLS):
-When designing nested pages (e.g., /employees/:id/edit):
-- Navigation back to parent pages MUST use server-side POST redirects
-- Specify in task: "Add cancel button: <form action='cancel-edit' method='POST'><button>Cancel</button></form>"
-- Specify route: "POST /employees/:id/cancel-edit redirects to /employees"
-- In technical_notes: "Cancel: POST /employees/:id/cancel-edit → res.redirect('/employees')"
-❌ NEVER specify client links for cross-depth (href="employees" from nested pages stacks incorrectly)
-❌ NEVER specify ../ paths (href="../employees" violates architecture)
+FLAT PAGES ONLY (PROVEN PATTERN):
+Generated apps MUST use single-segment page routes only:
+✅ /login, /dashboard, /employees
+❌ /employees/123, /employees/123/edit (FORBIDDEN)
+
+For "details" pages, use:
+- Query strings: /employees?id=123
+- POST actions with redirects
+- Data fetched from /api/employees?id=123
 
 6. REQUEST BODY PARSING
    - HTML forms require: app.use(express.urlencoded({ extended: true }))
@@ -291,7 +305,7 @@ When designing nested pages (e.g., /employees/:id/edit):
 
    SIMPLE FORMS (login, text-only fields):
    - Specify: JSON.stringify(Object.fromEntries(formData)) with Content-Type: application/json
-   - Example task instruction: "ADD script: const formData = new FormData(form); await fetch('api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(Object.fromEntries(formData)) });"
+   - Example task instruction: "ADD script: const formData = new FormData(form); await fetch('login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(Object.fromEntries(formData)) });"
    - Backend: express.json() and express.urlencoded({ extended: true })
 
    FILE UPLOADS:
@@ -466,7 +480,8 @@ These rules prevent bugs and rework:
 
 9. ASYNC/AWAIT CONTRACT (MANDATORY FOR ASYNC OPERATIONS)
    - If task description mentions "await", "Promise", or "async/await pattern", explicitly state "USE async (req, res) => { ... }" in the task description
-   - Example: "ADD router.get('/api/employees', async (req, res) => { ... use await for database queries ... })"
+   - Example: "ADD router.get('/employees', async (req, res) => { ... for page routes ... })"
+   - Example: "ADD router.get('/api/employees', async (req, res) => { ... for data endpoints ... })"
    - This ensures Alex implements async handlers correctly for database operations, file I/O, or API calls
    - Without explicit async notation, Alex may create synchronous handlers that fail or timeout
 

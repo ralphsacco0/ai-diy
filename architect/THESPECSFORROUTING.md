@@ -1,700 +1,281 @@
-# AI-DIY Routing Architecture Implementation Guide
+# AI-DIY Routing Architecture Implementation Guide (Canonical)
 
 ## Overview
 
-This document provides complete specifications for implementing consistent routing patterns in AI-DIY generated applications that work seamlessly across both local Mac development and Railway deployment environments.
+AI-DIY generates “small web apps” that must work in two environments **without any environment detection**:
 
-## Problem Statement
+- **Local**: `http://localhost:3000`
+- **Railway**: `https://<railway-host>/yourapp/` (behind Caddy prefix proxy)
 
-Generated applications must work in two distinct environments:
-- **Local Mac**: Direct access at `http://localhost:3000`
-- **Railway**: Behind Caddy proxy at `https://app.railway.app/yourapp/`
+This document defines the only allowed routing/pathing patterns for generated apps.
 
-Each environment requires different URL resolution patterns, creating routing complexity that must be handled systematically through consistent coding patterns.
+---
 
 ## Architecture Overview
 
-```
-Internet → Caddy (Railway) → Node.js App (Port 3000)
-```
-
 ### Traffic Flow
 
-1. **Main Application** (`/`, `/api/*`, `/static/*`) → FastAPI (Port 8001)
-2. **Generated Apps** (`/yourapp/*`) → Caddy → Node.js App (Port 3000)
-3. **Caddy strips `/yourapp/` prefix** before forwarding to Node.js
+- **Main AI-DIY platform**
+  - Root (`/`, `/api/*`, etc.) → **FastAPI** (port 8001)
+- **Generated app**
+  - `/yourapp/*` → **Caddy** → **Node/Express** (internal port 3000)
+  - Caddy **strips `/yourapp`** before forwarding to Node
+  - Caddy may rewrite **Location** response headers to re-add `/yourapp`
 
-## Core Routing Principles
+**Key consequence:** any browser request that does **NOT** include `/yourapp/...` will be handled by the main platform (FastAPI), not the generated app.
 
-### The Golden Rule
+---
 
-**Client-side calls use RELATIVE paths, Server-side routes use ABSOLUTE paths**
+## Non-Negotiable Rules
 
-This single principle ensures compatibility across both environments without environment detection or conditional code.
+### Rule 0: No environment detection
+Generated app code must NOT attempt to detect Railway vs local.
+No `apiPrefix`, no `BASE_PATH`, no `window.location.pathname` prefix hacks, no templated prefix injection.
 
-### Why This Works
+### Rule 1: Never use `<base>` tags
+No `<base href=...>` anywhere.
 
-**Caddy Proxy Behavior:**
-- Browser requests: `fetch('login')` from `/yourapp/login` → `/yourapp/login` → Caddy strips `/yourapp/` → Node.js receives `/login` ✅
-- Node.js responds: `res.redirect('/dashboard')` → Caddy rewrites to `/yourapp/dashboard` → Browser receives `/yourapp/dashboard`
+### Rule 2: Server-side vs Client-side path styles
 
-**🚨 CRITICAL DISCOVERY: Caddy Location Header Rewriting**
+**Server-side (Express routes + redirects):**
+- Always **absolute** paths starting with `/`
+- Example: `res.redirect('/dashboard')`
 
-**Problem Discovered:**
-When users visited `/yourapp/login` while already logged in, they were redirected to `/dashboard` instead of `/yourapp/dashboard`, causing a 404 error from FastAPI.
+**Client-side (HTML and browser JS):**
+- Always **relative** paths with **NO leading `/`**
+- Examples: `href="dashboard"`, `fetch('api/employees')`
 
-**Root Cause:**
-- Generated app sends: `res.redirect('/dashboard')` → Location header: `/dashboard`
-- Original Caddy config: `header_down Location "^/yourapp/(.*)" "/yourapp/$1"`
-- Pattern `/yourapp/(.*)` did NOT match `/dashboard` (no prefix)
-- Caddy passed through unchanged: `Location: /dashboard`
-- Browser went to `/dashboard` → FastAPI → 404
+### Rule 3: API namespace is mandatory
+All JSON/data endpoints in the generated app must live under:
 
-**Solution Implemented:**
-Smart Caddy configuration that distinguishes between applications:
+- **`/api/*`** (server-side absolute)
+- **`api/*`** (client-side relative)
 
-```caddy
-handle_path /yourapp/* {
-    reverse_proxy 127.0.0.1:3000 {
-        # Rewrite ALL Location headers from generated app
-        header_down Location "^/(.*)" "/yourapp/$1"
-    }
-}
+This prevents collisions with page routes (e.g., `/employees` page vs employees data).
 
-handle {
-    reverse_proxy 127.0.0.1:8001 {
-        # Don't rewrite Location headers from AI-DIY platform
-    }
-}
-```
+### Rule 4: Flat pages only (no nested GET pages)
+Generated app **pages** must be single-segment routes only:
 
-**Why This Works:**
-- Generated app (port 3000): `Location: /dashboard` → rewritten to `Location: /yourapp/dashboard` ✅
-- AI-DIY platform (port 8001): `Location: /dashboard` → unchanged ✅
-- Clean separation between two applications
-- Generated app stays simple (no environment detection needed)
+✅ `/login`, `/dashboard`, `/employees`  
+❌ `/employees/123`, `/employees/123/edit`, `/dashboard/settings`
 
-**🚨 CRITICAL CONSTRAINT: Generated App Redirect Rules**
-Generated apps MUST follow these redirect rules:
-- ✅ **ALWAYS emit**: `res.redirect('/dashboard')` (no /yourapp prefix)
-- ❌ **NEVER emit**: `res.redirect('/yourapp/dashboard')` (causes double-prefixing)
-- Caddy handles adding the /yourapp prefix automatically
+If you need “details”, do it as:
+- query string (`/employees?id=123`), and/or
+- POST action → server redirect back to a flat page, and/or
+- data fetched from `api/...`
 
-**CRITICAL: API calls MUST be relative to go through Caddy proxy**
-- `fetch('api/login')` → Through Caddy → Node.js ✅  
-- `fetch('/api/auth/login')` → Bypasses Caddy → FastAPI → 404 ❌
+### Rule 5: No trailing slashes on pages
+Canonical page URLs must not end with `/` (except root if you ever use it).
+This avoids browser-relative resolution changing based on trailing slash.
 
-## Complete Routing Specifications
+✅ `/employees`  
+❌ `/employees/`
 
-### 1. API Calls (Client-side JavaScript)
+---
 
-**✅ CORRECT Pattern:**
-```javascript
-// Relative paths - go through Caddy proxy to Node.js
-fetch('api/login')                   // For authentication
-fetch('api/logout')                  // For logout  
-fetch('api/check-session')           // For session validation
-fetch('api/employees')               // For data retrieval
-fetch('api/employees/123')           // For specific resource
-```
+## Canonical Endpoint Map (Generated App)
 
-**❌ WRONG Patterns:**
-```javascript
-// Absolute paths - bypass Caddy and hit FastAPI (404 errors)
-fetch('/api/auth/login')             // Goes to FastAPI → 404
-fetch('/api/employees')              // Goes to FastAPI → 404
-fetch('/api/auth/logout')            // Goes to FastAPI → 404
+### Pages (HTML)
+- `GET /login` → login page
+- `GET /dashboard` → dashboard page
+- `GET /employees` → employees page
 
-// Un-namespaced relative paths - collide with page routes
-fetch('employees')                   // Collides with /employees page route
-fetch('login')                       // Collides with /login page route
-```
+### API (JSON)
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `GET  /api/auth/check-session`
 
-**Implementation Requirements:**
-- Always include `credentials: 'include'` for authentication-related API calls
-- Use `Content-Type: application/json` for JSON data
-- Use `JSON.stringify()` for request bodies
+- `GET  /api/employees`
+- `POST /api/employees`
+- (etc — all data endpoints stay under `/api/...`)
 
-**Example:**
-```javascript
-const response = await fetch('api/login', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    credentials: 'include',
-    body: JSON.stringify({ email, password })
-});
-```
+---
 
-### 2. Navigation Links (Client-side HTML)
+## Client-Side Patterns (Browser)
 
-**✅ CORRECT Pattern:**
+### Navigation (HTML)
+Always relative, no leading slash:
+
 ```html
-<!-- Relative paths - resolve relative to current URL -->
 <a href="dashboard">Dashboard</a>
-<a href="employees">Employee Directory</a>
-<a href="leaves">Leave Requests</a>
-<a href="documents">Documents</a>
+<a href="employees">Employees</a>
 <a href="login">Login</a>
-```
 
-**❌ WRONG Patterns:**
-```html
-<!-- Absolute paths - break on Railway -->
-<a href="/dashboard">Dashboard</a>         <!-- Goes to wrong domain -->
-<a href="/employees">Employees</a>        <!-- 404 on Railway -->
-```
+Static assets (HTML)
 
-**Why Relative Works:**
-- **Mac**: At `/employees` → `href="dashboard"` → `/dashboard` ✅
-- **Railway**: At `/yourapp/employees` → `href="dashboard"` → `/yourapp/dashboard` ✅
+Always relative:
 
-**🚨 CRITICAL CONSTRAINT: No Nested Page URLs**
-Generated apps MUST use single-segment page routes only:
-- ✅ **Pages**: `/dashboard`, `/employees`, `/login`, `/leaves` (single segment)
-- ✅ **API**: `/api/employees`, `/api/employees/123` (can be nested)
-- ❌ **Forbidden**: `/employees/123/edit`, `/dashboard/settings/profile` (nested pages)
+<link rel="stylesheet" href="css/styles.css">
+<script src="login.js"></script>
 
-**Why This Constraint:**
-- Prevents relative link resolution errors from nested depths
-- Avoids complex cross-depth navigation issues
-- Maintains simplicity without requiring server-side POST redirects
+Fetch (browser JS)
 
-### 3. Form Actions (Client-side HTML)
+Always relative and namespaced under api/...:
 
-**✅ CORRECT Patterns:**
+await fetch('api/employees', { credentials: 'include' });
 
-**Self-submitting forms (submit to same URL):**
-```html
-<form action="#" method="POST">     <!-- or action="." -->
-    <input name="email" type="email">
-    <input name="password" type="password">
-    <button type="submit">Login</button>
+await fetch('api/auth/check-session', { credentials: 'include' });
+
+await fetch('api/auth/logout', {
+  method: 'POST',
+  credentials: 'include',
+});
+
+Never do this (bypasses /yourapp and hits FastAPI):
+
+fetch('/api/employees')
+fetch('/api/auth/login')
+
+Form actions
+
+Prefer JS-handled forms + action="#" (self-submit), OR a relative API action.
+
+Recommended (self-submit + JS handler):
+
+<form id="loginForm" action="#" method="post">
+  ...
 </form>
-```
 
-**Forms submitting to authentication endpoints:**
-```html
-<!-- Forms submitting to authentication endpoints -->
-<form action="api/login" method="POST">
-    <input name="email" type="email">
-    <input name="password" type="password">
-    <button type="submit">Login</button>
+Allowed (direct to API route):
+
+<form action="api/auth/login" method="post">
+  ...
 </form>
-```
 
-**Forms submitting to API endpoints:**
-```html
-<form action="api/employees" method="POST">
-    <input name="name" type="text">
-    <input name="email" type="email">
-    <button type="submit">Add Employee</button>
-</form>
-```
 
-**WRONG Patterns:**
-```html
-<!-- Absolute paths bypass Caddy -->
-<form action="/api/auth/login" method="POST">     <!-- Goes to FastAPI → 404 -->
-<form action="/login" method="POST">              <!-- Goes to wrong domain -->
-```
+⸻
 
-### 4. Form Data Encoding (Client-side JavaScript)
+Server-Side Patterns (Express)
 
-**CORRECT for Simple Forms (login, text fields):**
-```javascript
-const formData = new FormData(form);
-await fetch('api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(Object.fromEntries(formData))
-});
-```
+Absolute route definitions
 
-**✅ CORRECT for File Uploads:**
-```javascript
-const formData = new FormData(form);
-await fetch('api/upload', {
-    method: 'POST',
-    credentials: 'include',
-    body: formData  // multipart/form-data
-});
-```
+Always start with /:
 
-**❌ WRONG for Simple Forms:**
-```javascript
-// Absolute paths bypass Caddy and hit FastAPI
-await fetch('/api/login', {
-    method: 'POST',
-    body: formData  // WRONG - causes 404 on FastAPI
+app.get('/login', ...);
+app.get('/dashboard', ...);
+app.get('/employees', ...);
+
+app.post('/api/auth/login', ...);
+app.post('/api/auth/logout', ...);
+app.get('/api/auth/check-session', ...);
+
+app.get('/api/employees', ...);
+
+Absolute redirects (mandatory)
+
+Always redirect with a leading /:
+
+return res.redirect('/dashboard'); // correct
+
+Never:
+
+res.redirect('dashboard'); // wrong
+
+Canonical “no trailing slash” middleware (recommended)
+
+This prevents browser-relative resolution bugs caused by /employees/:
+
+app.use((req, res, next) => {
+  if (req.path.length > 1 && req.path.endsWith('/')) {
+    const q = req.url.slice(req.path.length); // keep query string
+    return res.redirect(301, req.path.slice(0, -1) + q);
+  }
+  next();
 });
 
-// Un-namespaced relative paths collide with page routes
-await fetch('login', {
-    method: 'POST',
-    body: formData  // WRONG - collides with /login page
-});
-```
+Sessions (dev-safe, works local + behind proxy)
 
-### 5. Server-side Routes (Node.js/Express)
+Because local dev is HTTP, cookie secure must remain false in this canonical spec.
 
-**✅ CORRECT Pattern:**
-```javascript
-// Page routes - serve HTML
-app.get('/login', (req, res) => { ... });
-app.get('/dashboard', isAuthenticated, (req, res) => { ... });
-app.get('/employees', isAuthenticated, (req, res) => { ... });
-
-// API routes - serve JSON
-app.get('/api/employees', isAuthenticated, (req, res) => { ... });
-app.post('/api/login', (req, res) => { ... });
-app.get('/api/employees/123', isAuthenticated, (req, res) => { ... });
-
-// Router mounting at ROOT (critical for API endpoints)
-const authRouter = require('./routes/auth');
-app.use('/', authRouter);  // Routes in auth.js become /login, /logout, /check-session
-
-const apiRouter = require('./routes/api');
-app.use('/api', apiRouter);  // API routes get /api prefix
-```
-
-**Router Export Pattern:**
-```javascript
-// routes/auth.js - handles page-level auth
-const express = require('express');
-const router = express.Router();
-
-router.post('/login', (req, res) => { ... });  // Becomes /login when mounted at root
-router.post('/logout', (req, res) => { ... });  // Becomes /logout when mounted at root
-router.get('/check-session', (req, res) => { ... });  // Becomes /check-session
-
-module.exports = router;
-
-// routes/api.js - handles API endpoints
-const express = require('express');
-const router = express.Router();
-
-router.get('/employees', (req, res) => { ... });  // Becomes /api/employees when mounted at /api
-router.post('/employees', (req, res) => { ... });  // Becomes /api/employees when mounted at /api
-router.get('/employees/:id', (req, res) => { ... });  // Becomes /api/employees/:id
-
-module.exports = router;
-```
-
-### 6. Server-side Redirects (Node.js/Express)
-
-** CORRECT Pattern:**
-```javascript
-// Absolute paths - Caddy handles rewriting
-res.redirect('/dashboard');           // Becomes /yourapp/dashboard on Railway
-res.redirect('/login');               // Becomes /yourapp/login on Railway
-res.redirect('/employees');           // Becomes /yourapp/employees on Railway
-```
-
-** WRONG Patterns:**
-```javascript
-// Relative paths - break server-side routing
-res.redirect('dashboard');            // Server-side confusion
-res.redirect('../dashboard');         // Unpredictable behavior
-```
-
-### 7. Client-side Redirects (JavaScript)
-
-** CORRECT Pattern:**
-```javascript
-// Relative paths - client-side navigation
-window.location.href = 'dashboard';   // Resolves relative to current URL
-window.location.href = 'login';       // Works in both environments
-```
-
-**❌ WRONG Patterns:**
-```javascript
-// Absolute paths - break on Railway
-window.location.href = '/dashboard';  // Goes to wrong domain on Railway
-```
-
-### 8. Session Management
-
-**✅ CRITICAL Configuration for Railway:**
-```javascript
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'dev-secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 30 * 60 * 1000,      // 30 minutes
-        secure: false,                // REQUIRED for Railway proxy
-        sameSite: 'lax'               // REQUIRED for Railway redirects
-    }
-}));
-```
-
-**Why These Settings:**
-- `secure: false` - Backend is HTTP behind HTTPS proxy
-- `sameSite: 'lax'` - Prevents cookies being blocked in redirects
-- Without these settings, sessions don't persist on Railway
-
-## Implementation Guide for AI-DIY
-
-### 1. System Prompt Updates
-
-**Add to SPRINT_EXECUTION_ARCHITECT_system_prompt.txt:**
-
-```markdown
-## ROUTING PATTERNS (CRITICAL FOR RAILWAY COMPATIBILITY)
-
-### Client-side vs Server-side Path Rules
-
-**CLIENT-SIDE (HTML/JavaScript) - Use RELATIVE paths:**
-- Navigation links: <a href="dashboard">Dashboard</a>
-- Form actions: <form action="login" method="POST">
-- API calls: fetch('employees') (RELATIVE for API calls)
-- Client redirects: window.location.href = 'dashboard'
-
-**SERVER-SIDE (Express) - Use ABSOLUTE paths:**
-- Routes: app.get('/dashboard', ...)
-- Redirects: res.redirect('/dashboard')
-- Router mounting: app.use('/', authRouter)
-
-### Form Data Encoding Rules
-
-**SIMPLE FORMS (login, text fields):**
-- Specify: JSON.stringify(Object.fromEntries(formData)) with application/json
-- Backend: express.json() and express.urlencoded({ extended: true })
-
-**FILE UPLOADS:**
-- Specify: body: formData (multipart/form-data)
-- Backend: Requires multer middleware
-
-### Session Configuration (MANDATORY)
-- secure: false and sameSite: 'lax' required for Railway proxy compatibility
-```
-
-**Add to SPRINT_EXECUTION_DEVELOPER_system_prompt.txt:**
-
-```markdown
-## RAILWAY ROUTING IMPLEMENTATION
-
-### Path Handling Rules
-- API calls: Use relative paths fetch('employees')
-- Navigation: Use relative paths href="dashboard"
-- Forms: Use relative paths action="login"
-- Server redirects: Use absolute paths res.redirect('/dashboard')
-
-### Session Configuration
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'dev-secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1800000,
-        secure: false,        // REQUIRED for Railway
-        sameSite: 'lax'       // REQUIRED for Railway
-    }
+  secret: process.env.SESSION_SECRET || 'dev-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+  },
 }));
 
-### Form Submission Pattern
-const formData = new FormData(form);
-await fetch('endpoint', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify(Object.fromEntries(formData))
-});
-```
 
-### 2. Code Generation Templates
+⸻
 
-**Login Form Template:**
-```html
-<form action="#" method="POST" id="login-form">
-    <input name="email" type="email" required>
-    <input name="password" type="password" required>
-    <button type="submit">Login</button>
-</form>
+Caddy Configuration (Railway prefix proxy)
 
-<script>
-document.querySelector('form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    
-    try {
-        const response = await fetch('login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(Object.fromEntries(formData))
-        });
-        
-        const data = await response.json();
-        if (data.success) {
-            window.location.href = data.redirect || 'dashboard';
-        } else {
-            // Show error
-        }
-    } catch (err) {
-        // Show error
-    }
-});
-</script>
-```
+Caddy goals
+	1.	Route /yourapp/* to the generated app (Node)
+	2.	Strip /yourapp before forwarding upstream
+	3.	Rewrite Location: /login → Location: /yourapp/login
+	4.	Prevent double-prefix loops (/yourapp/yourapp/...)
 
-**Navigation Template:**
-```html
-<nav>
-    <a href="dashboard">Dashboard</a>
-    <a href="employees">Employees</a>
-    <a href="leaves">Leaves</a>
-    <a href="documents">Documents</a>
-    <form action="logout" method="POST" style="display: inline;">
-        <button type="submit">Logout</button>
-    </form>
-</nav>
-```
+Canonical Caddy snippet (guarded Location rewrite)
 
-**Session Check Template:**
-```javascript
-window.addEventListener('load', async () => {
-    try {
-        const response = await fetch('check-session', {
-            credentials: 'include'
-        });
-        const data = await response.json();
-        if (!data.authenticated) {
-            window.location.href = 'login';
-        }
-    } catch (err) {
-        window.location.href = 'login';
-    }
-});
-```
-
-### 3. Validation Rules
-
-**Add to sprint validation:**
-
-```python
-def validate_routing_patterns(generated_code):
-    """Validate that generated code follows routing patterns."""
-    
-    # Check HTML files for correct patterns
-    html_files = find_files('*.html')
-    for file in html_files:
-        content = read_file(file)
-        
-        # Should have relative navigation links
-        assert 'href="/' not in content, "Absolute href found - should be relative"
-        
-        # Should have correct form actions
-        assert 'action="/login' not in content, "Absolute form action found"
-        
-        # Should have correct API calls
-        if 'fetch(' in content:
-            assert "fetch('" in content and not "fetch('/" in content, "API calls should be relative"
-            
-        # Should have credentials in auth calls
-        if 'fetch(\'login' in content or 'fetch(\'logout' in content:
-            assert 'credentials: \'include\'' in content, "Auth calls need credentials"
-    
-    # Check server files for correct patterns
-    server_files = find_files('server.js', 'routes/*.js')
-    for file in server_files:
-        content = read_file(file)
-        
-        # Should have absolute routes
-        assert 'app.get(\'/' in content or 'router.' in content, "Routes should be absolute"
-        
-        # Should have absolute redirects
-        assert 'res.redirect(\'/' in content, "Redirects should be absolute"
-        
-        # Should have correct session config
-        if 'session(' in content:
-            assert 'secure: false' in content, "Session needs secure: false for Railway"
-            assert 'sameSite: \'lax\'' in content, "Session needs sameSite: 'lax'"
-```
-
-### 4. Testing Strategy
-
-**Unit Tests for Routing:**
-```javascript
-// Test API calls work from different page depths
-test('API call from nested page', async () => {
-    // Simulate being at /yourapp/employees/departments
-    const response = await fetch('api/employees');
-    assert(response.ok);
-});
-
-// Test navigation links work correctly
-test('Navigation link resolution', () => {
-    // At /yourapp/employees, href="dashboard" should go to /yourapp/dashboard
-    const currentPath = '/yourapp/employees';
-    const linkHref = 'dashboard';
-    const resolved = new URL(linkHref, 'https://example.com' + currentPath + '/').pathname;
-    assert(resolved.endsWith('/yourapp/dashboard'));
-});
-```
-
-**Integration Tests:**
-```javascript
-// Test complete login flow
-test('Complete login flow', async () => {
-    // 1. Get login page
-    const loginPage = await app.request('/login');
-    assert(loginPage.ok);
-    
-    // 2. Submit login form
-    const response = await app.request('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'test@test.com', password: 'test' })
-    });
-    assert(response.ok);
-    
-    // 3. Follow redirect to dashboard
-    const dashboard = await app.request('/dashboard');
-    assert(dashboard.ok);
-});
-```
-
-## Deployment Considerations
-
-### 1. Caddy Configuration
-
-**Required Caddyfile:**
-```caddy
 :{$PORT} {
-    handle_path /yourapp/* {
-        reverse_proxy 127.0.0.1:3000 {
-            header_up X-Forwarded-Prefix /yourapp
-            # Rewrite ALL Location headers from generated app to include /yourapp prefix
-            header_down Location "^/(.*)" "/yourapp/$1"
-        }
-    }
 
-    handle {
-        reverse_proxy 127.0.0.1:8001 {
-            # Don't rewrite Location headers from AI-DIY platform
-        }
-    }
+  handle_path /yourapp/* {
+    reverse_proxy 127.0.0.1:3000
+
+    # Rewrite absolute Location headers (/login) into prefixed ones (/yourapp/login)
+    # but DO NOT rewrite if it is already /yourapp/...
+    header_down Location "^/(?!yourapp/)(.*)$" "/yourapp/$1"
+  }
+
+  # everything else continues to the main platform (FastAPI, etc.)
+  handle {
+    reverse_proxy 127.0.0.1:8001
+  }
 }
-```
 
-### 2. Environment Variables
+Critical rule for Node redirects
 
-**Railway Environment:**
-- `PORT=3000` (for generated app - internal port)
-- `SESSION_SECRET` (for session encryption)
-- `NODE_ENV=production` (optional)
+Node/Express must NEVER emit redirects containing /yourapp.
+Node should only emit: /login, /dashboard, etc.
+Caddy is responsible for prefixing on Railway.
 
-**🚨 IMPORTANT: Railway PORT Clarification**
-- Railway provides `$PORT` for the public-facing service (Caddy)
-- Generated Node.js app listens on fixed internal port 3000
-- FastAPI listens on fixed internal port 8001
-- Do NOT override Railway's $PORT unless you know what you're doing
+⸻
 
-### 3. File Structure
+Environment Variables (Railway + Local)
 
-**Required structure for Railway:**
-```
-/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp/
-├── src/
-│   ├── server.js
-│   ├── db.js
-│   └── routes/
-│       └── auth.js
-├── public/
-│   ├── login.html
-│   ├── dashboard.html
-│   ├── employees.html
-│   ├── leaves.html
-│   └── documents.html
-├── package.json
-└── .env
-```
+Ports
+	•	Caddy listens on Railway-provided $PORT (public)
+	•	Node/Express listens on 3000 (internal)
+	•	FastAPI listens on 8001 (internal)
 
-## Troubleshooting Guide
+Do not set PORT=3000 for the generated app; reserve $PORT for Caddy.
+If you want configurability, use APP_PORT=3000 for Node, not PORT.
 
-### Common Issues and Solutions
+Required
+	•	SESSION_SECRET (recommended for non-toy apps)
 
-1. **"Invalid credentials" despite correct login**
-   - Check form data encoding (should be JSON, not FormData)
-   - Verify credentials: 'include' in fetch calls
-   - Check session configuration (secure: false, sameSite: 'lax')
+⸻
 
-2. **404 errors on API calls**
-   - Check if API calls use relative paths: `fetch('login')` not `fetch('/api/auth/login')`
-   - Verify auth router is mounted at root: `app.use('/', authRouter)`
-   - Check if generated app is running on port 3000
+Troubleshooting (Dev)
 
-3. **Redirect loops or redirects go to wrong domain**
-   - Check session cookie settings
-   - Verify Caddy Location header rewriting (see CRITICAL DISCOVERY section)
-   - Check for conflicting middleware
+Symptom: “works on localhost, 404 on Railway”
 
-4. **Login redirects to /dashboard instead of /yourapp/dashboard**
-   - This is the Caddy Location header rewriting issue
-   - Generated app sends `Location: /dashboard` 
-   - Caddy must rewrite to `Location: /yourapp/dashboard`
-   - Check Caddyfile uses: `header_down Location "^/(.*)" "/yourapp/$1"` for generated app
+Almost always one of:
+	•	client used an absolute path (/api/..., /dashboard, /css/...)
+	•	a page URL ended with trailing slash (/employees/) and links resolved under it
+	•	Node emitted Location: /yourapp/... and Caddy double-prefixed
 
-5. **Navigation links go to wrong pages**
-   - Ensure links use relative paths: `href="dashboard"`
-   - Check for absolute paths in HTML
+Quick checks
+	•	In browser devtools Network:
+	•	all requests must start with /yourapp/... when deployed
+	•	Grep generated app:
+	•	no href="/
+	•	no src="/
+	•	no fetch('/
+	•	no action="/
 
-6. **Pages load then redirect to 404**
-   - Check session check API calls use relative paths: `fetch('check-session')`
-   - Verify session check includes credentials: 'include'
+Curl smoke tests (Railway)
+	•	Page:
+	•	curl -I https://<host>/yourapp/login
+	•	API:
+	•	curl -I https://<host>/yourapp/api/auth/check-session
 
-### Debug Commands
-
-**Railway Debugging:**
-```bash
-# Check if app is running
-railway ssh "netstat -tlnp | grep :3000"
-
-# Check generated files
-railway ssh "ls -la /app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp/"
-
-# Test API endpoints
-curl -X POST https://app.railway.app/yourapp/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "test@test.com", "password": "test"}'
-
-# Check session
-curl -b cookies.txt https://app.railway.app/yourapp/check-session
-```
-
-## Migration Guide
-
-### Converting Existing Code
-
-1. **HTML Files:**
-   - Replace `href="/page"` with `href="page"`
-   - Replace `action="/endpoint"` with `action="#"` or `action="endpoint"`
-   - Add `credentials: 'include'` to auth fetch calls
-
-2. **JavaScript Files:**
-   - Replace `fetch('/api/auth/login')` with `fetch('login')` (use relative for API)
-   - Replace `fetch('/api/employees')` with `fetch('employees')`
-   - Replace `fetch('/api/auth/check-session')` with `fetch('check-session')`
-   - Replace `window.location.href = '/page'` with `window.location.href = 'page'`
-
-3. **Server Files:**
-   - Mount auth router at root: `app.use('/', authRouter)` not `app.use('/api/auth', authRouter)`
-   - Add session configuration with `secure: false, sameSite: 'lax'`
-   - Ensure all routes use absolute paths
-
-## Summary
-
-This routing architecture provides:
-- **Consistent behavior** across Mac and Railway environments
-- **No environment detection** needed in generated code
-- **Simple patterns** that are easy to follow and implement
-- **Full compatibility** with Caddy proxy configuration
-- **Maintainable code** that works without conditional logic
-
-The key insight is that **client-side uses relative paths, server-side uses absolute paths**, and Caddy handles the translation between environments automatically.
-
-By implementing these patterns consistently in AI-DIY generated applications, we ensure seamless deployment and operation across both development and production environments.
+If you want, I can also give you the **exact “prompt insert” text** for:
+- Sprint Execution Architect
+- Sprint Execution Developer
+- Sprint Review Alex  
+so they **must** follow this canonical spec (and stop reintroducing `/api/...` absolute fetches, non-namespaced data calls, or nested pages).

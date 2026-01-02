@@ -131,20 +131,27 @@ ROUTING IMPLEMENTATION (CADDY HANDLES ALL REWRITING):
    - JavaScript fetch: fetch('employees')  // Relative paths go through Caddy
    - JavaScript redirects: window.location.href = 'login'  // Relative
    
-   ⚠️ CRITICAL PATH RULES:
-   ✅ fetch('login')               // CORRECT - relative for auth calls (goes through Caddy)
-   ✅ fetch('employees')           // CORRECT - relative for data calls (goes through Caddy)
-   ✅ fetch('check-session')       // CORRECT - relative for session calls (goes through Caddy)
+   ⚠️ CRITICAL PATH RULES (HYBRID APPROACH - PROVEN):
+   ✅ fetch('login')               // CORRECT - auth endpoints use simple pattern
+   ✅ fetch('logout')               // CORRECT - auth endpoints use simple pattern  
+   ✅ fetch('check-session')       // CORRECT - auth endpoints use simple pattern
+   ✅ fetch('api/employees')       // CORRECT - data endpoints use /api/ namespace
+   ✅ fetch('api/leaves')           // CORRECT - data endpoints use /api/ namespace
    ✅ href="dashboard"              // CORRECT - relative for navigation
    ✅ action="#"                    // CORRECT - self-submitting form
-   ✅ action="login"                // CORRECT - relative for forms to auth endpoint
-   ❌ fetch('/api/auth/login')      // WRONG - absolute bypasses Caddy and hits FastAPI
-   ❌ fetch('api/employees')        // WRONG - absolute bypasses Caddy and hits FastAPI
+   ❌ fetch('/login')               // WRONG - absolute bypasses Caddy and hits FastAPI
+   ❌ fetch('/api/employees')       // WRONG - absolute bypasses Caddy and hits FastAPI
    ❌ href="/dashboard"             // WRONG - absolute navigation breaks proxy
 
 WHY: Caddy strips /yourapp/ before forwarding, so Express sees the same paths
 in both environments. Server redirects get rewritten by Caddy. Client paths
 resolve relative to current URL, working everywhere.
+
+HYBRID API APPROACH (PROVEN WORKING PATTERN):
+- Authentication endpoints: Simple paths (login, logout, check-session) - NO /api/ prefix
+- Data endpoints: Namespaced paths (api/employees, api/leaves) - WITH /api/ prefix
+- Rationale: Auth is universal and simple, data needs namespace separation to prevent collisions
+- This pattern is PROVEN to work in the deployed POC application
 
 QUICK REFERENCE:
 ```
@@ -153,7 +160,8 @@ SERVER-SIDE (keep the /)        CLIENT-SIDE (all relative)
 res.redirect('/dashboard')      href="dashboard"        // Navigation: relative
 router.get('/login')            src="login.js"          // Scripts: relative
 router.post('/logout')          action="#"              // Forms: self-submit
-app.use('/', authRouter)        fetch('login')          // API calls: RELATIVE
+app.use('/', authRouter)        fetch('login')          // Auth API: simple pattern
+app.use('/api', dataRouter)    fetch('api/employees')  // Data API: /api/ namespace
                               window.location.href = 'dashboard' // Redirects: relative
 ```
 
@@ -237,13 +245,13 @@ At /login, action="#" → /login ✅
 When implementing Express routers, route paths are RELATIVE to their mount point in server.js.
 
 COMMON BUG - Double prefix:
-If Mike's technical_notes says "Backend exposes POST /api/auth/login", this means:
-- server.js: app.use('/api/auth', authRouter)
+If Mike's technical_notes says "Backend exposes POST /login", this means:
+- server.js: app.use('/', authRouter)
 - routes/auth.js: router.post('/login', ...)  ← NOT router.post('/api/auth/login', ...)
 
 CRITICAL: When Mike specifies routes in technical_notes, use those EXACT paths in your frontend code.
-If Mike says POST /login, your frontend calls fetch('/login').
-If Mike says POST /api/auth/login, your frontend calls fetch('/api/auth/login').
+If Mike says POST /login, your frontend calls fetch('login').
+If Mike says GET /api/employees, your frontend calls fetch('api/employees').
 Do NOT use example routes from this prompt - use Mike's actual specification.
 
 ❌ WRONG (creates /api/auth/api/auth/login):
@@ -255,37 +263,58 @@ app.use('/api/auth', authRouter);
 router.post('/api/auth/login', ...)  // ❌ Duplicates /api/auth prefix
 ```
 
-✅ CORRECT:
+✅ CORRECT - HYBRID PATTERN (PROVEN IN WORKING POC):
 ```javascript
+// AUTH ROUTES (Proven Pattern):
 // server.js
-app.use('/api/auth', authRouter);  // Mount point
+app.use('/', authRouter);          // Mount at root for simple auth
 
 // routes/auth.js
-router.post('/login', ...)         // ✅ Route path relative to mount
-// Final endpoint: /api/auth/login
+router.post('/login', ...)         // Final route: /login (not /api/auth/login)
+router.post('/logout', ...)        // Final route: /logout
+router.get('/check-session', ...)  // Final route: /check-session
+
+// DATA ROUTES (Namespaced Pattern):
+// server.js  
+app.use('/api', dataRouter);       // Mount at /api for data endpoints
+
+// routes/data.js
+router.get('/employees', ...)      // Final route: /api/employees
+router.post('/employees', ...)     // Final route: /api/employees
 ```
 
-RULE: Calculate route path by subtracting mount point from final endpoint. If Mike says "GET /api/user via app.use('/api', ...)", your route is /api/user minus /api = /user.
+RULE: Calculate route path by subtracting mount point from final endpoint.
+- Auth mount point: '/' + Router path: '/login' = Final endpoint: '/login'
+- Data mount point: '/api' + Router path: '/employees' = Final endpoint: '/api/employees'
 
-Example from Mike's breakdown:
-- Mike says in server.js task: "app.use('/api/auth', authRouter)"
-- Mike says in technical_notes: "POST /api/auth/login (mount: app.use('/api/auth', ...))"
-- Calculate: /api/auth/login minus /api/auth = /login
+Example from Mike's breakdown (HYBRID PATTERN):
+- Mike says in server.js task: "app.use('/', authRouter)" for auth routes
+- Mike says in technical_notes: "POST /login (auth endpoint)"
+- Calculate: /login minus '/' = /login
 - Your route file: router.post('/login', ...) ✅
-- NOT: router.post('/api/auth/login', ...) ❌ (creates double prefix /api/auth/api/auth/login)
+- Frontend call: fetch('login') ✅ (matches hybrid pattern)
+
+For data endpoints:
+- Mike says in server.js task: "app.use('/api', dataRouter)" for data routes  
+- Mike says in technical_notes: "GET /api/employees (data endpoint)"
+- Calculate: /api/employees minus /api = /employees
+- Your route file: router.get('/employees', ...) ✅
+- Frontend call: fetch('api/employees') ✅ (matches hybrid pattern)
 
 PRE-SUBMISSION CHECK:
 □ Did Mike specify a mount point in server.js (e.g., app.use('/api/auth', ...))? YES / NO
   └─ If YES: Are my router.* paths relative to that mount (WITHOUT the mount prefix)? YES / NO
 □ Example: If mounted at '/api/auth', is my route router.post('/login') not router.post('/api/auth/login')? YES / NO
 
-CROSS-DEPTH NAVIGATION (NESTED URLS):
-For navigation between different URL depths (e.g., /employees/4/edit → /employees):
-✅ Use server-side POST redirects:
-   <form action="cancel-edit" method="POST"><button>Cancel</button></form>
-   router.post('/employees/:id/cancel-edit', (req, res) => res.redirect('/employees'))
-❌ NEVER use client links: href="employees" (from /employees/4/edit → /employees/4/employees)
-❌ NEVER use ../ paths: href="../employees" (violates architecture)
+FLAT PAGES ONLY (PROVEN PATTERN):
+Generated apps MUST use single-segment page routes only:
+✅ /login, /dashboard, /employees
+❌ /employees/123, /employees/123/edit (FORBIDDEN)
+
+For "details" pages, use:
+- Query strings: /employees?id=123
+- POST actions with redirects
+- Data fetched from /api/employees?id=123
 
 Same-depth navigation (e.g., /dashboard → /employees) uses relative links as normal.
 
