@@ -26,19 +26,6 @@ for i in {1..30}; do
     sleep 1
 done
 
-# Start generated Node.js app on port 3000 (if it exists)
-GENERATED_APP_PATH="/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp"
-if [ -f "${GENERATED_APP_PATH}/src/server.js" ]; then
-    echo "Starting generated Node.js app on 127.0.0.1:3000..."
-    cd "${GENERATED_APP_PATH}"
-    PORT=3000 node src/server.js > /tmp/yourapp.log 2>&1 &
-    NODEJS_PID=$!
-    echo "Generated app started with PID ${NODEJS_PID}"
-    cd /app/development/src
-else
-    echo "No generated app found at ${GENERATED_APP_PATH}, skipping..."
-fi
-
 # Start Caddy in foreground (handles Railway PORT, typically 8000)
 echo "Starting Caddy on port ${PORT:-8000}..."
 exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
