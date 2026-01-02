@@ -2,11 +2,14 @@
 	handle_path /yourapp/* {
 		reverse_proxy 127.0.0.1:3000 {
 			header_up X-Forwarded-Prefix /yourapp
-			header_down Location "^/yourapp/(.*)" "/yourapp/$1"
+			# Rewrite ALL Location headers from generated app to include /yourapp prefix
+			header_down Location "^/(.*)" "/yourapp/$1"
 		}
 	}
 
 	handle {
-		reverse_proxy 127.0.0.1:8001
+		reverse_proxy 127.0.0.1:8001 {
+			# Don't rewrite Location headers from AI-DIY platform
+		}
 	}
 }
