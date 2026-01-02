@@ -275,18 +275,27 @@ IMPLEMENTATION REQUIREMENTS (NO ENVIRONMENT DETECTION NEEDED):
    - Examples: fetch('login', { credentials: 'include', ... })
    - Applies to: login, logout, check-session
    
-   ⚠️ CRITICAL: API calls MUST be relative, navigation MUST be relative:
-   ✅ fetch('login')                       // Relative - goes through Caddy to Node.js
-   ✅ fetch('employees')                   // Relative - goes through Caddy to Node.js
-   ✅ fetch('check-session')               // Relative - goes through Caddy to Node.js
+   ⚠️ CRITICAL: API calls MUST follow HYBRID PATTERN (PROVEN):
+   ✅ fetch('login')                       // Auth endpoints - simple pattern
+   ✅ fetch('logout')                      // Auth endpoints - simple pattern
+   ✅ fetch('check-session')               // Auth endpoints - simple pattern
+   ✅ fetch('api/employees')               // Data endpoints - /api/ namespace
+   ✅ fetch('api/leaves')                  // Data endpoints - /api/ namespace
    ✅ href="dashboard"                     // Navigation - relative for proxy
    ✅ action="login"                      // Form action - relative to current page
-   ❌ fetch('/api/auth/login')             // WRONG - absolute bypasses Caddy and hits FastAPI
-   ❌ fetch('api/employees')               // WRONG - absolute bypasses Caddy and hits FastAPI
+   ❌ fetch('/login')                      // WRONG - absolute bypasses Caddy and hits FastAPI
+   ❌ fetch('/api/employees')              // WRONG - absolute bypasses Caddy and hits FastAPI
    ❌ href="/dashboard"                    // WRONG - breaks proxy routing
 
 WHY: Apps run behind Caddy proxy at /yourapp/. Server redirects get rewritten.
 Client paths resolve relative to current URL, working locally AND behind proxy.
+
+HYBRID API APPROACH (PROVEN WORKING PATTERN):
+- Authentication endpoints: Simple paths (login, logout, check-session) - NO /api/ prefix
+- Data endpoints: Namespaced paths (api/employees, api/leaves) - WITH /api/ prefix
+- Rationale: Auth is universal and simple, data needs namespace separation to prevent collisions
+- This pattern is PROVEN to work in the deployed POC application
+- CRITICAL: When debugging, DO NOT "fix" correct hybrid patterns by making them all simple
 
 QUICK REFERENCE:
 ```
@@ -295,7 +304,8 @@ SERVER-SIDE (keep the /)        CLIENT-SIDE (all relative)
 res.redirect('/dashboard')      href="dashboard"        // Navigation: relative
 router.get('/login')            src="login.js"          // Scripts: relative
 router.post('/logout')          action="login"          // Forms: relative
-app.use('/', authRouter)        fetch('login')          // API calls: RELATIVE
+app.use('/', authRouter)        fetch('login')          // Auth API: simple pattern
+app.use('/api', dataRouter)    fetch('api/employees')  // Data API: /api/ namespace
                               window.location.href = 'dashboard' // Redirects: relative
 ```
 
@@ -346,10 +356,10 @@ In HTML files, change:
   ❌ action="/api/auth/login"   → ✅ action="login"
 
 In JavaScript files, change:
-  ❌ fetch('/api/auth/login')              → ✅ fetch('login')           // Use relative for auth calls
-  ❌ fetch('/api/user')                    → ✅ fetch('user')             // Use relative for API calls
-  ❌ fetch('/api/employees')               → ✅ fetch('employees')        // Use relative for API calls
-  ❌ fetch('/api/auth/check-session')      → ✅ fetch('check-session')    // Use relative for session calls
+  ❌ fetch('/api/auth/login')              → ✅ fetch('login')           // Use simple for auth calls
+  ❌ fetch('/api/user')                    → ✅ fetch('api/user')         // KEEP /api/ for data calls
+  ❌ fetch('/api/employees')               → ✅ fetch('api/employees')    // KEEP /api/ for data calls
+  ❌ fetch('/api/auth/check-session')      → ✅ fetch('check-session')    // Use simple for auth calls
   ❌ window.location.href = '/dashboard'   → ✅ window.location.href = 'dashboard'
 
 WHY THIS WORKS:
@@ -361,16 +371,17 @@ But absolute paths go to wrong place:
   href="/logout" → /logout (hits wrong server) ❌
   href="/css/styles.css" → /css/styles.css (404) ❌
 
-CROSS-DEPTH NAVIGATION (NESTED URLS):
-For navigation between different URL depths (e.g., /employees/4/edit → /employees):
-✅ CORRECT: Server-side POST redirect
-   <form action="cancel-edit" method="POST"><button>Cancel</button></form>
-   router.post('/employees/:id/cancel-edit', (req, res) => res.redirect('/employees'))
-❌ WRONG: Client link href="employees" (resolves to /employees/4/employees)
-❌ WRONG: Using ../ paths href="../employees" (violates architecture)
+FLAT PAGES ONLY (PROVEN PATTERN):
+Generated apps MUST use single-segment page routes only:
+✅ /login, /dashboard, /employees
+❌ /employees/123, /employees/123/edit (FORBIDDEN)
+
+For "details" pages, use:
+- Query strings: /employees?id=123
+- POST actions with redirects
+- Data fetched from /api/employees?id=123
 
 Same-depth navigation (e.g., /dashboard → /employees) uses relative links as normal.
-When fixing nested navigation bugs, propose adding POST redirect routes, not client-side links.
 
 THE WRONG FIX (never do this):
 ═══════════════════════════════════════════════════════════════════
@@ -381,10 +392,12 @@ THE WRONG FIX (never do this):
    - <base href="/yourapp/">: Breaks Mac (path doesn't exist locally)
    - Solution: NO <base> tag at all - relative paths work everywhere
 ❌ NEVER change res.redirect('/dashboard') to res.redirect('dashboard') - SERVER paths stay absolute
-❌ NEVER duplicate mount prefix in router paths:
-   - If server.js has app.use('/', authRouter)
+❌ NEVER duplicate mount prefix in router paths (HYBRID PATTERN):
+   - AUTH routes: If server.js has app.use('/', authRouter)
    - Routes must be router.post('/login') NOT router.post('/api/auth/login')
-   - Double prefix creates /api/auth/login endpoints that don't work with relative fetch calls
+   - DATA routes: If server.js has app.use('/api', dataRouter)
+   - Routes must be router.get('/employees') NOT router.get('/api/employees')
+   - Double prefix creates wrong endpoints that don't work with hybrid fetch calls
 
 ⚠️ CRITICAL: KNOW THE DIFFERENCE:
 - SERVER-SIDE = res.redirect(), router.get(), router.post() → KEEP the leading /
