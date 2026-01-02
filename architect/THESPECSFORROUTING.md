@@ -35,8 +35,12 @@ This single principle ensures compatibility across both environments without env
 ### Why This Works
 
 **Caddy Proxy Behavior:**
-- Browser requests: `/yourapp/api/users` → Caddy strips `/yourapp/` → Node.js receives `/api/users`
+- Browser requests: `fetch('login')` from `/yourapp/login` → `/yourapp/login` → Caddy strips `/yourapp/` → Node.js receives `/login` ✅
 - Node.js responds: `res.redirect('/dashboard')` → Caddy rewrites to `/yourapp/dashboard` → Browser receives `/yourapp/dashboard`
+
+**CRITICAL: API calls MUST be relative to go through Caddy proxy**
+- `fetch('login')` → Through Caddy → Node.js ✅  
+- `fetch('/api/auth/login')` → Bypasses Caddy → FastAPI → 404 ❌
 
 ## Complete Routing Specifications
 
@@ -44,18 +48,20 @@ This single principle ensures compatibility across both environments without env
 
 **✅ CORRECT Pattern:**
 ```javascript
-// Absolute paths - work from ANY page depth
-fetch('/api/employees')           // For data retrieval
-fetch('/api/auth/login')          // For authentication
-fetch('/api/auth/logout')         // For logout
-fetch('/api/auth/check-session')  // For session validation
+// Relative paths - go through Caddy proxy to Node.js
+fetch('login')                     // For authentication
+fetch('logout')                    // For logout  
+fetch('check-session')             // For session validation
+fetch('employees')                 // For data retrieval
+fetch('employees/123')             // For specific resource
 ```
 
 **❌ WRONG Patterns:**
 ```javascript
-// Relative paths - break navigation
-fetch('api/employees')            // Fails from different page depths
-fetch('../api/employees')         // Breaks when URL structure changes
+// Absolute paths - bypass Caddy and hit FastAPI (404 errors)
+fetch('/api/auth/login')           // Goes to FastAPI → 404
+fetch('/api/employees')            // Goes to FastAPI → 404
+fetch('/api/auth/logout')          // Goes to FastAPI → 404
 ```
 
 **Implementation Requirements:**
@@ -65,7 +71,7 @@ fetch('../api/employees')         // Breaks when URL structure changes
 
 **Example:**
 ```javascript
-const response = await fetch('/api/auth/login', {
+const response = await fetch('login', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -111,28 +117,38 @@ const response = await fetch('/api/auth/login', {
 </form>
 ```
 
-**Forms submitting to specific endpoints:**
+**Forms submitting to authentication endpoints:**
 ```html
-<form action="api/auth/login" method="POST">
+<!-- Forms submitting to authentication endpoints -->
+<form action="login" method="POST">
     <input name="email" type="email">
     <input name="password" type="password">
     <button type="submit">Login</button>
 </form>
 ```
 
-**❌ WRONG Patterns:**
+**Forms submitting to API endpoints:**
 ```html
-<!-- Creates double-path issues -->
-<form action="/login" method="POST">     <!-- Becomes /login/login -->
-<form action="login" method="POST">      <!-- Same issue as above -->
+<form action="employees" method="POST">
+    <input name="name" type="text">
+    <input name="email" type="email">
+    <button type="submit">Add Employee</button>
+</form>
+```
+
+**WRONG Patterns:**
+```html
+<!-- Absolute paths bypass Caddy -->
+<form action="/api/auth/login" method="POST">     <!-- Goes to FastAPI → 404 -->
+<form action="/login" method="POST">              <!-- Goes to wrong domain -->
 ```
 
 ### 4. Form Data Encoding (Client-side JavaScript)
 
-**✅ CORRECT for Simple Forms (login, text fields):**
+**CORRECT for Simple Forms (login, text fields):**
 ```javascript
 const formData = new FormData(form);
-await fetch('/api/endpoint', {
+await fetch('login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -143,7 +159,7 @@ await fetch('/api/endpoint', {
 **✅ CORRECT for File Uploads:**
 ```javascript
 const formData = new FormData(form);
-await fetch('/api/upload', {
+await fetch('upload', {
     method: 'POST',
     credentials: 'include',
     body: formData  // multipart/form-data
@@ -152,10 +168,10 @@ await fetch('/api/upload', {
 
 **❌ WRONG for Simple Forms:**
 ```javascript
-// FormData defaults to multipart/form-data which express.urlencoded() cannot parse
+// Absolute paths bypass Caddy and hit FastAPI
 await fetch('/api/login', {
     method: 'POST',
-    body: formData  // WRONG - causes empty req.body
+    body: formData  // WRONG - causes 404 on FastAPI
 });
 ```
 
@@ -165,13 +181,12 @@ await fetch('/api/login', {
 ```javascript
 // Absolute paths - server-side routes
 app.get('/login', (req, res) => { ... });
-app.post('/login', (req, res) => { ... });
 app.get('/dashboard', isAuthenticated, (req, res) => { ... });
-app.get('/api/employees', (req, res) => { ... });
+app.get('/employees', isAuthenticated, (req, res) => { ... });
 
-// Router mounting (avoid double-prefixing)
+// Router mounting at ROOT (critical for API endpoints)
 const authRouter = require('./routes/auth');
-app.use('/api/auth', authRouter);  // Routes in auth.js use relative paths
+app.use('/', authRouter);  // Routes in auth.js become /login, /logout, /check-session
 ```
 
 **Router Export Pattern:**
@@ -180,15 +195,16 @@ app.use('/api/auth', authRouter);  // Routes in auth.js use relative paths
 const express = require('express');
 const router = express.Router();
 
-router.post('/login', (req, res) => { ... });  // Relative to mount point
-router.get('/check-session', (req, res) => { ... });
+router.post('/login', (req, res) => { ... });  // Becomes /login when mounted at root
+router.post('/logout', (req, res) => { ... });  // Becomes /logout when mounted at root
+router.get('/check-session', (req, res) => { ... });  // Becomes /check-session
 
-module.exports = router;  // Export router directly
+module.exports = router;
 ```
 
 ### 6. Server-side Redirects (Node.js/Express)
 
-**✅ CORRECT Pattern:**
+** CORRECT Pattern:**
 ```javascript
 // Absolute paths - Caddy handles rewriting
 res.redirect('/dashboard');           // Becomes /yourapp/dashboard on Railway
@@ -196,7 +212,7 @@ res.redirect('/login');               // Becomes /yourapp/login on Railway
 res.redirect('/employees');           // Becomes /yourapp/employees on Railway
 ```
 
-**❌ WRONG Patterns:**
+** WRONG Patterns:**
 ```javascript
 // Relative paths - break server-side routing
 res.redirect('dashboard');            // Server-side confusion
@@ -205,7 +221,7 @@ res.redirect('../dashboard');         // Unpredictable behavior
 
 ### 7. Client-side Redirects (JavaScript)
 
-**✅ CORRECT Pattern:**
+** CORRECT Pattern:**
 ```javascript
 // Relative paths - client-side navigation
 window.location.href = 'dashboard';   // Resolves relative to current URL
@@ -395,10 +411,10 @@ def validate_routing_patterns(generated_code):
         
         # Should have correct API calls
         if 'fetch(' in content:
-            assert "fetch('/api/" in content, "API calls should be absolute"
+            assert "fetch('" in content and not "fetch('/" in content, "API calls should be relative"
             
         # Should have credentials in auth calls
-        if 'fetch(\'/api/auth' in content:
+        if 'fetch(\'login' in content or 'fetch(\'logout' in content:
             assert 'credentials: \'include\'' in content, "Auth calls need credentials"
     
     # Check server files for correct patterns
@@ -425,7 +441,7 @@ def validate_routing_patterns(generated_code):
 // Test API calls work from different page depths
 test('API call from nested page', async () => {
     // Simulate being at /yourapp/employees/departments
-    const response = await fetch('/api/employees');
+    const response = await fetch('employees');
     assert(response.ok);
 });
 
@@ -520,8 +536,8 @@ reverse_proxy localhost:8001
    - Check session configuration (secure: false, sameSite: 'lax')
 
 2. **404 errors on API calls**
-   - Check if API calls use absolute paths: `/api/endpoint`
-   - Verify Caddy proxy is running
+   - Check if API calls use relative paths: `fetch('login')` not `fetch('/api/auth/login')`
+   - Verify auth router is mounted at root: `app.use('/', authRouter)`
    - Check if generated app is running on port 3000
 
 3. **Redirect loops**
@@ -534,7 +550,7 @@ reverse_proxy localhost:8001
    - Check for absolute paths in HTML
 
 5. **Pages load then redirect to 404**
-   - Check session check API calls use absolute paths
+   - Check session check API calls use relative paths: `fetch('check-session')`
    - Verify session check includes credentials: 'include'
 
 ### Debug Commands
@@ -548,12 +564,12 @@ railway ssh "netstat -tlnp | grep :3000"
 railway ssh "ls -la /app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp/"
 
 # Test API endpoints
-curl -X POST https://app.railway.app/yourapp/api/auth/login \
+curl -X POST https://app.railway.app/yourapp/login \
   -H "Content-Type: application/json" \
   -d '{"email": "test@test.com", "password": "test"}'
 
 # Check session
-curl -b cookies.txt https://app.railway.app/yourapp/api/auth/check-session
+curl -b cookies.txt https://app.railway.app/yourapp/check-session
 ```
 
 ## Migration Guide
@@ -566,13 +582,14 @@ curl -b cookies.txt https://app.railway.app/yourapp/api/auth/check-session
    - Add `credentials: 'include'` to auth fetch calls
 
 2. **JavaScript Files:**
-   - Replace `fetch('/api/auth/login')` with `fetch('/api/auth/login')` (keep absolute for API)
+   - Replace `fetch('/api/auth/login')` with `fetch('login')` (use relative for API)
+   - Replace `fetch('/api/auth/check-session')` with `fetch('check-session')`
    - Replace `window.location.href = '/page'` with `window.location.href = 'page'`
 
 3. **Server Files:**
+   - Mount auth router at root: `app.use('/', authRouter)` not `app.use('/api/auth', authRouter)`
    - Add session configuration with `secure: false, sameSite: 'lax'`
    - Ensure all routes use absolute paths
-   - Export routers correctly
 
 ## Summary
 
