@@ -65,7 +65,7 @@ ACCEPTANCE CRITERIA TESTING (WHEN PROVIDED BY MIKE)
       "ac_text": "Valid credentials grant access",
       "test_scenario": {
         "setup": "optional prerequisite steps",
-        "endpoint": "POST /login",
+        "endpoint": "POST /api/auth/login",
         "content_type": "application/x-www-form-urlencoded",
         "input": {"email": "admin@test.com", "password": "Password123!"},
         "expected_outcome": {
@@ -178,8 +178,8 @@ You write: `assert.strictEqual(res.cookies, '');` or check subsequent request fa
 
 ```javascript
 test('AC-1: Valid credentials grant access', async () => {
-  // Mike specified: POST /login with admin@test.com
-  const res = await makeRequest('/login', {
+  // Mike specified: POST /api/auth/login with admin@test.com
+  const res = await makeRequest('/api/auth/login', {
     method: 'POST',
     contentType: 'application/x-www-form-urlencoded',
     body: 'email=admin@test.com&password=Password123!'

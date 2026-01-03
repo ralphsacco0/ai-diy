@@ -148,10 +148,10 @@ These rules cause SPRINT FAILURES if violated:
    - JavaScript fetch: fetch('employees')  // Relative paths go through Caddy
    - JavaScript redirects: window.location.href = 'login'  // Relative
    
-   ⚠️ CRITICAL PATH RULES (HYBRID APPROACH - PROVEN):
-   ✅ fetch('login')               // CORRECT - auth endpoints use simple pattern
-   ✅ fetch('logout')               // CORRECT - auth endpoints use simple pattern  
-   ✅ fetch('check-session')       // CORRECT - auth endpoints use simple pattern
+   ⚠️ CRITICAL PATH RULES (CONSISTENT API NAMESPACE):
+   ✅ fetch('api/auth/login')      // CORRECT - auth under /api/auth/ namespace
+   ✅ fetch('api/auth/logout')     // CORRECT - auth under /api/auth/ namespace  
+   ✅ fetch('api/auth/check-session') // CORRECT - auth under /api/auth/ namespace
    ✅ fetch('api/employees')       // CORRECT - data endpoints use /api/ namespace
    ✅ fetch('api/leaves')           // CORRECT - data endpoints use /api/ namespace
    ✅ href="dashboard"              // CORRECT - relative for navigation
@@ -161,8 +161,8 @@ These rules cause SPRINT FAILURES if violated:
    ❌ href="/dashboard"             // WRONG - absolute navigation breaks proxy
 
    WHY THIS WORKS:
-   - Railway: Browser requests login from /yourapp/login → /yourapp/login → Caddy strips /yourapp → Express receives /login
-   - Local: Browser requests login from /login → /login → Express receives /login
+   - Railway: Browser at /yourapp/login calls fetch('api/auth/login') → /yourapp/api/auth/login → Caddy strips /yourapp → Express receives /api/auth/login
+   - Local: Browser at /login calls fetch('api/auth/login') → /api/auth/login → Express receives /api/auth/login
    - Same code, both environments work because relative paths resolve correctly and Caddy handles rewriting
    - ABSOLUTE API calls (/api/auth/login) bypass Caddy and hit FastAPI, causing 404 errors
    
@@ -171,11 +171,11 @@ These rules cause SPRINT FAILURES if violated:
    rewritten by Caddy. Client-side paths resolve relative to the current URL,
    so they work both locally AND behind the proxy without any code changes.
 
-   HYBRID API APPROACH (PROVEN WORKING PATTERN):
-   - Authentication endpoints: Simple paths (login, logout, check-session) - NO /api/ prefix
-   - Data endpoints: Namespaced paths (api/employees, api/leaves) - WITH /api/ prefix
-   - Rationale: Auth is universal and simple, data needs namespace separation to prevent collisions
-   - This pattern is PROVEN to work in the deployed POC application
+   CONSISTENT API NAMESPACE (REQUIRED PATTERN):
+   - ALL API endpoints use /api/ namespace for consistency
+   - Authentication endpoints: api/auth/login, api/auth/logout, api/auth/check-session
+   - Data endpoints: api/employees, api/leaves, api/documents
+   - Rationale: Consistent namespace prevents routing confusion and frontend/backend mismatches
 
    API RESPONSES WITH REDIRECT URLS (HYBRID CASE):
    When an API returns a redirect path in JSON that client JS will use:
@@ -252,16 +252,16 @@ These rules cause SPRINT FAILURES if violated:
    router.post('/api/auth/login', ...)  // ❌ WRONG - final route: /api/auth/api/auth/login
    ```
 
-   ✅ CORRECT - HYBRID PATTERN (PROVEN IN WORKING POC):
+   ✅ CORRECT - CONSISTENT PATTERN:
    ```javascript
-   // AUTH ROUTES (Proven Pattern):
+   // AUTH ROUTES (Consistent Pattern):
    // server.js
-   app.use('/', authRouter);          // Mount at root for simple auth
+   app.use('/api/auth', authRouter);  // Mount at /api/auth for consistency
 
    // routes/auth.js
-   router.post('/login', ...)         // Final route: /login (not /api/auth/login)
-   router.post('/logout', ...)        // Final route: /logout
-   router.get('/check-session', ...)  // Final route: /check-session
+   router.post('/login', ...)         // Final route: /api/auth/login
+   router.post('/logout', ...)        // Final route: /api/auth/logout
+   router.get('/check-session', ...)  // Final route: /api/auth/check-session
 
    // DATA ROUTES (Namespaced Pattern):
    // server.js  
@@ -273,14 +273,14 @@ These rules cause SPRINT FAILURES if violated:
    ```
 
    RULE: Router paths are added to the mount point path.
-   - Auth mount point: '/' + Router path: '/login' = Final endpoint: '/login'
+   - Auth mount point: '/api/auth' + Router path: '/login' = Final endpoint: '/api/auth/login'
    - Data mount point: '/api' + Router path: '/employees' = Final endpoint: '/api/employees'
 
-   YOUR TASK DESCRIPTIONS MUST SPECIFY (HYBRID PATTERN):
-   - AUTH routes: "app.use('/', authRouter)" + "router.post('/login', ...)" → Final: /login
+   YOUR TASK DESCRIPTIONS MUST SPECIFY (CONSISTENT PATTERN):
+   - AUTH routes: "app.use('/api/auth', authRouter)" + "router.post('/login', ...)" → Final: /api/auth/login
    - DATA routes: "app.use('/api', dataRouter)" + "router.get('/employees', ...)" → Final: /api/employees
-   - In technical_notes: "Backend exposes POST /login (auth) and GET /api/employees (data)"
-   - CRITICAL: Frontend calls must match: fetch('login') for auth, fetch('api/employees') for data
+   - In technical_notes: "Backend exposes POST /api/auth/login and GET /api/employees"
+   - CRITICAL: Frontend calls must match: fetch('api/auth/login') for auth, fetch('api/employees') for data
    - Ensure frontend paths in task descriptions match backend routes in technical_notes
 
 FLAT PAGES ONLY (PROVEN PATTERN):
@@ -591,7 +591,7 @@ NORMAL STORY OUTPUT:
       "dependency_reason": "Depends on T-US-009-03 because database module must exist first"
     }
   ],
-  "technical_notes": "URL Contract: Backend exposes POST /login, GET /dashboard; Frontend uses action='#' (self-submit to /login), href='dashboard' (relative paths, no leading /, NO <base> tag); Consistency check: ✓ URLs match, no <base> tags"
+  "technical_notes": "URL Contract: Backend exposes POST /api/auth/login, GET /dashboard; Frontend uses fetch('api/auth/login'), href='dashboard' (relative paths, no leading /, NO <base> tag); Consistency check: ✓ URLs match, no <base> tags"
 }
 
 JSON VALIDATION RULES:
