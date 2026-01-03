@@ -1330,7 +1330,7 @@ async def run_sprint_review_alex_execution_mode(
             if fix_match:
                 fix_proposal = fix_match.group(1).strip()
 
-        files_match = re.search(r'Files to modify[:\s]+(.+?)(?:\n|$)', alex_last_response, re.IGNORECASE)
+        files_match = re.search(r'Files to modify[:\s]+(.*?)(?:\n\n|Should I apply|$)', alex_last_response, re.DOTALL | re.IGNORECASE)
         if files_match:
             files_to_modify = files_match.group(1).strip()
 
@@ -1397,15 +1397,17 @@ async def run_sprint_review_alex_execution_mode(
                             logger.info(f"Strategy 1: Extracted file path: {word}", character=persona_key)
                         break  # Found a path in this line, move to next line
     
-    # Strategy 2: Scan entire Alex response for common file patterns
+    # Strategy 2: Scan entire Alex response for common file patterns (ONLY if Strategy 1 found nothing)
+    # This is a fallback - we prefer explicit "Files to modify:" lists over scanning the whole response
     if not target_file_paths and alex_last_response:
-        logger.info("Strategy 2: Scanning full Alex response for file patterns", character=persona_key)
+        logger.info("Strategy 2: Scanning full Alex response for file patterns (fallback)", character=persona_key)
         import re
         # Look for patterns like src/file.js, public/page.html, etc.
         file_pattern = r'\b((?:src|public|routes|controllers|middleware|tests)/[\w\-./]+\.(?:js|html|css|json))\b'
         matches = re.findall(file_pattern, alex_last_response, re.IGNORECASE)
         logger.info(f"Strategy 2: Found {len(matches)} potential file paths in response", character=persona_key)
-        for match in matches:
+        # Limit to first 3 files to avoid grabbing too many files mentioned in context
+        for match in matches[:3]:
             cleaned = match.strip().replace("`", "")
             if cleaned not in target_file_paths:
                 target_file_paths.append(cleaned)
