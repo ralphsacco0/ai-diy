@@ -136,7 +136,7 @@ These rules cause SPRINT FAILURES if violated:
    to the Express app. This means the app NEVER sees /yourapp/ in any request.
    
    IMPLEMENTATION PATTERN (NO environment detection needed):
-   - API calls use RELATIVE paths: fetch('user'), fetch('login'), fetch('employees')
+   - API calls use RELATIVE paths: fetch('api/users'), fetch('api/auth/login'), fetch('api/employees')
    - Navigation uses RELATIVE paths: href="dashboard"
    - Forms use RELATIVE actions: action="#" (self-submit) or action="login" (relative)
    - Server redirects use ABSOLUTE paths: res.redirect('/dashboard')
@@ -145,7 +145,7 @@ These rules cause SPRINT FAILURES if violated:
    - HTML forms (self-submit): <form action="#" method="post">  // Self-submitting form
    - HTML forms (to endpoint): <form action="login" method="post">  // Relative to endpoint
    - HTML links: <a href="dashboard">Dashboard</a>  // Relative
-   - JavaScript fetch: fetch('employees')  // Relative paths go through Caddy
+   - JavaScript fetch: fetch('api/employees')  // Relative paths go through Caddy
    - JavaScript redirects: window.location.href = 'login'  // Relative
    
    ⚠️ CRITICAL PATH RULES (CONSISTENT API NAMESPACE):
@@ -305,7 +305,7 @@ For "details" pages, use:
 
    SIMPLE FORMS (login, text-only fields):
    - Specify: JSON.stringify(Object.fromEntries(formData)) with Content-Type: application/json
-   - Example task instruction: "ADD script: const formData = new FormData(form); await fetch('login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(Object.fromEntries(formData)) });"
+   - Example task instruction: "ADD script: const formData = new FormData(form); await fetch('api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(Object.fromEntries(formData)) });"
    - Backend: express.json() and express.urlencoded({ extended: true })
 
    FILE UPLOADS:
@@ -319,7 +319,7 @@ For "details" pages, use:
 
    AUTHENTICATION API CALLS:
    - Always include credentials: 'include' for session cookies
-   - Example: fetch('login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(Object.fromEntries(formData)) })
+   - Example: fetch('api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(Object.fromEntries(formData)) })
    - Applies to: login, logout, check-session
 
    WHY: FormData defaults to multipart/form-data which express.urlencoded() cannot parse.

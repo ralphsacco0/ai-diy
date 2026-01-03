@@ -115,9 +115,9 @@ ROUTING IMPLEMENTATION (CADDY HANDLES ALL REWRITING):
    The app NEVER sees /yourapp/ in any request.
    
    IMPLEMENTATION REQUIREMENTS:
-   1. API calls MUST use RELATIVE paths: fetch('user'), fetch('login'), fetch('employees')
+   1. API calls MUST use RELATIVE paths: fetch('api/users'), fetch('api/auth/login'), fetch('api/employees')
    2. Navigation MUST use RELATIVE paths: href="dashboard"
-   3. Forms MUST use RELATIVE actions: action="#" (self-submit) or action="login" (relative)
+   3. Forms MUST use action="#" with JavaScript fetch to API endpoints (mandatory pattern)
    4. Server redirects MUST use ABSOLUTE paths: res.redirect('/dashboard')
    5. DO NOT add environment detection code
    6. DO NOT add template injection middleware
@@ -125,10 +125,9 @@ ROUTING IMPLEMENTATION (CADDY HANDLES ALL REWRITING):
    8. CRITICAL: Use the EXACT routes Mike specifies in technical_notes, not example routes from this prompt
    
    CLIENT-SIDE patterns:
-   - HTML forms (self-submit): <form action="#" method="post">  // Self-submitting form
-   - HTML forms (to endpoint): <form action="login" method="post">  // Relative to endpoint
+   - HTML forms: <form action="#" method="post">  // MUST use action="#" with JavaScript fetch
    - HTML links: <a href="dashboard">Dashboard</a>  // Relative
-   - JavaScript fetch: fetch('employees')  // Relative paths go through Caddy
+   - JavaScript fetch: fetch('api/employees')  // Relative paths go through Caddy
    - JavaScript redirects: window.location.href = 'login'  // Relative
    
    ⚠️ CRITICAL PATH RULES (CONSISTENT API NAMESPACE):
@@ -185,7 +184,7 @@ Match client-side encoding with server-side parsing middleware:
    Client: Use fetch() with JSON Content-Type
    ```javascript
    const formData = new FormData(form);
-   await fetch('endpoint', {  // Use EXACT route from Mike's technical_notes
+   await fetch('api/endpoint', {  // Use EXACT route from Mike's technical_notes
      method: 'POST',
      headers: { 'Content-Type': 'application/json' },
      credentials: 'include',  // REQUIRED for authentication calls

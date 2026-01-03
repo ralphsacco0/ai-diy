@@ -200,15 +200,15 @@ When testing forms that submit to the same URL they're served from:
 
 test('AC-4: Logout clears session', async () => {
   // Setup: Login first (Mike specified this)
-  const loginRes = await makeRequest('/login', {
+  const loginRes = await makeRequest('/api/auth/login', {
     method: 'POST',
     contentType: 'application/x-www-form-urlencoded',
     body: 'email=admin@test.com&password=Password123!'
   });
   const sessionCookie = loginRes.cookies;
   
-  // Action: Logout (Mike specified GET /logout)
-  const logoutRes = await makeRequest('/logout', {}, sessionCookie);
+  // Action: Logout (Mike specified POST /api/auth/logout)
+  const logoutRes = await makeRequest('/api/auth/logout', { method: 'POST' }, sessionCookie);
   
   // Mike specified: redirects to login, session destroyed
   assert.strictEqual(logoutRes.statusCode, 302);
