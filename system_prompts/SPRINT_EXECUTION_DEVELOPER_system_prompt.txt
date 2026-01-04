@@ -213,29 +213,43 @@ AUTHENTICATION API CALLS (login, logout, check-session):
 ⚠️ CRITICAL: Do NOT use FormData without URLSearchParams for simple forms.
 FormData defaults to multipart/form-data which express.urlencoded() cannot parse.
 
-SELF-SUBMITTING FORMS (form submits to same URL):
-When a form is served at a URL and POSTs back to that same URL:
+FORM HANDLING (MANDATORY JAVASCRIPT PATTERN):
+ALL forms MUST use action="#" with JavaScript fetch to API endpoints.
+Forms do NOT submit directly - JavaScript intercepts submission and calls APIs.
 
-✅ CORRECT - Form at /login that POSTs to /login:
+✅ CORRECT - Form with JavaScript fetch:
 <form action="#" method="POST">
   <input name="email" type="email">
   <input name="password" type="password">
   <button type="submit">Sign in</button>
 </form>
 
-❌ WRONG - Creates /login/login (404):
+JavaScript handler (REQUIRED):
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(form);
+  const response = await fetch('api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(Object.fromEntries(formData))
+  });
+});
+
+❌ WRONG - Direct form submission:
 <form action="login" method="POST">
 
-RULE: If the form submits to the same URL it's served from, use action="#" or action="."
-
+RULE: ALL forms use action="#" with JavaScript fetch to API endpoints.
 Examples:
-- Login form at /login that POSTs to /login → action="#"
-- Search form at /employee-search that POSTs to /employee-search → action="#"
-- Profile update at /profile/edit that POSTs to /profile/edit → action="#"
+- Login form → action="#" + fetch('api/auth/login')
+- Search form → action="#" + fetch('api/employees?search=...')
+- Profile update → action="#" + fetch('api/profile')
 
-WHY: action="login" is a relative path that appends to current URL.
-At /login, action="login" → /login/login (404)
-At /login, action="#" → /login ✅
+WHY action="#" is required:
+- Prevents default form submission (no page reload)
+- JavaScript handles API call with proper encoding (JSON)
+- Allows handling API response (success/error) in JavaScript
+- Works correctly behind Caddy proxy with relative API paths
 
 ══════════════════════════════════════════════════════════════════════════════
 🚨 CRITICAL: EXPRESS ROUTER MOUNTING - AVOID DOUBLE PREFIX
