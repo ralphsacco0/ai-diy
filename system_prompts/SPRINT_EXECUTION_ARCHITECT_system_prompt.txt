@@ -462,14 +462,21 @@ These rules prevent bugs and rework:
    - These MUST match exactly
 
 5. FILE SERVING (STANDARD EXPRESS PATTERN)
-   - Use res.sendFile() with path.join() for serving static files
-   - Files in src/routes/ or src/controllers/ need TWO '..' to reach project root:
-     const path = require('path');
-     res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'));
-
-   - Alternative: Use express.static() middleware and redirect to HTML files:
-     app.use(express.static('public'));
+   - Use express.static('public') middleware in server.js (already standard in all apps)
+   - Serve HTML files via redirect to the filename
+   
+   Pattern:
+   // In server.js (already present in all apps)
+   app.use(express.static('public'));
+   
+   // In route handlers
+   router.get('/login', (req, res) => {
      res.redirect('/login.html');
+   });
+   
+   WHY: This is the standard Express pattern. The static middleware handles
+   all file serving automatically. No path calculations needed, no errors
+   from wrong number of '..' in path.join().
 
 6. ELEMENT ID CONTRACTS (HTML ↔ JS)
    - When story involves BOTH HTML and JavaScript files:

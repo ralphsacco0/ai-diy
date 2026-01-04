@@ -37,13 +37,27 @@ No `<base href=...>` anywhere.
 
 ### Rule 2: Server-side vs Client-side path styles
 
-**Server-side (Express routes + redirects):**
+**Server-side (Express routes):**
+- Always **absolute** paths starting with `/`
+- Example: `app.get('/dashboard', ...)`, `app.post('/api/auth/login', ...)`
+
+**Server-side (redirects in HTML responses):**
 - Always **absolute** paths starting with `/`
 - Example: `res.redirect('/dashboard')`
 
-**Client-side (HTML and browser JS):**
+**Server-side (redirects in JSON responses):**
 - Always **relative** paths with **NO leading `/`**
-- Examples: `href="dashboard"`, `fetch('api/employees')`
+- Example: `res.json({ success: true, redirect: 'dashboard' })`
+- Client uses: `window.location.href = result.redirect`
+
+**Client-side (HTML links and forms):**
+- Always **relative** paths with **NO leading `/`**
+- Examples: `href="dashboard"`, `action="#"`
+
+**Client-side (JavaScript fetch):**
+- Always **relative** paths with **NO leading `/`**
+- Examples: `fetch('api/employees')`, `fetch('api/auth/login')`
+- **NEVER** use absolute paths like `fetch('/api/employees')` - this bypasses `/yourapp/` on Railway
 
 ### Rule 3: API namespace is mandatory
 All JSON/data endpoints in the generated app must live under:
@@ -100,18 +114,20 @@ Always relative, no leading slash:
 <a href="dashboard">Dashboard</a>
 <a href="employees">Employees</a>
 <a href="login">Login</a>
+```
 
-Static assets (HTML)
-
+### Static assets (HTML)
 Always relative:
 
+```html
 <link rel="stylesheet" href="css/styles.css">
 <script src="login.js"></script>
+```
 
-Fetch (browser JS)
+### Fetch (browser JS)
+Always relative and namespaced under `api/...`:
 
-Always relative and namespaced under api/...:
-
+```javascript
 await fetch('api/employees', { credentials: 'include' });
 
 await fetch('api/auth/check-session', { credentials: 'include' });
@@ -120,56 +136,150 @@ await fetch('api/auth/logout', {
   method: 'POST',
   credentials: 'include',
 });
+```
 
-Never do this (bypasses /yourapp and hits FastAPI):
+**CRITICAL - Never do this (bypasses /yourapp and hits FastAPI):**
 
+```javascript
+// ❌ WRONG - absolute paths
 fetch('/api/employees')
 fetch('/api/auth/login')
+```
 
-Form actions
+### Form Handling Pattern (MANDATORY)
 
-Prefer JS-handled forms + action="#" (self-submit), OR a relative API action.
+**All forms MUST use JavaScript fetch, not standard HTML form submission.**
 
-Recommended (self-submit + JS handler):
+Pattern:
 
-<form id="loginForm" action="#" method="post">
-  ...
+```html
+<form action="#" method="POST">
+  <input name="email" type="email" required>
+  <input name="password" type="password" required>
+  <button type="submit">Submit</button>
 </form>
 
-Allowed (direct to API route):
+<script>
+  document.querySelector('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    
+    try {
+      const response = await fetch('api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        window.location.href = result.redirect;  // relative path from server
+      } else {
+        // Show error message
+      }
+    } catch (err) {
+      // Handle error
+    }
+  });
+</script>
+```
 
-<form action="api/auth/login" method="post">
-  ...
-</form>
+**Why this pattern:**
+- `action="#"` prevents standard form submission
+- `e.preventDefault()` stops page reload
+- Fetch uses **relative path** `api/auth/login` (no leading `/`)
+- Server returns JSON with **relative redirect**: `{ success: true, redirect: 'dashboard' }`
+- Works identically on localhost and Railway
 
 
-⸻
+---
 
-Server-Side Patterns (Express)
+## Server-Side Patterns (Express)
 
-Absolute route definitions
+### Route Definitions
+Always use absolute paths starting with `/`:
 
-Always start with /:
+```javascript
+// Pages (serve HTML)
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));
+});
 
-app.get('/login', ...);
-app.get('/dashboard', ...);
-app.get('/employees', ...);
+app.get('/dashboard', isAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'dashboard.html'));
+});
 
-app.post('/api/auth/login', ...);
-app.post('/api/auth/logout', ...);
-app.get('/api/auth/check-session', ...);
+// API endpoints (return JSON)
+app.post('/api/auth/login', async (req, res) => { ... });
+app.post('/api/auth/logout', (req, res) => { ... });
+app.get('/api/auth/check-session', (req, res) => { ... });
+app.get('/api/employees', isAuthenticated, async (req, res) => { ... });
+```
 
-app.get('/api/employees', ...);
+### JSON Response Format (for API endpoints)
 
-Absolute redirects (mandatory)
+**Login endpoint:**
 
-Always redirect with a leading /:
+```javascript
+router.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  const user = await validateUser(email, password);
+  
+  if (!user) {
+    return res.status(401).json({ 
+      success: false, 
+      error: 'Invalid credentials' 
+    });
+  }
+  
+  req.session.userId = user.id;
+  req.session.user = { id: user.id, role: user.role };
+  
+  // Return RELATIVE redirect path
+  res.json({ success: true, redirect: 'dashboard' });
+});
+```
 
-return res.redirect('/dashboard'); // correct
+**Logout endpoint:**
 
-Never:
+```javascript
+router.post('/api/auth/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ success: false, error: 'Logout failed' });
+    }
+    res.clearCookie('connect.sid');
+    res.json({ success: true, redirect: 'login' });
+  });
+});
+```
 
-res.redirect('dashboard'); // wrong
+**Check session endpoint:**
+
+```javascript
+router.get('/api/auth/check-session', (req, res) => {
+  res.json({ 
+    authenticated: !!(req.session && req.session.userId),
+    user: req.session?.user || null
+  });
+});
+```
+
+### HTML Redirects (for non-API routes)
+
+When serving HTML pages that need to redirect, use **absolute** paths:
+
+```javascript
+// ✅ Correct - absolute path for HTML redirect
+return res.redirect('/dashboard');
+
+// ❌ Wrong - relative path
+res.redirect('dashboard');
+```
+
+**Why:** Caddy rewrites `Location: /dashboard` to `Location: /yourapp/dashboard` on Railway.
 
 Canonical “no trailing slash” middleware (recommended)
 
@@ -198,21 +308,20 @@ app.use(session({
   },
 }));
 
+---
 
-⸻
+## Caddy Configuration (Railway prefix proxy)
 
-Caddy Configuration (Railway prefix proxy)
+### Caddy Goals
+1. Route `/yourapp/*` to the generated app (Node)
+2. Strip `/yourapp` before forwarding upstream
+3. Rewrite `Location: /login` → `Location: /yourapp/login`
+4. Prevent double-prefix loops (`/yourapp/yourapp/...`)
 
-Caddy goals
-	1.	Route /yourapp/* to the generated app (Node)
-	2.	Strip /yourapp before forwarding upstream
-	3.	Rewrite Location: /login → Location: /yourapp/login
-	4.	Prevent double-prefix loops (/yourapp/yourapp/...)
+### Canonical Caddy Configuration
 
-Canonical Caddy snippet (guarded Location rewrite)
-
+```caddy
 :{$PORT} {
-
   handle_path /yourapp/* {
     reverse_proxy 127.0.0.1:3000
 
@@ -226,56 +335,135 @@ Canonical Caddy snippet (guarded Location rewrite)
     reverse_proxy 127.0.0.1:8001
   }
 }
+```
 
-Critical rule for Node redirects
+### Critical Rule for Node Redirects
 
-Node/Express must NEVER emit redirects containing /yourapp.
-Node should only emit: /login, /dashboard, etc.
-Caddy is responsible for prefixing on Railway.
+Node/Express must **NEVER** emit redirects containing `/yourapp`.
 
-⸻
+- ✅ Node emits: `Location: /login`
+- ✅ Caddy rewrites to: `Location: /yourapp/login`
+- ❌ Node emits: `Location: /yourapp/login` (causes double-prefix)
 
-Environment Variables (Railway + Local)
+---
 
-Ports
-	•	Caddy listens on Railway-provided $PORT (public)
-	•	Node/Express listens on 3000 (internal)
-	•	FastAPI listens on 8001 (internal)
+## Environment Variables (Railway + Local)
 
-Do not set PORT=3000 for the generated app; reserve $PORT for Caddy.
-If you want configurability, use APP_PORT=3000 for Node, not PORT.
+### Ports
+- **Caddy:** Listens on Railway-provided `$PORT` (public)
+- **Node/Express:** Listens on `3000` (internal)
+- **FastAPI:** Listens on `8001` (internal)
 
-Required
-	•	SESSION_SECRET (recommended for non-toy apps)
+**IMPORTANT:** Do not set `PORT=3000` for the generated app; reserve `$PORT` for Caddy.
 
-⸻
+### Required Variables
+- `SESSION_SECRET` (recommended for production apps)
 
-Troubleshooting (Dev)
+### Server Startup Pattern
 
-Symptom: “works on localhost, 404 on Railway”
+```javascript
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+```
 
-Almost always one of:
-	•	client used an absolute path (/api/..., /dashboard, /css/...)
-	•	a page URL ended with trailing slash (/employees/) and links resolved under it
-	•	Node emitted Location: /yourapp/... and Caddy double-prefixed
+---
 
-Quick checks
-	•	In browser devtools Network:
-	•	all requests must start with /yourapp/... when deployed
-	•	Grep generated app:
-	•	no href="/
-	•	no src="/
-	•	no fetch('/
-	•	no action="/
+## Troubleshooting
 
-Curl smoke tests (Railway)
-	•	Page:
-	•	curl -I https://<host>/yourapp/login
-	•	API:
-	•	curl -I https://<host>/yourapp/api/auth/check-session
+### Symptom: "Works on localhost, 404 on Railway"
 
-If you want, I can also give you the **exact “prompt insert” text** for:
-- Sprint Execution Architect
-- Sprint Execution Developer
-- Sprint Review Alex  
-so they **must** follow this canonical spec (and stop reintroducing `/api/...` absolute fetches, non-namespaced data calls, or nested pages).
+Almost always caused by:
+- ✅ Client used an **absolute path** (`/api/...`, `/dashboard`, `/css/...`)
+- ✅ Page URL ended with **trailing slash** (`/employees/`) causing wrong relative resolution
+- ✅ Node emitted `Location: /yourapp/...` and Caddy double-prefixed
+
+### Quick Checks
+
+**Browser DevTools Network tab (Railway):**
+- All requests must start with `/yourapp/...`
+- If you see requests to `/api/...` or `/dashboard` → client is using absolute paths
+
+**Grep the generated app for violations:**
+
+```bash
+# Find absolute paths in HTML/JS (should return nothing)
+grep -r 'href="/' public/
+grep -r 'src="/' public/
+grep -r "fetch('/" public/
+grep -r 'action="/' public/
+```
+
+### Curl Smoke Tests (Railway)
+
+**Test page route:**
+```bash
+curl -I https://<railway-host>/yourapp/login
+# Should return 200 OK
+```
+
+**Test API route:**
+```bash
+curl -I https://<railway-host>/yourapp/api/auth/check-session
+# Should return 200 OK (or 401 if not authenticated)
+```
+
+### Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| `fetch('/api/employees')` | `fetch('api/employees')` |
+| `href="/dashboard"` | `href="dashboard"` |
+| `action="/api/auth/login"` | `action="#"` + JS handler |
+| `res.json({ redirect: '/dashboard' })` | `res.json({ redirect: 'dashboard' })` |
+| Environment detection code | Remove all `isRailway`, `apiPrefix` variables |
+| `cookie: { secure: true }` | `cookie: { secure: false }` |
+
+---
+
+## File Serving Pattern (Standardized)
+
+**Decision Date:** January 4, 2026
+
+Generated apps must use the standard Express static file serving pattern:
+
+### Pattern (REQUIRED)
+```javascript
+// In server.js (setup once)
+app.use(express.static('public'));
+
+// In route handlers
+router.get('/login', (req, res) => {
+  res.redirect('/login.html');
+});
+
+router.get('/dashboard', (req, res) => {
+  res.redirect('/dashboard.html');
+});
+```
+
+### Rationale
+- **Simplicity:** No path calculations needed (`__dirname`, `..`, `path.join()`)
+- **Error prevention:** Eliminates common mistakes with wrong number of `..` in paths
+- **Standard Express pattern:** Follows Express.js best practices
+- **Already present:** `express.static('public')` is standard in all generated apps
+- **Flexibility maintained:** Works for all file serving scenarios
+
+### Forbidden Pattern
+❌ Do NOT use `res.sendFile()` with manual path calculations:
+```javascript
+// WRONG - error-prone path calculations
+res.sendFile(path.join(__dirname, '..', '..', 'public', 'login.html'));
+```
+
+This pattern is error-prone because:
+- Files in `src/routes/` need TWO `..` to reach project root
+- Files in `src/server.js` need ONE `..` to reach project root
+- Easy to get wrong, causes file not found errors
+
+---
+
+## Complete Working Example
+
+See `architect/aayourapp_gold_sample_readonly/yourapp/` for a fully working reference implementation.
