@@ -138,12 +138,11 @@ These rules cause SPRINT FAILURES if violated:
    IMPLEMENTATION PATTERN (NO environment detection needed):
    - API calls use RELATIVE paths: fetch('api/users'), fetch('api/auth/login'), fetch('api/employees')
    - Navigation uses RELATIVE paths: href="dashboard"
-   - Forms use RELATIVE actions: action="#" (self-submit) or action="login" (relative)
+   - Forms use action="#" with JavaScript fetch to API endpoints (mandatory pattern)
    - Server redirects use ABSOLUTE paths: res.redirect('/dashboard')
    
    CLIENT-SIDE patterns:
-   - HTML forms (self-submit): <form action="#" method="post">  // Self-submitting form
-   - HTML forms (to endpoint): <form action="login" method="post">  // Relative to endpoint
+   - HTML forms: <form action="#" method="post">  // MUST use action="#" with JavaScript fetch
    - HTML links: <a href="dashboard">Dashboard</a>  // Relative
    - JavaScript fetch: fetch('api/employees')  // Relative paths go through Caddy
    - JavaScript redirects: window.location.href = 'login'  // Relative
@@ -188,24 +187,37 @@ These rules cause SPRINT FAILURES if violated:
    by client-side JavaScript (window.location.href = data.redirect), so it must
    follow CLIENT-SIDE rules (no leading /).
 
-   SELF-SUBMITTING FORMS (form submits to same URL):
-   When a form is served at a URL and POSTs back to that same URL, use action="#":
+   FORM HANDLING (MANDATORY JAVASCRIPT PATTERN):
+   ALL forms MUST use action="#" with JavaScript fetch to API endpoints.
+   Forms do NOT submit directly - JavaScript intercepts submission and calls APIs.
    
-   ✅ CORRECT - Form at /login that POSTs to /login:
+   ✅ CORRECT - Form with JavaScript fetch:
    <form action="#" method="POST">
      <input name="email" type="email">
      <input name="password" type="password">
      <button type="submit">Sign in</button>
    </form>
    
-   ❌ WRONG - Creates /login/login (404):
+   JavaScript handler:
+   form.addEventListener('submit', async (e) => {
+     e.preventDefault();
+     const formData = new FormData(form);
+     const response = await fetch('api/auth/login', {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       credentials: 'include',
+       body: JSON.stringify(Object.fromEntries(formData))
+     });
+   });
+   
+   ❌ WRONG - Direct form submission:
    <form action="login" method="POST">
    
-   RULE: If GET /path serves a form that POSTs to /path, use action="#" or action="."
+   RULE: ALL forms use action="#" with JavaScript fetch to API endpoints.
    Examples:
-   - Login form at /login → action="#"
-   - Search form at /employee-search → action="#"
-   - Profile update at /profile/edit → action="#"
+   - Login form → action="#" + fetch('api/auth/login')
+   - Search form → action="#" + fetch('api/employees?search=...')
+   - Profile update → action="#" + fetch('api/profile')
 
 3. HTML BASE TAG (FORBIDDEN)
 
