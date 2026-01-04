@@ -710,7 +710,7 @@ async def call_openrouter_api(messages: List[Dict], model: str, persona_name: st
                                             logger.info(f"Building CURRENT FILE STRUCTURE for project: {project_name}", character=persona_key)
                                             try:
                                                 from pathlib import Path
-                                                from services.project_context import extract_file_structure, extract_api_endpoints
+                                                from services.project_context import extract_file_structure, extract_api_endpoints, extract_route_mounting
 
                                                 # Use consistent path resolution (matches sprint_orchestrator.py pattern)
                                                 # Working directory is /app/development/src on Railway, repo/development/src locally
@@ -721,6 +721,7 @@ async def call_openrouter_api(messages: List[Dict], model: str, persona_name: st
                                                 if project_path.exists():
                                                     # Use shared extraction utilities (same as sprint execution)
                                                     file_structure = extract_file_structure(project_path)
+                                                    route_mounting = "\n\n" + extract_route_mounting(project_path)
                                                     routes_info = "\n\n" + extract_api_endpoints(project_path)
 
                                                     # Check for wireframes
@@ -739,6 +740,7 @@ async def call_openrouter_api(messages: List[Dict], model: str, persona_name: st
 CURRENT FILE STRUCTURE (ACTUAL project on disk):
 ═══════════════════════════════════════════════════════════════════
 {file_structure}
+{route_mounting}
 {routes_info}
 
 CRITICAL: Use the exact paths shown above when calling read_file.

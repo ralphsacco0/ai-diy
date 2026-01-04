@@ -274,6 +274,66 @@ def extract_file_structure(project_path: Path) -> str:
         return "Could not extract file structure"
 
 
+def extract_route_mounting(project_path: Path) -> str:
+    """
+    Extract route mounting information from server.js.
+
+    Shows which routers are mounted at which paths via app.use() statements.
+    Critical for debugging API 404 errors - shows if routes are actually wired up.
+
+    Args:
+        project_path: Root path of the project
+
+    Returns:
+        Formatted string showing route mounting map
+    """
+    try:
+        server_file = project_path / "src" / "server.js"
+        if not server_file.exists():
+            return "No server.js found yet (first story)"
+
+        content = server_file.read_text(encoding="utf-8")
+
+        # Remove comments to avoid false positives
+        content = re.sub(r'//.*?$', '', content, flags=re.MULTILINE)
+        content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+
+        mountings = []
+
+        # Pattern 1: app.use('/path', routerVariable)
+        # Example: app.use('/api/auth', authRouter)
+        pattern1 = re.findall(r"app\.use\(['\"]([^'\"]+)['\"]\s*,\s*(\w+)\)", content)
+        for mount_path, router_var in pattern1:
+            mountings.append((mount_path, router_var))
+
+        # Pattern 2: app.use('/path', require('./routes/file'))
+        # Example: app.use('/api/auth', require('./routes/auth'))
+        pattern2 = re.findall(r"app\.use\(['\"]([^'\"]+)['\"]\s*,\s*require\(['\"]\.\/routes\/([^'\"]+)['\"]\)", content)
+        for mount_path, route_file in pattern2:
+            mountings.append((mount_path, f"require('./routes/{route_file}')"))
+
+        if not mountings:
+            return "No route mountings found in server.js yet (first story)"
+
+        # Build output showing which routes are mounted where
+        result_lines = ["ROUTE MOUNTING (from server.js app.use statements):"]
+        for mount_path, router_ref in mountings:
+            # Try to map router variable back to file
+            # Look for: const authRouter = require('./routes/auth')
+            file_match = re.search(rf"{router_ref}\s*=\s*require\(['\"]\.\/routes\/([^'\"]+)['\"]\)", content)
+            if file_match:
+                route_file = file_match.group(1)
+                result_lines.append(f"  {mount_path} → src/routes/{route_file}.js")
+            else:
+                result_lines.append(f"  {mount_path} → {router_ref}")
+
+        return "\n".join(result_lines)
+
+    except Exception as e:
+        logger.warning(f"Could not extract route mounting: {e}")
+        return "Could not extract route mounting"
+
+
 def extract_api_endpoints(project_path: Path) -> str:
     """
     Parse API endpoints from route files.
