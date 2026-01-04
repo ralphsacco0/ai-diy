@@ -703,16 +703,21 @@ ROUTER EXPORT CHECKLIST:
 □ If exporting multiple things, export router as default and others as named
 
 MIDDLEWARE DEFENSIVE CHECKS (CRITICAL - #1 CAUSE OF RUNTIME ERRORS):
-When creating middleware that accesses req.session or req.session.user:
-- ALWAYS check req.session exists BEFORE accessing req.session.user
-- ALWAYS check req.session.user exists BEFORE accessing req.session.user.role
+When creating middleware that accesses req.session properties:
+- ALWAYS check req.session exists BEFORE accessing session properties
+- Follow Mike's EXACT session property structure from his task descriptions
 - Middleware runs on EVERY request, including unauthenticated ones
+
+CRITICAL: Use the FLAT session property pattern that Mike specifies:
+- Login sets: req.session.userId and req.session.role (flat properties)
+- Middleware checks: req.session.userId (NOT req.session.user.id)
+- This is the standard pattern across all generated apps
 
 ❌ WRONG (crashes on unauthenticated requests):
 ```javascript
 function requireRole(role) {
   return (req, res, next) => {
-    if (req.session.user.role !== role) {  // ← CRASHES: session.user is undefined
+    if (req.session.role !== role) {  // ← CRASHES: session is undefined
       return res.redirect('/unauthorized');
     }
     next();
@@ -724,13 +729,12 @@ function requireRole(role) {
 ```javascript
 function requireRole(role) {
   return (req, res, next) => {
-    // Check session exists
-    if (!req.session || !req.session.user) {
+    // Check session exists first
+    if (!req.session || !req.session.userId) {
       return res.redirect('/login');
     }
-    // Now safe to access user properties
-    if (req.session.user.role !== role) {
-      console.log(`Unauthorized: ${req.session.user.email} tried to access ${req.path}`);
+    // Now safe to access session properties
+    if (req.session.role !== role) {
       return res.redirect('/unauthorized');
     }
     next();
@@ -738,11 +742,29 @@ function requireRole(role) {
 }
 ```
 
+STANDARD SESSION PATTERN (Follow Mike's specification):
+```javascript
+// In login route (src/routes/auth.js):
+req.session.userId = user.id;
+req.session.role = user.role;
+
+// In middleware (src/middleware/auth.js):
+if (!req.session || !req.session.userId) {
+  return res.redirect('/login');
+}
+
+// Accessing role:
+if (req.session.role === 'admin') {
+  // Allow access
+}
+```
+
 MIDDLEWARE PRE-SUBMISSION CHECKLIST:
-□ Does my middleware access req.session.user? YES / NO
-  └─ If YES: Do I check (!req.session || !req.session.user) FIRST? YES / NO
-□ Does my middleware access req.session.user.role or other properties? YES / NO
-  └─ If YES: Is the session/user check BEFORE I access those properties? YES / NO
+□ Does my middleware access req.session properties? YES / NO
+  └─ If YES: Do I check (!req.session || !req.session.userId) FIRST? YES / NO
+□ Does my middleware access req.session.role or other properties? YES / NO
+  └─ If YES: Is the session check BEFORE I access those properties? YES / NO
+□ Am I using FLAT properties (req.session.userId) not nested (req.session.user.id)? YES / NO
 □ If checks fail, do I redirect to '/login' (absolute path with leading /)? YES / NO
 
 SERVER LIFECYCLE PROTOCOL (Node.js + Express - CRITICAL FOR TESTABILITY):
