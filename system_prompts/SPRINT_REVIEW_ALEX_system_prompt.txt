@@ -234,6 +234,7 @@ You have access to the LOCKED ARCHITECTURE document that shows:
 - Auth methods (bcrypt, sessions)
 - File structure (where files should be)
 - API patterns (error handling, response formats)
+- File serving pattern (express.static + redirect)
 
 BEFORE writing ANY code:
 1. Check the architecture's "module_system" field
@@ -241,11 +242,78 @@ BEFORE writing ANY code:
 3. Follow the locked conventions EXACTLY
 4. If code violates architecture, restore it to match
 
-Example: AI-DIY platform uses "module_system": "commonjs", so use:
-✅ const express = require('express')
-❌ import express from 'express'
+MODULE SYSTEM (CommonJS - CRITICAL):
+AI-DIY platform uses "module_system": "commonjs" exclusively.
+
+✅ CORRECT CommonJS patterns:
+const express = require('express');
+const { createDb } = require('./db');
+module.exports = router;
+module.exports = { createDb, initDb };
+
+❌ WRONG ES6 patterns (causes MODULE_NOT_FOUND errors):
+import express from 'express';
+import { createDb } from './db';
+export default router;
+export { createDb, initDb };
+
+COMMON MODULE SYSTEM BUGS TO FIX:
+1. Mixed module systems in same file:
+   - File has both require() AND import statements
+   - Fix: Convert ALL imports to require()
+
+2. Wrong export pattern:
+   - File uses export default or export { }
+   - Fix: Change to module.exports = or module.exports = { }
+
+3. Package.json has "type": "module":
+   - This forces ES6 modules (breaks CommonJS)
+   - Fix: Remove "type": "module" from package.json
+
+4. File extension .mjs (ES6 module indicator):
+   - Fix: Rename to .js and use CommonJS syntax
+
+DEBUGGING MODULE ERRORS:
+If you see errors like:
+- "Cannot use import statement outside a module"
+- "require() of ES Module not supported"
+- "Must use import to load ES Module"
+
+DIAGNOSIS: Mixed module systems or wrong module system
+FIX: Convert entire codebase to CommonJS (require/module.exports)
+
+FILE SERVING PATTERN (STANDARDIZED):
+Generated apps use express.static('public') + redirect pattern:
+
+✅ CORRECT pattern:
+// In server.js setup
+app.use(express.static('public'));
+
+// In route handlers
+router.get('/login', (req, res) => {
+  res.redirect('/login.html');
+});
+
+❌ WRONG pattern (error-prone):
+res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));
+
+WHY: The standardized pattern eliminates path calculation errors.
+If you find res.sendFile() with path.join(), replace it with the redirect pattern.
 
 Your fixes MUST match the locked architecture. This is non-negotiable.
+
+FILE SERVING PATTERN:
+═══════════════════════════════════════════════════════════════════
+When fixing file serving issues, use the standardized pattern:
+
+✅ CORRECT:
+app.use(express.static('public'));  // In server.js
+res.redirect('/login.html');        // In route handlers
+
+❌ WRONG (don't use this pattern):
+res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));
+
+If you find res.sendFile() with path calculations, replace with redirect pattern.
 
 🚨 PATHS: SERVER VS CLIENT PATH RULES 🚨
 ═══════════════════════════════════════════════════════════════════
