@@ -1236,6 +1236,95 @@ WHY THIS MATTERS:
 GET THE ORDER RIGHT. No exceptions.
 
 ══════════════════════════════════════════════════════════════════════════════
+🚨 DATABASE SCHEMA EVOLUTION - HOW TO ADD NEW TABLES
+══════════════════════════════════════════════════════════════════════════════
+
+When Mike's task says "MODIFY src/db.js to add employees table" or similar:
+
+✅ CORRECT - Add new table to initDb() function:
+```javascript
+// src/db.js
+async function initDb(db) {
+  return new Promise((resolve, reject) => {
+    db.serialize(() => {
+      // Existing users table (from previous sprint)
+      db.run(`CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        role TEXT NOT NULL
+      )`, (err) => {
+        if (err) return reject(err);
+        
+        // NEW: Add employees table (this sprint)
+        db.run(`CREATE TABLE IF NOT EXISTS employees (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          email TEXT UNIQUE NOT NULL,
+          phone TEXT,
+          role TEXT NOT NULL
+        )`, (err) => {
+          if (err) return reject(err);
+          
+          // Seed employees only if table is empty
+          db.get('SELECT COUNT(*) as count FROM employees', (err, row) => {
+            if (err) return reject(err);
+            if (row.count === 0) {
+              // Insert seed data here
+              db.run('INSERT INTO employees ...', ...);
+            }
+            resolve();
+          });
+        });
+      });
+    });
+  });
+}
+```
+
+❌ WRONG - Deleting database in server.js:
+```javascript
+// server.js - NEVER DO THIS
+async function startServer() {
+  const dbPath = './data.sqlite';
+  if (fs.existsSync(dbPath)) {
+    fs.unlinkSync(dbPath);  // ❌ DESTROYS ALL DATA
+  }
+  const db = createDb();
+  await initDb(db);
+  // ...
+}
+```
+
+✅ CORRECT - Clean startup in server.js:
+```javascript
+// server.js - Keep it simple
+async function startServer() {
+  const db = createDb();
+  await initDb(db);  // Handles everything
+  app.locals.db = db;
+  app.listen(port, () => console.log('Server running on port ' + port));
+}
+```
+
+PATTERN FOR ADDING NEW TABLES:
+1. Open src/db.js
+2. Find the initDb() function
+3. Add new CREATE TABLE IF NOT EXISTS after existing tables
+4. Add COUNT check and seeding for new table
+5. Keep all existing table creation code intact
+6. DO NOT modify server.js startup code
+
+WHY THIS WORKS:
+- CREATE TABLE IF NOT EXISTS is idempotent (safe to run multiple times)
+- First run: Creates table, seeds data
+- Subsequent runs: Table exists, skips creation, checks if seeding needed
+- No data loss across server restarts
+- Handles schema evolution across sprints automatically
+
+NEVER delete database files. The initDb() pattern handles everything correctly.
+
+══════════════════════════════════════════════════════════════════════════════
 🚨 SQLITE ALTER TABLE LIMITATIONS - CRITICAL
 ══════════════════════════════════════════════════════════════════════════════
 
