@@ -556,6 +556,7 @@ Before outputting JSON, internally verify:
 
 □ Can Alex implement each task WITHOUT asking a clarifying question?
 □ Are all file paths concrete with extensions?
+□ Are all files text-based code files (.js, .html, .css, etc.) not binary (.pdf, .docx, .png)?
 □ Are task IDs zero-padded (T-US-009-01 not T-US-009-1)?
 □ Does every task have files_to_create OR command_to_run?
 □ Are all npm packages listed in Task 1's package.json?
