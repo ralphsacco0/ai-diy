@@ -234,8 +234,9 @@ router.post('/api/auth/login', async (req, res) => {
     });
   }
   
+  // FLAT session properties (required pattern)
   req.session.userId = user.id;
-  req.session.user = { id: user.id, role: user.role };
+  req.session.role = user.role;
   
   // Return RELATIVE redirect path
   res.json({ success: true, redirect: 'dashboard' });
@@ -260,10 +261,14 @@ router.post('/api/auth/logout', (req, res) => {
 
 ```javascript
 router.get('/api/auth/check-session', (req, res) => {
-  res.json({ 
-    authenticated: !!(req.session && req.session.userId),
-    user: req.session?.user || null
-  });
+  if (req.session && req.session.userId) {
+    res.json({ 
+      authenticated: true,
+      role: req.session.role
+    });
+  } else {
+    res.json({ authenticated: false });
+  }
 });
 ```
 
