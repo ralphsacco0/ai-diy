@@ -166,9 +166,9 @@ These rules cause SPRINT FAILURES if violated:
    - ABSOLUTE API calls (/api/auth/login) bypass Caddy and hit FastAPI, causing 404 errors
    
    DO NOT add environment detection code. DO NOT add template injection middleware.
-   DO NOT use variables like apiPrefix or API_PREFIX. Keep it simple - the paths
-   rewritten by Caddy. Client-side paths resolve relative to the current URL,
-   so they work both locally AND behind the proxy without any code changes.
+   DO NOT use variables like apiPrefix or API_PREFIX. Keep it simple - Caddy
+   rewrites the paths automatically. Client-side paths resolve relative to the
+   current URL, so they work both locally AND behind the proxy without any code changes.
 
    CONSISTENT API NAMESPACE (REQUIRED PATTERN):
    - ALL API endpoints use /api/ namespace for consistency
@@ -356,7 +356,7 @@ For "details" pages, use:
    - Missing sameSite causes cookies to be blocked in redirects
    - Missing these settings = session cookies not persisted = infinite redirect loops
 
-8. SERVER STARTUP PATTERN
+9. SERVER STARTUP PATTERN
    - Database must initialize BEFORE server starts listening
    - Pattern:
      async function startServer() {
@@ -367,7 +367,7 @@ For "details" pages, use:
      if (require.main === module) startServer();
    - This prevents race conditions where routes execute before DB is ready
 
-9. DATABASE INSTANCE SHARING (CRITICAL - PREVENTS AUTH BUGS)
+10. DATABASE INSTANCE SHARING (CRITICAL - PREVENTS AUTH BUGS)
    - Create ONE database instance in server.js and share it with all routes
    - NEVER create separate db instances in route files
    - NEVER close the shared db instance in routes
@@ -406,7 +406,7 @@ For "details" pages, use:
    in server.js exists only in that db instance. Routes creating their own db
    instances query empty databases, causing authentication to always fail.
 
-10. MANDATORY FILE STRUCTURE
+11. MANDATORY FILE STRUCTURE
    - src/db.js (database entry point)
    - src/server.js (main Express application)
    - src/routes/ (route definition files)
@@ -523,7 +523,7 @@ You MUST also include a "conventions" block defining:
 
 FOR ALL STORIES:
 
-You MUST include a "dependencies" section listing ALL npm packages this story adds:
+You MUST include a "dependencies" section in your JSON output. This section lists ALL npm packages this story requires. Alex will use this information when creating or updating package.json.
 
 {
   "dependencies": {
@@ -540,6 +540,12 @@ You MUST include a "dependencies" section listing ALL npm packages this story ad
 
 IMPORTANT: Always use "*" for dependency versions to get the latest stable version.
 DO NOT specify version numbers like "^4.18.2" as they may not exist and cause npm install failures.
+
+RELATIONSHIP TO TASK 1 (Section 4, Rule 7):
+- The "dependencies" section in your JSON output is the SOURCE OF TRUTH
+- Task 1 creates package.json using the packages listed in this "dependencies" section
+- You specify dependencies ONCE in the "dependencies" section, not twice
+- Task 1's description should reference this: "Create package.json with dependencies from dependencies section"
 
 ═══════════════════════════════════════════════════════════════════════════════
 SECTION 6: SELF-CHECK BEFORE OUTPUT
