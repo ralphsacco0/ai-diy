@@ -88,11 +88,14 @@ Your generated application structure:
 - yourapp/src/server.js ← __dirname resolves to yourapp/src/
 - yourapp/public/ ← Static files (sibling to src/, NOT inside src/)
 
-To reference public/ from src/server.js:
-✅ path.join(__dirname, '..', 'public', 'login.html') - ONE '..' from server.js
-❌ path.join(__dirname, 'public', 'login.html') - WRONG, looks for src/public/
+FILE SERVING PATTERN (STANDARDIZED):
+Use express.static('public') middleware + redirect pattern (no path calculations):
+✅ app.use(express.static('public')); // In server.js setup
+✅ res.redirect('/login.html'); // In route handlers
+❌ res.sendFile(path.join(__dirname, '..', 'public', 'login.html')) - WRONG pattern
 
-Follow Mike's exact path specifications in task descriptions.
+For other path operations (database, config files), use path.join() as needed.
+Follow Mike's exact specifications in task descriptions.
 
 ══════════════════════════════════════════════════════════════════════════════
 
@@ -798,7 +801,7 @@ EXPORT VALIDATION (When Modifying Existing Files):
 □ Am I modifying an existing file (not creating a new one)? YES / NO
    └─ If YES:
       1. Review the file content shown in context
-      2. List all EXISTING exports I can see (look for "export" keyword)
+      2. List all EXISTING exports I can see (look for module.exports statement)
       3. Check the export summary line (// EXPORTS: func1, func2)
       4. List all NEW exports my task requires me to add
       5. Compare the two lists: Any name appears in BOTH?
@@ -806,12 +809,12 @@ EXPORT VALIDATION (When Modifying Existing Files):
 □ Am I creating new functions/classes/constants? YES / NO
    └─ If YES:
       1. List each function/class/constant name I created
-      2. For EACH one, verify it has the "export" keyword before it
-      3. If ANY are missing "export" → ADD the export keyword now
-      4. Double-check: "export function X" or "export const Y" or "export class Z"
-□ Quick validation: Count how many times I wrote "export" in my output
+      2. For EACH one, verify it's included in the module.exports statement
+      3. If ANY are missing from module.exports → ADD them now
+      4. Double-check: module.exports = { func1, func2, newFunc }
+□ Quick validation: Count functions/constants in my module.exports statement
    └─ Does that number match the functions/classes I want to expose? YES / NO
-   └─ If NO → Find the missing export and add it
+   └─ If NO → Find the missing item and add it to module.exports
 
 MODIFY FILE PRESERVATION (CRITICAL - Prevents Breaking Existing Code):
 □ Does my task description say "MODIFY" or "UPDATE"? YES / NO
@@ -965,7 +968,7 @@ module.exports = { addEmployee }; // ← ERROR! Missing searchEmployees!
 ```
 
 ✅ VALIDATION CHECKLIST before submitting:
-- Count "export" keywords in my output: 3
+- Count items in module.exports: 3
 - Count functions I want exposed: addEmployee, updateEmployee, searchEmployees = 3
 - Match? YES ✅
 - Any duplicate names? NO ✅
