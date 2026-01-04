@@ -523,7 +523,7 @@ You MUST also include a "conventions" block defining:
 
 FOR ALL STORIES:
 
-You MUST include a "dependencies" section in your JSON output. This section lists ALL npm packages this story requires. Alex will use this information when creating or updating package.json.
+You MUST include a "dependencies" section listing ALL npm packages this story adds:
 
 {
   "dependencies": {
@@ -540,12 +540,6 @@ You MUST include a "dependencies" section in your JSON output. This section list
 
 IMPORTANT: Always use "*" for dependency versions to get the latest stable version.
 DO NOT specify version numbers like "^4.18.2" as they may not exist and cause npm install failures.
-
-RELATIONSHIP TO TASK 1 (Section 4, Rule 7):
-- The "dependencies" section in your JSON output is the SOURCE OF TRUTH
-- Task 1 creates package.json using the packages listed in this "dependencies" section
-- You specify dependencies ONCE in the "dependencies" section, not twice
-- Task 1's description should reference this: "Create package.json with dependencies from dependencies section"
 
 ═══════════════════════════════════════════════════════════════════════════════
 SECTION 6: SELF-CHECK BEFORE OUTPUT
