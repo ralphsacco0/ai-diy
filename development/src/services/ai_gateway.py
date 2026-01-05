@@ -1415,18 +1415,18 @@ async def run_sprint_review_alex_execution_mode(
                 target_file_paths.append(cleaned)
                 logger.info(f"Strategy 2: Extracted file path: {cleaned}", character=persona_key)
     
-    # Strategy 3: Check conversation history for files Alex read during investigation
-    if not target_file_paths:
-        for msg in reversed(messages):
-            if msg.get("role") == "assistant" and msg.get("content"):
-                content = msg.get("content", "")
-                # Look for "📄 File: project/path" patterns from read_file tool results
-                file_read_pattern = r'📄 File: [^/]+/([\w\-./]+)'
-                matches = re.findall(file_read_pattern, content)
-                for match in matches:
-                    if match not in target_file_paths:
-                        target_file_paths.append(match)
-                        logger.info(f"Extracted file path from investigation history: {match}")
+    # Strategy 3: ALWAYS add files Alex read during investigation (for reference patterns)
+    # This supplements Strategy 1/2 with additional context files
+    for msg in reversed(messages):
+        if msg.get("role") == "assistant" and msg.get("content"):
+            content = msg.get("content", "")
+            # Look for "📄 File: project/path" patterns from read_file tool results
+            file_read_pattern = r'📄 File: [^/]+/([\w\-./]+)'
+            matches = re.findall(file_read_pattern, content)
+            for match in matches:
+                if match not in target_file_paths:
+                    target_file_paths.append(match)
+                    logger.info(f"Strategy 3: Added reference file from investigation: {match}", character=persona_key)
     
     logger.info(f"Execution mode: extracted {len(target_file_paths)} file paths: {target_file_paths}")
 
