@@ -277,7 +277,6 @@
       ],
       "meeting_triggers": [],
       "solo_mode": false,
-      "inject_context": [],
       "system_prompt_file": "system_prompts/SPRINT_RETROSPECTIVE_PM_system_prompt.txt"
     },
     "SPRINT_EXECUTION_PM": {
@@ -299,7 +298,8 @@
       "inject_context": [
         "vision",
         "backlog",
-        "sprint_plan"
+        "sprint_plan",
+        "sprint_log"
       ],
       "meeting_announcement": {
         "start": "\ud83c\udfaf Starting Sprint Execution Meeting: {project_name}",
