@@ -641,6 +641,18 @@ async def update_story_status(request: dict):
                 row['Last_Event'] = f"Status changed to {new_status}"
                 
                 logger.info(f"Updated story {story_id}: Status={new_status}")
+                
+                # Auto-update associated wireframe if this is a US story
+                if story_id.startswith('US-'):
+                    wf_id = story_id.replace('US-', 'WF-')
+                    for wf_row in rows:
+                        if wf_row.get('Story_ID') == wf_id:
+                            wf_row['Status'] = new_status
+                            wf_row['Last_Updated'] = datetime.now().isoformat()
+                            wf_row['Last_Event'] = f"Auto-updated with {story_id}"
+                            logger.info(f"Auto-updated wireframe {wf_id}: Status={new_status}")
+                            break
+                
                 break
         
         if not story_found:
