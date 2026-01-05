@@ -1,0 +1,17 @@
+{
+  "name": "brighthr-lite",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "*",
+    "sqlite3": "*",
+    "bcryptjs": "*",
+    "express-session": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "NODE_ENV=test node --test"
+  },
+  "description": "BrightHR Lite - HR Management System",
+  "main": "src/server.js"
+}

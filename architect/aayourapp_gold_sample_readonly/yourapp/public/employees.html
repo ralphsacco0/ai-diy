@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrightHR Lite - Employee Directory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center h-auto sm:h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-semibold text-gray-900">BrightHR Lite</h1>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4 mt-2 sm:mt-0 w-full sm:w-auto">
+                    <a href="dashboard" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium" aria-label="Dashboard">Dashboard</a>
+                    <a href="employees" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium" aria-label="Employee Directory">Employee Directory</a>
+                    <a href="leaves" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium" aria-label="Leave Management">Leave Management</a>
+                    <a href="documents" class="text-gray-700 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium" aria-label="Documents">Documents</a>
+                    <button id="logout-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium" aria-label="Logout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 py-6 sm:px-0">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Employee Directory</h2>
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <p class="text-gray-600">Coming soon - Placeholder for employee directory per AC 3.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check session
+            try {
+                const response = await fetch('check-session', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (!data.authenticated) {
+                    window.location.href = 'login';
+                }
+            } catch (error) {
+                console.error('Session check failed:', error);
+                window.location.href = 'login';
+            }
+
+            // Logout handler
+            document.getElementById('logout-btn').addEventListener('click', async () => {
+                try {
+                    const response = await fetch('logout', {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        window.location.href = data.redirect || 'login';
+                    }
+                } catch (error) {
+                    console.error('Logout failed:', error);
+                    window.location.href = 'login';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
