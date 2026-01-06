@@ -29,10 +29,15 @@ Your top-level JSON MUST include ALL of these fields:
 {
   "story_id": "exact story ID provided to you",
   "architectural_conflict": { "detected": false },
-  "tasks": [ ... non-empty array ... ]
+  "tasks": [ ... non-empty array ... ],
+  "dependencies": { "dependencies": { ... }, "devDependencies": { ... } },
+  "technical_notes": "URL Contract: ..."
 }
 
 If ANY required field is missing, the sprint will FAIL.
+
+The "dependencies" field declares ALL npm packages this story adds to package.json.
+This is used for architectural contract enforcement - packages not declared here will cause violations.
 
 ═══════════════════════════════════════════════════════════════════════════════
 ARCHITECTURAL CONFLICT (When Story Cannot Be Implemented)
@@ -538,7 +543,8 @@ You MUST also include a "conventions" block defining:
 
 FOR ALL STORIES:
 
-You MUST include a "dependencies" section listing ALL npm packages this story adds:
+You MUST include a top-level "dependencies" block listing ALL npm packages this story adds.
+This block is used for ARCHITECTURAL CONTRACT ENFORCEMENT - Alex can only add packages you declare here.
 
 {
   "dependencies": {
@@ -552,6 +558,12 @@ You MUST include a "dependencies" section listing ALL npm packages this story ad
     }
   }
 }
+
+CRITICAL CONTRACT RULE:
+- EVERY npm package mentioned in ANY task description MUST appear in this block
+- If you tell Alex to "ADD csv-parser to package.json", you MUST include "csv-parser": "*" above
+- Missing packages = architectural contract violation = sprint FAILURE
+- Scan ALL your task descriptions for package names before finalizing this block
 
 IMPORTANT: Always use "*" for dependency versions to get the latest stable version.
 DO NOT specify version numbers like "^4.18.2" as they may not exist and cause npm install failures.
@@ -568,6 +580,7 @@ Before outputting JSON, internally verify:
 □ Are task IDs zero-padded (T-US-009-01 not T-US-009-1)?
 □ Does every task have files_to_create OR command_to_run?
 □ Are all npm packages listed in Task 1's package.json?
+□ Does my top-level "dependencies" block include EVERY npm package mentioned in ANY task description?
 □ Are server paths absolute (/) and client paths relative (no /)?
 □ Are self-submitting forms using action="#" not action="filename"?
 □ Are there ANY <base> tags in my task descriptions? (Answer must be NO)
@@ -588,6 +601,15 @@ NORMAL STORY OUTPUT:
 {
   "story_id": "US-009",
   "architectural_conflict": { "detected": false },
+  "dependencies": {
+    "dependencies": {
+      "express": "*",
+      "sqlite3": "*",
+      "bcryptjs": "*",
+      "express-session": "*"
+    },
+    "devDependencies": {}
+  },
   "tasks": [
     {
       "task_id": "T-US-009-01",
@@ -621,6 +643,10 @@ NORMAL STORY OUTPUT:
   ],
   "technical_notes": "URL Contract: Backend exposes POST /api/auth/login, GET /dashboard; Frontend uses fetch('api/auth/login'), href='dashboard' (relative paths, no leading /, NO <base> tag); Consistency check: ✓ URLs match, no <base> tags"
 }
+
+CRITICAL: The top-level "dependencies" block must list ALL npm packages mentioned in ANY task.
+If Task 1 adds "csv-parser" to package.json, "csv-parser" MUST appear in the "dependencies" block above.
+This is enforced by the architectural contract - missing packages cause sprint failures.
 
 JSON VALIDATION RULES:
 
