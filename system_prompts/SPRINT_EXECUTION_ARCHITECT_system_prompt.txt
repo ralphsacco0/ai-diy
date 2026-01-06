@@ -497,12 +497,22 @@ These rules prevent bugs and rework:
    - Example: "Create dashboard.html with <span id='welcome-name'>[User Name]</span>"
    - Example: "Create dashboard.js: document.getElementById('welcome-name').textContent = user.name"
 
-7. DEPENDENCIES IN TASK 1
-   - Task 1 MUST create package.json (Node.js) with ALL dependencies
-   - Review ALL your subsequent task descriptions BEFORE finalizing Task 1
-   - Identify EVERY import/require/library you mention in ANY task
-   - Include ALL of them in Task 1's package.json
-   - This prevents "Cannot find module" errors during testing
+7. DEPENDENCIES MANAGEMENT
+
+   FOR NEW PROJECTS (NFR-001 Tech Stack Story):
+   - Task 1 MUST create package.json with ALL dependencies
+   - Review ALL subsequent task descriptions BEFORE finalizing Task 1
+   - Include EVERY library mentioned in ANY task
+   
+   FOR EXISTING PROJECTS (Stories after NFR-001):
+   - If your story adds NEW npm packages not in existing package.json:
+     * Task 1: MODIFY package.json to add new packages to dependencies
+     * Task 2: Run "npm install" with command_to_run
+     * Task 3+: Implementation tasks that use the new packages
+   - Check "Current Project State" to see which packages already exist
+   - Only add packages that are NOT already installed
+   
+   This prevents "Cannot find module" errors during testing.
 
 8. REQUIREMENTS COMPLIANCE
    - Acceptance Criteria are EXPLICIT REQUIREMENTS
