@@ -1,5 +1,4 @@
 # Dataflow and Schema
-_Last consolidated: 2025-11-12 12:52:56_
 
 This document is the authoritative reference for **Backlog CSV Dataflow** and **Backlog CSV Schema**.
 
@@ -43,7 +42,7 @@ Story_ID,Title,User_Story,Functional_Requirements,Non_Functional_Requirements,In
 | Wireframe_Ref | String | wf-xxx-slug | Link to wireframe |
 | Notes | String | Timestamped entries separated by " \| " | Audit trail |
 | Sprint_ID | String | SP-XXX | Which sprint contains this |
-| Execution_Status | String | pending, in_progress, completed, failed | Sprint execution state |
+| Execution_Status | String | pending, planned, in_progress, completed, completed_with_failures, failed | Sprint execution state |
 | Execution_Started_At | ISO DateTime | YYYY-MM-DDTHH:MM:SS | When execution started |
 | Execution_Completed_At | ISO DateTime | YYYY-MM-DDTHH:MM:SS | When execution finished |
 | Last_Event | String | Any | Last thing that happened |
@@ -110,20 +109,17 @@ POST /api/backlog
 
 ---
 
-### 2. SPRINT PLANNING MEETING (Mike as SPRINT_PLANNING_ARCHITECT)
+### 2. SPRINT PLANNING MEETING (via Sprint API)
 
 **Purpose:** Select stories for sprint and update their status
 
 **Operations:**
 - **READ** backlog to see available stories
-- **UPDATE** selected stories: Set Sprint_ID, Status="In Sprint"
+- **UPDATE** selected stories: Set Sprint_ID, Status="In Sprint", Execution_Status="planned"
 
-**CRITICAL:** Mike should NOT save the entire backlog. He should either:
-- **Option A:** Use the update-story endpoint (safer)
-- **Option B:** Read full backlog, modify specific rows, save complete CSV
+**Current Behavior:** When a sprint plan is saved via `POST /api/sprints`, the backend automatically updates the backlog CSV for all selected stories. It sets `Sprint_ID`, `Status="In Sprint"`, and `Execution_Status="planned"` (if not already set). For US- stories, corresponding WF- wireframes are also updated.
 
-**Current Behavior:** Mike creates sprint JSON files but does NOT update backlog CSV
-**Problem:** Stories in sprint are not marked as "In Sprint" in backlog
+**Implementation:** `api/sprint.py` lines 166-198
 
 ---
 
@@ -284,10 +280,9 @@ POST /api/backlog
 
 ## Current Issues and Gaps
 
-### Issue 1: Sprint Planning Doesn't Update Backlog
-**Problem:** When Mike selects stories for a sprint, he doesn't update their Status to "In Sprint"
-**Impact:** Backlog shows stories as "Backlog" even though they're in a sprint
-**Fix Needed:** Mike should call update-story for each selected story
+### Issue 1: Sprint Planning Backlog Updates ✅ IMPLEMENTED
+**Status:** RESOLVED - Sprint planning now updates backlog automatically.
+**Implementation:** `POST /api/sprints` updates selected stories with `Sprint_ID`, `Status="In Sprint"`, and `Execution_Status="planned"`.
 
 ### Issue 2: Sprint Execution Backlog Updates ✅ IMPLEMENTED
 **Status:** RESOLVED - Orchestrator DOES update `Backlog.csv` during execution using row-scoped updates.
@@ -319,11 +314,7 @@ git add Backlog.csv
 git commit -m "Track backlog CSV for version control"
 ```
 
-### Fix 2: Update Mike's Sprint Planning Prompt
-Add instruction to update backlog when selecting stories:
-```
-For each selected story, update its status:
-http_post(url="http://localhost:8000/api/backlog/update-story",---
+---
 
 ## Sprint SSE Event Schemas (Runtime Narration)
 
@@ -363,10 +354,7 @@ http_post(url="http://localhost:8000/api/backlog/update-story",---
 - SSE uses default "message" events only (no named `event:`); payload is JSON
 - SSE Manager buffers ~200 messages before first listener connects
 
-          payload={"story_id": "US-XXX", "status": "In Sprint", "notes": "Added to sprint SP-XXX"})
-```
-
-### Fix 3: Add Validation to Sarah's Save
+### Fix 2: Add Validation to Sarah's Save
 Before saving, verify rows_csv contains ALL existing stories:
 ```python
 # In save_backlog()
@@ -452,98 +440,11 @@ Backlog → In Sprint → Done
 
 ---
 
-## Last Updated
-2025-11-01 - Initial documentation after data loss incident
-
-
 ## 2) Backlog CSV Schema
 
 _Migrated from: `architect/BACKLOG_CSV_SCHEMA.md`_
 
-# Backlog CSV Schema - Single Source of Truth
-
-**Version:** 1.0  
-**Last Updated:** 2025-11-01  
-**Status:** ACTIVE - All code and personas MUST follow this schema
-
----
-
-## Schema Definition
-
-### Column Structure (20 columns - EXACT ORDER)
-
-```csv
-Story_ID,Title,User_Story,Functional_Requirements,Non_Functional_Requirements,Integrations,Dependencies,Constraints,Acceptance_Criteria,Priority,Status,Vision_Ref,Wireframe_Ref,Notes,Sprint_ID,Execution_Status,Execution_Started_At,Execution_Completed_At,Last_Event,Last_Updated
-```
-
-### Column Definitions
-
-| # | Column | Type | Required | Allowed Values | Description |
-|---|--------|------|----------|----------------|-------------|
-| 1 | Story_ID | String | Yes | US-###, WF-###, NFR-###, STYLE-### | Unique identifier with prefix |
-| 2 | Title | String | Yes | Any | Short descriptive title |
-| 3 | User_Story | String | Yes | Any | As a X, I want Y, so that Z format |
-| 4 | Functional_Requirements | String | No | Semicolon-separated list | What the feature must do |
-| 5 | Non_Functional_Requirements | String | No | Semicolon-separated list | Performance, security, etc. |
-| 6 | Integrations | String | No | Semicolon-separated list | External systems/APIs |
-| 7 | Dependencies | String | No | Semicolon-separated list | Other Story_IDs this depends on |
-| 8 | Constraints | String | No | Semicolon-separated list | Limitations or restrictions |
-| 9 | Acceptance_Criteria | String | Yes | Semicolon-separated list | How to verify completion |
-| 10 | Priority | Enum | Yes | High, Medium, Low | Business priority |
-| 11 | Status | Enum | Yes | See Status Values below | Current lifecycle state |
-| 12 | Vision_Ref | String | No | Any | Reference to vision document section |
-| 13 | Wireframe_Ref | String | No | wf-###-slug | Link to wireframe file |
-| 14 | Notes | String | No | Pipe-separated timestamped entries | Audit trail and comments |
-| 15 | Sprint_ID | String | No | SP-### | Which sprint contains this story |
-| 16 | Execution_Status | Enum | No | See Execution Status below | Sprint execution state |
-| 17 | Execution_Started_At | ISO DateTime | No | YYYY-MM-DDTHH:MM:SS | When execution began |
-| 18 | Execution_Completed_At | ISO DateTime | No | YYYY-MM-DDTHH:MM:SS | When execution finished |
-| 19 | Last_Event | String | No | Any | Last action taken on this story |
-| 20 | Last_Updated | ISO DateTime | Yes | YYYY-MM-DDTHH:MM:SS | Last modification timestamp |
-
----
-
-## Status Field - AUTHORITATIVE DEFINITION
-
-### Lifecycle States
-
-```
-Backlog → In Sprint → Done
-              ↓
-           Rejected
-```
-
-### Allowed Values
-
-- **Backlog** - Story is in backlog, not yet selected for a sprint
-- **In Sprint** - Story has been selected and is being worked on
-- **Done** - Story completed and approved by user
-- **Rejected** - Story completed but rejected by user, needs rework
-
-### State Transitions
-
-| From | To | Who | When |
-|------|-----|-----|------|
-| Backlog | In Sprint | Sprint Planning (Mike) | Story selected for sprint |
-| In Sprint | Done | Sprint Review (Sarah) | User approves completed work |
-| In Sprint | Rejected | Sprint Review (Sarah) | User finds issues |
-| Rejected | Backlog | Requirements Meeting (Sarah) | After clarification |
-
-### DEPRECATED VALUES - DO NOT USE
-
-- Draft (use Backlog instead)
-- Approved (use Backlog instead - approval happens at review)
-- In Progress (use In Sprint instead)
-
----
-
-## Priority Field
-
-### Allowed Values
-
-- **High** - Critical for MVP or blocking other work
-- **Medium** - Important but not blocking
-- **Low** - Nice to have, can be deferred
+This section provides additional detail on schema rules, formatting, and implementation patterns. For the canonical field definitions, see Section 1 above.
 
 ---
 
@@ -552,8 +453,9 @@ Backlog → In Sprint → Done
 ### Allowed Values
 
 - **pending** - Story in sprint but execution not started (design/default)
+- **planned** - Story assigned to sprint via sprint planning
 - **in_progress** - Story currently being executed
-- **completed** - Execution finished and all tests passed (current orchestrator behavior)
+- **completed** - Execution finished and all tests passed
 - **completed_with_failures** - Execution finished but tests failed or could not run; code is kept for review
 - **failed** - Reserved for future use to represent hard failures that abort execution early
 
@@ -763,7 +665,7 @@ Before any code writes to Backlog.csv, verify:
 - [ ] All rows have exactly 20 columns
 - [ ] Status values are: Backlog, In Sprint, Done, or Rejected
 - [ ] Priority values are: High, Medium, or Low
-- [ ] Execution_Status values are: pending, in_progress, completed, or failed
+- [ ] Execution_Status values are: pending, planned, in_progress, completed, completed_with_failures, or failed
 - [ ] Story_IDs follow prefix rules: US-###, WF-###, NFR-###, STYLE-###
 - [ ] ISO timestamps are valid format
 - [ ] Row count is not suspiciously lower than before
@@ -781,13 +683,7 @@ If backlog is corrupted or accidentally overwritten:
 
 ---
 
-**Last Updated:** 2025-11-13  
-**Maintained By:** Ralph Sacco  
-**Referenced By:** governance_process.md, DATA_FLOW_BACKLOG_CSV.md
-
----
-
-## JSON Records Implementation (2025-11-13)
+## JSON Records Implementation
 
 **Status:** ✅ IMPLEMENTED AND TESTED
 

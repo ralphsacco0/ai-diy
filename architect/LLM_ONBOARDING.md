@@ -3,7 +3,7 @@
 **Status**: Canonical - MUST READ before any work session  
 **Audience**: LLMs working on AI-DIY platform  
 **Purpose**: Prevent "2 steps forward, 1 step back" by ensuring deep understanding  
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-07
 
 ---
 
@@ -144,9 +144,9 @@ This is not negotiable, not configurable, not dependent on user preferences. It 
 ### Source of Truth Hierarchy
 
 1. **ULTIMATE SOURCE**: Mike's system prompt (`SPRINT_EXECUTION_ARCHITECT_system_prompt.txt`)
-   - Lines 97-102: "COMMONJS MODULE SYSTEM (MANDATORY)" 
-   - Line 98: "NEVER add 'type': 'module' to package.json"
-   - Line 322: "module_system: 'commonjs'" (for NFR-001)
+   - Search for "COMMONJS MODULE SYSTEM (MANDATORY)" - this is the canonical rule
+   - Search for "NEVER add 'type': 'module'" - explicit prohibition
+   - Search for "module_system" - always outputs "commonjs" for NFR-001
 
 2. **Generated Artifacts**: architecture.json and package.json are OUTPUTS, not inputs
    - architecture.json gets `"module_system": "commonjs"` because Mike's prompt mandates it
@@ -248,16 +248,16 @@ FAILURE: "require is not defined in ES module scope"
 
 When auditing or changing module system behavior, these are ALL the files that must align:
 
-| # | Component | File Path | What to Check | Expected Value |
-|---|-----------|-----------|---------------|----------------|
-| 1 | **Vision Prompt** | `system_prompts/VISION_PM_system_prompt.txt` | Lines 51-59: Tech stack specification | Node.js + Express, no mention of ES modules |
-| 2 | **Requirements Prompt** | `system_prompts/REQUIREMENTS_PM_system_prompt.txt` | Lines 255-269: NFR-001 conflict detection | Must flag ES6 modules as conflicts |
-| 3 | **Sprint Orchestrator** | `development/src/services/sprint_orchestrator.py` | Lines 475-478: Export style hints | CommonJS patterns only |
-| 4 | **Mike's Prompt** | `system_prompts/SPRINT_EXECUTION_ARCHITECT_system_prompt.txt` | Lines 97-102: Module system rules | "COMMONJS MODULE SYSTEM (MANDATORY)" |
-| 5 | **Alex's Prompt** | `system_prompts/SPRINT_EXECUTION_DEVELOPER_system_prompt.txt` | Lines 69-80: Module system handling | 🚨 CONFLICTS - remove ES module options |
-| 6 | **Jordan's Prompt** | `system_prompts/SPRINT_EXECUTION_QA_system_prompt.txt` | Line 433: Module system detection | 🚨 CONFLICTS - check architecture, not package.json |
-| 7 | **Sprint Review Alex** | `system_prompts/SPRINT_REVIEW_ALEX_system_prompt.txt` | Lines 232, 244: Architecture compliance | References locked architecture as source |
-| 8 | **Generated Architecture** | `static/appdocs/architecture.json` | Line 6: module_system field | Always "commonjs" (output, not input) |
+| # | Component | File | Search For | Expected State |
+|---|-----------|------|------------|----------------|
+| 1 | **Vision Prompt** | `VISION_PM_system_prompt.txt` | "tech stack" or "Node.js" | Node.js + Express only, no ES modules |
+| 2 | **Requirements Prompt** | `REQUIREMENTS_PM_system_prompt.txt` | "NFR-001" or "conflict" | Flags ES6 modules as conflicts |
+| 3 | **Sprint Orchestrator** | `sprint_orchestrator.py` | "export" or "require" | CommonJS patterns only |
+| 4 | **Mike's Prompt** | `SPRINT_EXECUTION_ARCHITECT_system_prompt.txt` | "COMMONJS" | "COMMONJS MODULE SYSTEM (MANDATORY)" |
+| 5 | **Alex's Prompt** | `SPRINT_EXECUTION_DEVELOPER_system_prompt.txt` | "CommonJS" or "require" | Uses ONLY CommonJS, no ES module options |
+| 6 | **Jordan's Prompt** | `SPRINT_EXECUTION_QA_system_prompt.txt` | "CommonJS" or "architecture" | Checks architecture, ignores package.json |
+| 7 | **Sprint Review Alex** | `SPRINT_REVIEW_ALEX_system_prompt.txt` | "architecture" or "conventions" | References locked architecture as source |
+| 8 | **Generated Architecture** | `architecture.json` | "module_system" | `"module_system": "commonjs"` |
 
 ### Touch Point Audit Checklist
 
@@ -286,6 +286,65 @@ This specification supersedes any conflicting instructions in individual persona
 
 ---
 
+## Section 3.5: SEMINAL SPECIFICATION - Generated App Routing Patterns
+
+**Status**: CANONICAL - This is the definitive specification
+**Purpose**: Prevent "works on Mac, 404 on Railway" failures
+**Full Details**: See `PATTERNS_AND_METHODS.md` → Generated App Routing Patterns
+
+### The Problem
+
+Generated apps run in two environments:
+- **Mac**: `http://localhost:3000` (direct)
+- **Railway**: `https://<host>/yourapp/` (behind Caddy proxy)
+
+Caddy strips `/yourapp/` before forwarding to Express. The app **never sees** the prefix. If client-side code uses absolute paths (`/api/...`), requests bypass the proxy and hit FastAPI instead.
+
+### Critical Rules (Summary)
+
+| Rule | Why |
+|------|-----|
+| **Client paths: RELATIVE** | `fetch('api/auth/login')` not `fetch('/api/auth/login')` |
+| **Server redirects: ABSOLUTE** | `res.redirect('/dashboard')` - Caddy rewrites Location headers |
+| **JSON redirects: RELATIVE** | `{ redirect: 'dashboard' }` - consumed by client JS |
+| **No `<base>` tags** | Breaks relative path resolution |
+| **Forms: `action="#"`** | Use JS fetch, not HTML form submission |
+| **Session: `secure: false`** | App is HTTP behind HTTPS proxy |
+
+### Quick Reference Table
+
+```
+CLIENT-SIDE (no leading /)     SERVER-SIDE (with leading /)
+=========================      ============================
+href="dashboard"               res.redirect('/dashboard')
+fetch('api/auth/login')        router.post('/login', ...)
+window.location.href = 'login' app.use('/api/auth', authRouter)
+action="#"                     res.redirect('/login.html')
+```
+
+### Mike and Alex: This Affects You
+
+**Mike (Architect)**: Your `technical_notes` must specify:
+- API mount points: `app.use('/api/auth', authRouter)`
+- Frontend fetch paths: `fetch('api/auth/login')` (relative)
+- Form pattern: `action="#"` with JS handler
+
+**Alex (Developer)**: When implementing:
+- All `fetch()` calls use relative paths (no leading `/`)
+- All `href` attributes use relative paths
+- All forms use `action="#"` with `e.preventDefault()` + fetch
+- JSON responses use relative redirects: `{ redirect: 'dashboard' }`
+
+### If Something Breaks
+
+**Symptom**: Works on Mac, 404 on Railway
+**Cause**: Client using absolute path (`/api/...`)
+**Fix**: Remove the leading `/`
+
+**Full troubleshooting**: See `PATTERNS_AND_METHODS.md` → Generated App Routing Patterns → Troubleshooting
+
+---
+
 ## Section 4: Pre-Change Verification Checklist
 
 **BEFORE making ANY change, complete this checklist:**
@@ -305,14 +364,14 @@ This specification supersedes any conflicting instructions in individual persona
 - [ ] I have read the relevant sections of `architecture.md`
 - [ ] I have read the relevant sections of `system-flow.md` (if meeting-related)
 - [ ] I have read the relevant sections of `PATTERNS_AND_METHODS.md`
-- [ ] I have checked `ADRs.md` for related decisions
+- [ ] I have checked `DESIGN_PRINCIPLES.md` for related principles
 - [ ] I have reviewed `GOVERNANCE.md` for approval requirements
 
 ### Step 4: Plan the Change
 - [ ] I can cite specific line numbers from the docs that support my approach
 - [ ] I have identified all files that need to be modified
 - [ ] I know which pattern I'm following (with file reference)
-- [ ] I have checked for related ADRs that might be affected
+- [ ] I have checked for related design principles that might be affected
 
 ### Step 5: Explain and Wait for Approval
 - [ ] I have explained the change in plain English
@@ -871,7 +930,7 @@ When you need detailed information, read these in order:
 - **Working on meetings** → `system-flow.md` (Meeting Flow Details) + `myvision.md` (Meeting definitions)
 - **Touching backlog/vision** → `dataflow-and-schema.md` (CSV schema) + `architecture.md` (Living Document pattern)
 - **Sprint execution** → `system-flow.md` (Sprint Execution) + `PATTERNS_AND_METHODS.md` (Sprint Execution Method)
-- **Making architectural changes** → `GOVERNANCE.md` + `ADRs.md` + `architecture.md`
+- **Making architectural changes** → `GOVERNANCE.md` + `DESIGN_PRINCIPLES.md` + `architecture.md`
 
 ### Full Documentation Set
 - `README.md` - Entry point, quick start
@@ -882,7 +941,7 @@ When you need detailed information, read these in order:
 - `dataflow-and-schema.md` - CSV schemas and data contracts
 - `PATTERNS_AND_METHODS.md` - How to code here (patterns and examples)
 - `GOVERNANCE.md` - Decision process and approval requirements
-- `ADRs.md` - Architecture Decision Records
+- `DESIGN_PRINCIPLES.md` - Core design principles
 - `DOCUMENTATION_INDEX.md` - Index of all documentation
 
 ---

@@ -3,8 +3,34 @@
 Status: Canonical
 Audience: Developers
 **Purpose**: Single source of truth for "how we do things" in AI-DIY. Read this before coding to prevent spaghetti code.
-**Last Updated**: November 10, 2025
+**Last Updated**: January 7, 2026
 Related: [architecture.md](./architecture.md) · [GOVERNANCE.md](./GOVERNANCE.md)
+
+---
+
+## How to Maintain This Document
+
+**Principle**: Documentation explains *why* and *when*, code shows *what*. Don't duplicate code here.
+
+**When updating a section:**
+1. **Verify against actual code** - Read the source files, not just the docs
+2. **Keep examples minimal** - 3-5 lines max to illustrate a concept
+3. **Point to code, don't copy it** - Use "See `file.py:function_name()`" references
+4. **Remove stale details** - Line numbers, full implementations, anything that will drift
+5. **Focus on decisions** - Why this pattern? What problem does it solve? What are the gotchas?
+
+**Each pattern section should have:**
+- **When to use**: The problem this pattern solves
+- **Why**: The reasoning behind the approach
+- **Where**: File/function references (not copied code)
+- **Common Mistakes**: What NOT to do
+
+**Each pattern section should NOT have:**
+- Full function implementations (read the code instead)
+- Line numbers (they go stale)
+- Details that duplicate what `grep` would show you
+
+**To audit this document:** Compare each section against Railway production code. If the doc says X but the code does Y, update the doc (or flag the code as wrong).
 
 ---
 
@@ -26,19 +52,20 @@ Related: [architecture.md](./architecture.md) · [GOVERNANCE.md](./GOVERNANCE.md
 3. [Data Storage Patterns](#data-storage-patterns)
 4. [Persona Patterns](#persona-patterns)
 5. [API Patterns](#api-patterns)
-6. [Logging Patterns](#logging-patterns)
-7. [Context Injection Patterns](#context-injection-patterns)
-8. [File Modification Patterns](#file-modification-patterns)
-9. [Configuration Patterns](#configuration-patterns)
-10. [Meeting Patterns](#meeting-patterns)
-11. [Always Rules](#always-rules)
+6. [Generated App Routing Patterns](#generated-app-routing-patterns)
+7. [Logging Patterns](#logging-patterns)
+8. [Context Injection Patterns](#context-injection-patterns)
+9. [File Modification Patterns](#file-modification-patterns)
+10. [Configuration Patterns](#configuration-patterns)
+11. [Meeting Patterns](#meeting-patterns)
+12. [Always Rules](#always-rules)
 
 ---
 
 ## Methodology Index
 
 - Cascade-Style Context Injection (Scoped: Sprint Review Alex) → [Pattern link](#pattern-cascade-style-context-regular-conversations)
-- Bounded Tool Loop (Scoped: Sprint Review Alex) → [Pattern link](#pattern-bounded-loop-context-lean-and-focused)
+- Investigation + Execution Mode (Scoped: Sprint Review Alex) → [Pattern link](#pattern-sprint-review-alex-investigation--execution)
 - Sprint Execution Method (Sequential Orchestrator) → [Pattern link](#sprint-execution-method-sequential-orchestrator)
 
 ---
@@ -46,15 +73,19 @@ Related: [architecture.md](./architecture.md) · [GOVERNANCE.md](./GOVERNANCE.md
 ## Guiding Philosophy
 
 - **Copy, Don’t Create**: Reuse established patterns. Start by copying `vision.py` or `backlog.py` for APIs; copy existing persona JSON for new personas.
-- **Fail Fast, No Defaults**: If configuration is missing, raise a clear error. Never silently fall back.
+- **Fail Fast for Critical Config**: API keys and model names must be explicit - raise clear errors if missing. Sensible defaults are allowed for local dev convenience (paths, ports, log levels).
   ```python
-  # ✅ Good
-  model = os.getenv("MODEL_NAME")
-  if not model:
-      raise ValueError("Missing required config: MODEL_NAME")
-  
-  # ❌ Bad
-  model = os.getenv("MODEL_NAME", "default-model")
+  # ✅ Good - critical config fails fast
+  api_key = os.getenv("OPENROUTER_API_KEY")
+  if not api_key:
+      raise ValueError("Missing required config: OPENROUTER_API_KEY")
+
+  # ✅ OK - sensible defaults for local dev
+  log_level = os.getenv("LOG_LEVEL", "INFO")
+  personas_path = os.getenv("PERSONAS_PATH") or "system_prompts/personas_config.json"
+
+  # ❌ Bad - silent default for critical operational config
+  model = os.getenv("MODEL_NAME", "some-random-model")
   ```
 - **Personas in Config, Not Code**: All AI behavior lives in configuration, not Python code. Persona metadata lives in `system_prompts/personas_config.json`; system prompts live in `system_prompts/*_system_prompt.txt`. Keep Python free of persona logic.
 
@@ -134,40 +165,37 @@ Notes:
 
 ```
 Need to store data?
-├─ Multiple versions needed? → Use Versioned Documents Pattern
-├─ Single evolving document? → Use Living Document Pattern
-└─ Tabular data with rows? → Use Living Document Pattern (CSV)
+├─ Single canonical document? → Living Document with Backups (Vision)
+├─ Tabular data with rows? → Living Document CSV (Backlog)
+└─ Need rollback? → Both patterns include rotating backups
 ```
 
-### Pattern: Versioned Documents (Vision API)
+### Pattern: Living Document with Backups (Vision)
 
-**When to use**: Multiple versions of same document can coexist (drafts, approved)
+**When to use**: Single canonical document that evolves over time
 
-**Why**: Allows version history, approval workflows, and rollback
+**Why**: Simple single source of truth, with backups for recovery
 
-**Where it's used**: `/development/src/api/vision.py`, `static/appdocs/visions/`
+**Where**: `api/vision.py`, `static/appdocs/visions/vision.json`
 
 **The Pattern**:
-- One file per document with timestamped IDs
-- Format: `ProjectName-Vision_YYYYMMDD_HHMMSS.json`
-- Also save markdown version for readability
+- Fixed canonical file: `vision.json` (ID is always `"vision"`)
+- Timestamped backups created on each save: `backups/vision_YYYYMMDD_HHMMSS.json`
+- Markdown version maintained for readability: `vision.md`
 
-**How to Apply It**:
-```python
-from datetime import datetime
-vision_id = f"{project_name}-Vision_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-vision_path = Path("static/appdocs/visions") / vision_id
-# Save JSON and markdown versions
-```
+**Key Points** (see `api/vision.py:save_vision()`):
+- `vision_id = "vision"` - fixed, not generated
+- Backups go to `visions/backups/` subdirectory
+- `client_approval` flag tracked in the document
 
 **Common Mistakes**:
-- ❌ Using fixed ID (breaks multiple versions)
+- ❌ Creating timestamped IDs for the main file (Vision is single source of truth)
 - ❌ Storing outside `static/appdocs/` (breaks data management)
-- ❌ Overwriting instead of creating new file (loses history)
+- ❌ Skipping backup before overwrite (loses history)
 
 ---
 
-### Pattern: Living Document (Backlog API)
+### Pattern: Living Document CSV (Backlog)
 
 **When to use**: Single evolving document where all items are rows
 
@@ -213,13 +241,19 @@ Need a persona?
 
 **Why**: Keeps config clean, avoids duplicate prompts, enables context-specific behavior
 
-**Where it's used**: Sarah has 3 personas: `PM`, `VISION_PM`, `REQUIREMENTS_PM`
+**Where it's used**: Sarah has 6 personas for different contexts:
+- `PM` - General project management
+- `VISION_PM` - Vision meeting facilitator
+- `REQUIREMENTS_PM` - Requirements/backlog meeting facilitator
+- `SPRINT_PLANNING_ARCHITECT` - (Mike, not Sarah, but same pattern)
+- `SPRINT_REVIEW_PM` - Sprint review facilitator
+- `SPRINT_EXECUTION_PM` - Sprint execution facilitator
 
-**The Pattern**:
+**The Pattern** (see `system_prompts/personas_config.json`):
 ```json
-"PM": { "name": "Sarah", "role": "Project Manager" },
-"VISION_PM": { "name": "Sarah", "meeting_triggers": ["vision"] },
-"REQUIREMENTS_PM": { "name": "Sarah", "meeting_triggers": ["requirements"] }
+"PM": { "name": "Sarah", "role": "Project Manager (PM)", "meeting_triggers": [] },
+"VISION_PM": { "name": "Sarah", "meeting_triggers": ["start vision meeting"], "solo_mode": true },
+"REQUIREMENTS_PM": { "name": "Sarah", "meeting_triggers": ["start requirements meeting"], "solo_mode": true }
 ```
 
 **Common Mistakes**:
@@ -265,27 +299,37 @@ Need a persona?
 
 **Why**: Non-coders can modify behavior, easier to maintain
 
-**Where it's used**: `system_prompts/personas_config.json` + `system_prompts/*_system_prompt.txt` form the single source of truth
+**Where it's used**: `system_prompts/personas_config.json` (metadata + config) + `system_prompts/*_system_prompt.txt` (actual prompts)
 
-**The Pattern**:
+**The Pattern** (actual field names from config):
 ```json
 {
   "PERSONA_KEY": {
-    "name": "Display Name",
-    "role": "Role Description",
-    "system_prompt": "Full system prompt...",
+    "name": "Sarah",
+    "display_name": "Sarah · Project Manager",
+    "role": "Project Manager (PM)",
+    "role_key": "PERSONA_KEY",
+    "system_prompt_file": "system_prompts/PM_system_prompt.txt",
     "enabled": true,
-    "tools": ["read_file", "write_text"],
+    "priority": 1,
+    "tools": ["http_post"],
     "inject_context": ["vision", "backlog"],
-    "meeting_triggers": ["meeting_name"]
+    "meeting_triggers": ["start vision meeting"],
+    "solo_mode": true
   }
 }
 ```
 
+**Key Fields**:
+- `system_prompt_file` - Path to .txt file with full prompt (NOT inline `system_prompt`)
+- `persona_role` - Used for meeting role mapping (e.g., `"developer_alex"`)
+- `solo_mode` - When true, only this persona responds in meeting context
+- `inject_context` - Which documents to inject (vision, backlog, sprint_log, etc.)
+
 **Common Mistakes**:
 - ❌ Hardcoding persona logic in Python (defeats purpose)
-- ❌ Forgetting enabled: true (persona won't load)
-- ❌ Putting system prompt in Python (can't be edited by non-coders)
+- ❌ Forgetting `enabled: true` (persona won't load)
+- ❌ Using inline `system_prompt` instead of `system_prompt_file` (actual config uses file references)
 
 ---
 
@@ -484,6 +528,200 @@ return create_error_response(message="Not found", error_code=ApiErrorCode.NOT_FO
 
 ---
 
+## Generated App Routing Patterns
+
+### Overview
+
+Generated apps must work in **two environments without code changes**:
+- **Local (Mac)**: `http://localhost:3000` - direct access
+- **Railway**: `https://<host>/yourapp/` - behind Caddy proxy that strips `/yourapp/` prefix
+
+This section defines the mandatory routing patterns that make this work.
+
+### The Proxy Problem
+
+On Railway, Caddy's `handle_path /yourapp/*` directive:
+1. Receives request: `/yourapp/api/auth/login`
+2. **Strips** `/yourapp/` prefix
+3. Forwards to Express: `/api/auth/login`
+
+The app **never sees** `/yourapp/` in any request. This means:
+- Server-side code is identical for both environments
+- Client-side paths must be **relative** (no leading `/`) so they resolve correctly from the current URL
+
+### Non-Negotiable Rules
+
+**Rule 0: No environment detection**
+- ❌ No `apiPrefix`, `BASE_PATH`, `isRailway` variables
+- ❌ No `window.location.pathname` prefix hacks
+- ✅ Same code runs everywhere
+
+**Rule 1: Never use `<base>` tags**
+- ❌ `<base href="/">` breaks Railway (forces URLs to root)
+- ❌ `<base href="/yourapp/">` breaks Mac (path doesn't exist)
+- ✅ Relative paths work in both without `<base>`
+
+**Rule 2: Server-side vs Client-side path styles**
+
+| Context | Path Style | Example |
+|---------|------------|---------|
+| Express routes | Absolute (with `/`) | `app.get('/login', ...)` |
+| Server redirects (HTML) | Absolute (with `/`) | `res.redirect('/dashboard')` |
+| Server redirects (JSON) | Relative (no `/`) | `res.json({ redirect: 'dashboard' })` |
+| HTML links | Relative (no `/`) | `href="dashboard"` |
+| HTML forms | Self-submit | `action="#"` |
+| JavaScript fetch | Relative (no `/`) | `fetch('api/auth/login')` |
+
+**Rule 3: API namespace is mandatory**
+- All data endpoints under `/api/*`
+- Auth endpoints under `/api/auth/*`
+- Prevents collisions with page routes
+
+**Rule 4: Flat pages only**
+- ✅ `/login`, `/dashboard`, `/employees`
+- ❌ `/employees/123`, `/dashboard/settings`
+- Use query strings for details: `/employees?id=123`
+
+**Rule 5: No trailing slashes**
+- ✅ `/employees`
+- ❌ `/employees/`
+
+### Pattern: Client-Side Navigation and API Calls
+
+```html
+<!-- HTML links - RELATIVE, no leading / -->
+<a href="dashboard">Dashboard</a>
+<a href="employees">Employees</a>
+
+<!-- Forms - ALWAYS action="#" with JS fetch -->
+<form action="#" method="POST">
+  <input name="email" type="email">
+  <button type="submit">Login</button>
+</form>
+
+<script>
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData);
+
+  // Fetch - RELATIVE path, no leading /
+  const response = await fetch('api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  });
+  const result = await response.json();
+
+  if (result.success) {
+    // Redirect value from server is RELATIVE
+    window.location.href = result.redirect;
+  }
+});
+</script>
+```
+
+### Pattern: Server-Side Routes and Responses
+
+```javascript
+// Route definitions - ABSOLUTE paths
+app.get('/login', (req, res) => {
+  res.redirect('/login.html');  // Absolute - Caddy rewrites for Railway
+});
+
+app.get('/dashboard', isAuthenticated, (req, res) => {
+  res.redirect('/dashboard.html');
+});
+
+// API mount points
+app.use('/api/auth', authRouter);  // Auth at /api/auth/*
+app.use('/api', dataRouter);       // Data at /api/*
+
+// In authRouter - paths relative to mount point
+router.post('/login', async (req, res) => {
+  // ... validate user ...
+  // JSON redirect - RELATIVE (consumed by client JS)
+  res.json({ success: true, redirect: 'dashboard' });
+});
+
+router.post('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.json({ success: true, redirect: 'login' });
+  });
+});
+```
+
+### Pattern: File Serving (Standard Express)
+
+```javascript
+// Setup - use express.static
+app.use(express.static('public'));
+
+// Page routes - redirect to .html files
+app.get('/login', (req, res) => {
+  res.redirect('/login.html');
+});
+
+app.get('/dashboard', isAuthenticated, (req, res) => {
+  res.redirect('/dashboard.html');
+});
+```
+
+**Why redirect, not sendFile:**
+- `express.static` handles file serving automatically
+- No path calculations needed (`__dirname`, `..`, `path.join()`)
+- Eliminates common mistakes with wrong directory traversal
+
+### Pattern: Session Configuration
+
+```javascript
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'dev-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false,    // Required - app is HTTP behind HTTPS proxy
+    sameSite: 'lax',  // Required - prevents cookie blocking
+    maxAge: 1800000
+  }
+}));
+```
+
+### Why Each Pattern Matters
+
+| Pattern | Without It | Result |
+|---------|------------|--------|
+| Relative client paths | `fetch('/api/...')` | Request goes to FastAPI, not generated app |
+| Absolute server redirects | `res.redirect('dashboard')` | Caddy can't rewrite Location header |
+| Relative JSON redirects | `{ redirect: '/dashboard' }` | Client navigates to wrong URL on Railway |
+| No `<base>` tag | `<base href="/">` | All relative URLs resolve from wrong root |
+| `action="#"` forms | `action="/login"` | Form submits bypass Caddy on Railway |
+| `secure: false` cookie | `secure: true` | Cookies rejected (HTTP behind HTTPS proxy) |
+
+### Troubleshooting
+
+**Symptom: "Works on Mac, 404 on Railway"**
+- Check: Client using absolute paths (`/api/...`)
+- Check: Trailing slash causing wrong relative resolution
+- Fix: Use relative paths in all client-side code
+
+**Symptom: "Infinite redirect loop"**
+- Check: Session cookie `secure: true` or missing `sameSite`
+- Fix: Set `secure: false, sameSite: 'lax'`
+
+**Symptom: "Login works, but dashboard 404"**
+- Check: JSON response has `redirect: '/dashboard'` (absolute)
+- Fix: Use `redirect: 'dashboard'` (relative)
+
+### Canonical Reference
+
+The working example is the app on Railway at:
+`/app/development/src/static/appdocs/execution-sandbox/client-projects/yourapp/`
+
+---
+
 ## Logging Patterns
 
 ### Goals
@@ -594,15 +832,6 @@ if persona_key == "SPRINT_REVIEW_ALEX" and session_id:
     messages = system_messages + history_messages + current_messages
 ```
 
-**Status**: Active (Scoped: Sprint Review Alex)
-
-**Verification checklist**:
-- First turn includes backlog and sprint_log; subsequent turns do not.
-- Response time is lower on second turn (history-only context).
-- No static context reinjected after first turn in SR Alex.
-
-Last Verified: 2025-11-10 (services/ai_gateway.py::call_openrouter_api, development/src/streaming.py::stream_chat)
-
 **Common Mistakes**:
 - ❌ Re-injecting static context every turn (context explosion)
 - ❌ Not checking for conversation history (can't optimize)
@@ -610,186 +839,36 @@ Last Verified: 2025-11-10 (services/ai_gateway.py::call_openrouter_api, developm
 
 ---
 
-### Pattern: Two-Loop Architecture (Investigation + Execution)
+### Pattern: Sprint Review Alex Investigation + Execution
 
 **When to use**: SPRINT_REVIEW_ALEX debugging workflow
 
-**Why**: Separates investigation (diagnose and propose) from execution (apply fix), provides clear context for each phase, prevents testing loops that find infinite bugs
+**Why**: Separates investigation (diagnose and propose) from execution (apply fix), prevents execution from drifting away from approved plan
 
-**Where it's used (code anchors)**:
-- `services/ai_gateway.py` → approval detection, loop initialization, mode-specific context injection
-- `system_prompts/SPRINT_REVIEW_ALEX_system_prompt.txt` → mode descriptions and workflows
+**Where**: `services/ai_gateway.py:run_sprint_review_alex_execution_mode()` and `call_openrouter_api()`
 
-**The Pattern** (Two Separate Bounded Loops):
+**The Two Phases**:
 
-```
-═══════════════════════════════════════════════════════════════
-INVESTIGATION LOOP (User reports bug)
-═══════════════════════════════════════════════════════════════
+1. **Investigation Phase** (tool-based)
+   - Alex uses `list_directory` and `read_file` tools to diagnose
+   - Proposes a fix and lists files to modify
+   - Waits for user approval
 
-Initial API Call:
-  - System prompt
-  - Architecture context
-  - User message: "login doesn't work"
-  
-  → Agent calls tools (list_directory, read_file)
-  → Returns: content + tool_calls
+2. **Execution Phase** (backend-orchestrated, NO tools)
+   - Triggered by approval phrases: "yes", "fix it", "go ahead", etc.
+   - Backend reads file contents from sandbox
+   - Backend calls `run_sprint_review_alex_execution_mode()` which:
+     - Extracts approved plan from Alex's last response
+     - Builds `APPROVED_CHANGE_SPEC` with file paths
+     - Calls LLM once with NO tools, expects JSON response
+     - Backend applies changes via sandbox write API
 
-Bounded Loop Starts (max 3 passes):
-  bounded_messages = [
-    system_messages,
-    architecture_msg,
-    current_user_message,
-    MODE CONTEXT: "INVESTIGATION MODE - Your task: 1. list_directory 2. read_file 3. diagnose 4. propose 5. STOP",
-    agent_initial_response (with tool_calls),
-    tool_results
-  ]
-  
-  Pass 1-3:
-    - Nudge: "Continue investigating. Call tools to look deeper."
-    - Agent reads more files, diagnoses issue
-    - Agent proposes fix: "Should I apply this?"
-    - Agent stops calling tools → Loop exits
-  
-  Result: Proposal sent to user, waits for approval
-
-═══════════════════════════════════════════════════════════════
-EXECUTION LOOP (User approves: "yes")
-═══════════════════════════════════════════════════════════════
-
-Approval Detection:
-  - Check last user message for: "yes", "yes please", "fix it", "go ahead", "apply it", "do it"
-  - If detected → is_approval_message = True
-
-Context Reinjection:
-  - Load conversation history
-  - Extract investigation turn (turn -2)
-  - Re-execute tool calls from investigation (get fresh file contents)
-
-Bounded Loop Starts (max 3 passes):
-  bounded_messages = [
-    system_messages,
-    architecture_msg,
-    current_user_message ("yes"),
-    MODE CONTEXT: "EXECUTION MODE ACTIVATED - Your investigation: [...] Files: [...] Execute NOW: 1. write_text 2. Report 3. STOP (no testing)",
-  ]
-  
-  Pass 1:
-    - Nudge: "Execute the fix NOW. Call write_text. No explanation needed - just do it."
-    - Agent calls write_text with complete fixed file
-    - Agent stops calling tools → Loop exits
-  
-  Result: Fix applied, confirmation sent to user
-
-═══════════════════════════════════════════════════════════════
-```
-
-**How to Apply It**:
-```python
-# Detect approval message
-is_approval_message = False
-if persona_key == "SPRINT_REVIEW_ALEX":
-    user_messages = [m.get("content", "").lower() for m in messages if m.get("role") == "user"]
-    last_user_msg = user_messages[-1] if user_messages else ""
-    approval_phrases = ["yes", "yes please", "fix it", "go ahead", "apply it", "do it"]
-    is_approval_message = any(phrase in last_user_msg for phrase in approval_phrases)
-
-# Trigger bounded loop for BOTH modes
-if function_results or is_approval_message:
-    loop_mode = "EXECUTION" if is_approval_message else "INVESTIGATION"
-    
-    # Initialize bounded messages
-    bounded_messages = system_messages.copy()
-    
-    # Extract architecture from any message (streaming.py injects it separately)
-    architecture_msg = None
-    for msg in messages:
-        if "LOCKED ARCHITECTURE" in msg.get("content", ""):
-            architecture_msg = msg
-            break
-    
-    if architecture_msg:
-        bounded_messages.append(architecture_msg)
-    bounded_messages.append(current_user_message)
-    
-    # Add mode-specific context
-    if not is_approval_message:
-        # INVESTIGATION MODE
-        investigation_context = """INVESTIGATION MODE
-        
-User reported an issue. Your task:
-1. Call list_directory to see project structure
-2. Call read_file to see actual code related to the issue
-   → If read_file FAILS, report the exact error to the user
-   → Say: "I'm having trouble accessing files. Error: [exact error]"
-   → DO NOT proceed to step 3 without successfully reading files
-3. Diagnose the problem based on code you READ (not assumptions)
-4. Propose a specific fix in plain English
-5. STOP and wait for approval (do NOT call write_text yet)
-
-CRITICAL: NEVER diagnose based on assumptions when tools fail."""
-        bounded_messages.append({"role": "user", "content": investigation_context})
-        
-    elif is_approval_message:
-        # EXECUTION MODE - Get investigation context from history
-        history_file = Path(...) / f"{persona_key}_{session_id}_history.json"
-        with open(history_file, 'r') as f:
-            history_data = json.load(f)
-            investigation_turn = history_data["turns"][-2]  # Turn before "yes"
-            alex_last_response = investigation_turn["assistant_response"]
-            alex_tool_calls = investigation_turn["tool_calls"]
-        
-        # Re-execute tool calls to get fresh file contents
-        alex_tool_results = await execute_function_calls(alex_tool_calls, "", persona_key)
-        
-        execution_context = f"""EXECUTION MODE ACTIVATED
-
-Your Investigation and Proposal:
-{alex_last_response}
-
-Files You Examined (current contents):
-{alex_tool_results}
-
-User Response: "yes"
-
-This is APPROVAL. Execute your proposed fix NOW:
-1. Call write_text with the complete fixed file content
-2. Set force_replace=true
-3. Include ALL the code, not just the changed parts
-4. Report what you changed and STOP (no testing, no more tool calls)"""
-        bounded_messages.append({"role": "user", "content": execution_context})
-    
-    # Run bounded loop (max 3 passes)
-    has_fix_permission = is_approval_message
-```
-
-**Status**: Active (Scoped: Sprint Review Alex)
-
-**Verification checklist**:
-- ✅ Investigation mode has explicit "INVESTIGATION MODE" message
-- ✅ Execution mode has explicit "EXECUTION MODE ACTIVATED" message
-- ✅ Approval detection works for common phrases
-- ✅ Investigation context is reinjected into execution loop
-- ✅ Tool calls from investigation are re-executed to get fresh file contents
-- ✅ No testing in execution mode (agent stops after write_text)
-- ✅ Conversation history is NOT included in bounded loops
-- ✅ Static context (backlog/sprint_log) is NOT reinjected within loops
-- ✅ Architecture context IS included in bounded loops (extracted from any message role)
-- ✅ Execution context explicitly reminds Alex to check architecture conventions
-
-Last Verified: 2025-11-25 (services/ai_gateway.py::call_openrouter_api)
-
-**Key Differences from Single-Loop Pattern**:
-- ✅ Two separate loops instead of one continuous loop
-- ✅ Explicit mode messages tell agent which phase they're in
-- ✅ Execution loop gets investigation context from history (not from current session)
-- ✅ No testing after execution (prevents infinite bug discovery)
-- ✅ Clear stopping points (investigation: after proposal, execution: after write_text)
+**Key Design Decision**: Execution uses JSON-only LLM response (no tool calls) to prevent drift from the approved plan.
 
 **Common Mistakes**:
-- ❌ Including conversation history in bounded loop (hallucination)
-- ❌ Re-injecting backlog/sprint_log in loop (wastes tokens)
-- ❌ Not extracting current_user_message (gets confused by history)
+- ❌ Thinking execution still uses `write_text` tool (it doesn't - backend applies changes)
+- ❌ Adding new features during execution (only apply the approved fix)
+- ❌ Using file paths not in the approved plan (constrained by `APPROVED_CHANGE_SPEC`)
 - ❌ Allowing testing in execution mode (leads to infinite bug loops)
 - ❌ Not reinjecting investigation context into execution loop (agent forgets what to fix)
 
@@ -832,10 +911,7 @@ Last Verified: 2025-11-25 (services/ai_gateway.py::call_openrouter_api)
 - Backlog.csv shows updated fields for each Story_ID processed.
 - `static/appdocs/sprints/execution_log_{sprint_id}.jsonl` contains chronological events.
 
-**Status**: Active (Development)
-Last Verified: 2025-11-12 (services/sprint_orchestrator.py)
-
-### Implementation Phases (2025-11-12)
+### Implementation Phases
 
 #### Phase 1: Context Injection + Validation ✅ IMPLEMENTED
 
@@ -977,7 +1053,7 @@ if tests_failed > 0 and test_success == False:
   - `architect/DATA_FLOW_BACKLOG_CSV.md`
 
 **Common Mistakes**:
-- ❌ Including conversation history in bounded loop (hallucination)
+- ❌ Including conversation history in execution mode (hallucination)
 - ❌ Re-injecting backlog/sprint_log in loop (wastes tokens)
 - ❌ Not extracting current_user_message (gets confused by history)
 - ❌ Overwriting files instead of merging (use Phase 2 merge logic)
@@ -1110,15 +1186,15 @@ if not model:
 
 | I Need To... | Use This Pattern | Key File |
 |---|---|---|
-| Store multiple versions | Versioned Documents | `/development/src/api/vision.py` |
-| Store single evolving doc | Living Document | `/development/src/api/backlog.py` |
+| Store canonical doc with backups | Living Document with Backups | `/development/src/api/vision.py` |
+| Store tabular data (rows) | Living Document CSV | `/development/src/api/backlog.py` |
 | Add new persona | Configuration-Driven Personas | `system_prompts/personas_config.json` |
 | Same person, different contexts | Multiple Personas Per Person | `system_prompts/personas_config.json` |
 | Multiple personas in meeting | Meeting Personas with Role Mapping | `system_prompts/personas_config.json` |
 | Add new API endpoint | API Endpoint Structure | `/development/src/api/vision.py` |
 | Modify existing file | Safe File Modification | Sprint orchestrator |
 | Run sprint execution | Sprint Execution Method | `/development/src/services/sprint_orchestrator.py` |
-| Inject context | Cascade-Style or Two-Loop Architecture | `/development/src/services/ai_gateway.py` |
+| Inject context | Cascade-Style Context | `/development/src/services/ai_gateway.py` |
 | Add configuration | Configuration Decision Tree | `.env` or `system_prompts/personas_config.json` |
 | Handle errors | Error Handling | `/development/src/api/conventions.py` |
 
@@ -1126,7 +1202,7 @@ if not model:
 
 ## Anti-Patterns: What NOT to Do
 
-❌ **NEVER** use silent defaults or fallbacks  
+❌ **NEVER** use silent defaults for critical config (API keys, model names)  
 ❌ **NEVER** hardcode model names in code  
 ❌ **NEVER** store data outside `static/appdocs/`  
 ❌ **NEVER** put persona logic in Python (use configuration: `system_prompts/personas_config.json` + `system_prompts/*_system_prompt.txt`)  
@@ -1134,7 +1210,7 @@ if not model:
 ❌ **NEVER** create new patterns without checking existing ones first  
 ❌ **NEVER** overwrite files without merging (use safe modification)  
 ❌ **NEVER** re-inject static context every turn (use Cascade-style)  
-❌ **NEVER** include conversation history in bounded loop (use lean context)  
+❌ **NEVER** include conversation history in execution mode (use lean context)  
 ❌ **NEVER** write code without validating syntax first  
 
 ---
@@ -1360,37 +1436,8 @@ test('Story - Server and database work together', async () => {
 - Recognize both `sprint_completed` and `sprint_complete` as sprint end.
 - Do not rely on persona text formatting to trigger UI; use minimal phrases (e.g., Sarah’s “Sprint execution started for SP-XXX”) only to open streams; rely on structured events thereafter.
 
-### Update: Sprint Review Alex Execution Mode (Backend-Orchestrated Writes)
+### Sprint Review Alex Execution Details
 
-**Scope**: This updates how Sprint Review Alex applies an approved fix **after** investigation. It supersedes the older "EXECUTION LOOP" description under the Bounded Loop pattern for Sprint Review Alex.
+See [Pattern: Sprint Review Alex Investigation + Execution](#pattern-sprint-review-alex-investigation--execution) for the full pattern.
 
-**Execution behavior (current implementation)**:
-- Investigation mode remains a bounded tool loop with `read_file` and `list_directory` to diagnose the bug and propose a fix.
-- When the user approves (e.g., "yes", "fix it"), the backend calls `run_sprint_review_alex_execution_mode` which:
-  - Extracts the approved plan and "Files to modify" from Alex's last answer.
-  - Builds an `APPROVED_CHANGE_SPEC` JSON object with the exact `file_path` list and a short description of the fix.
-  - Reads each target file from the sandbox (`execution-sandbox/client-projects/<ProjectName>`) using the sandbox `read-file` API.
-  - Calls the LLM **once**, with **no tools**, and asks for a single JSON response of the form:
-    ```json
-    {
-      "files": [
-        {"file_path": "public/login.html", "action": "overwrite" or "none", "new_content": "..."}
-      ],
-      "explanation": "Plain-English explanation of what changed, or why nothing changed."
-    }
-    ```
-  - Enforces constraints in the execution system prompt:
-    - `files[*].file_path` **must** come from `APPROVED_CHANGE_SPEC.files` (no invented or altered paths).
-    - Literal values in the approved plan (e.g. endpoint strings like `/auth/login`) must be copied **exactly`**; do not substitute similar values such as `/login`.
-    - If Alex cannot safely apply the change under these rules, he must use `action: "none"` for that file and explain why in `explanation`.
-  - Parses the JSON and applies overwrites via the sandbox `write-file` API (with `force_replace=true` for each `action: "overwrite"`).
-  - Returns a final message to the user that always includes:
-    - A backend summary listing which files were inspected and which were overwritten.
-    - Alex's `explanation` text from the JSON.
-
-**Why this matters**:
-- Keeps investigation flexible and tool-based, but makes execution deterministic and auditable.
-- Prevents execution from drifting away from the approved plan (e.g. changing `/auth/login` to `/login`).
-- Guarantees the user always sees both **what files changed** and **why** Alex did or did not change them.
-
-**Note**: Older references in this document to a bounded execution loop where Alex directly calls `write_text` are now **legacy**. The source of truth for current execution behavior is `run_sprint_review_alex_execution_mode` in `development/src/services/ai_gateway.py` and this summary.
+**Source of truth**: `services/ai_gateway.py:run_sprint_review_alex_execution_mode()`

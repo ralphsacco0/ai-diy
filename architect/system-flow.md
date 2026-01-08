@@ -19,7 +19,7 @@ The personas configuration lives in `system_prompts/personas_config.json` plus a
 Each base persona can assume specialized roles depending on the meeting type.
 
 ### 1.1 Base vs Specialized Personas
-The app models four base people  Sarah (PM), Mike (Architect), Alex (Developer), and Jordan (QA)  and derives multiple **specialized personas** from each base person.
+The app models four base people — Sarah (PM), Mike (Architect), Alex (Developer), and Jordan (QA) — and derives multiple **specialized personas** from each base person.
 
 Specialized personas differ by:
 - **Meeting type** (Vision, Requirements, Sprint Planning, Sprint Execution, Sprint Review)
@@ -27,24 +27,34 @@ Specialized personas differ by:
 - **Tools and context** they receive (`tools`, `inject_context`, `meeting_triggers`, etc.)
 
 All persona variants are defined **purely in configuration**:
-- `system_prompts/personas_config.json`  persona metadata, tools, triggers, and wiring
-- `system_prompts/*_system_prompt.txt`  per-persona prompt text
+- `system_prompts/personas_config.json` — persona metadata, tools, triggers, and wiring
+- `system_prompts/*_system_prompt.txt` — per-persona prompt text
 
 **Examples (not exhaustive):**
 
-- **Sarah (PM)**
-  - `PM`  general project manager for free-form chat
-  - `VISION_PM`  leads Vision meetings; injects `vision` context
-  - `REQUIREMENTS_PM`  leads Requirements/Backlog meetings; injects `vision` and `backlog`
-  - `SPRINT_PLANNING_ARCHITECT` works with Sarah in Sprint Planning (Mike persona) to decompose work
-  - `SPRINT_EXECUTION_PM` and `SPRINT_REVIEW_PM` coordinate sprint execution and review
+- **Sarah (PM)** — 6 specialized personas
+  - `PM` — general project manager for free-form chat
+  - `VISION_PM` — leads Vision meetings; injects `vision` context
+  - `REQUIREMENTS_PM` — leads Requirements/Backlog meetings; injects `vision` and `backlog`
+  - `SPRINT_EXECUTION_PM` — coordinates sprint execution
+  - `SPRINT_REVIEW_PM` — leads sprint review meetings
+  - `SPRINT_RETROSPECTIVE_PM` — facilitates retrospectives
 
-- **Alex (Developer)**
-  - `DEVELOPER`  base developer persona
-  - `SPRINT_EXECUTION_DEVELOPER`  implements stories during Sprint Execution
-  - `SPRINT_REVIEW_ALEX`  joins Sprint Review as a debugging/execution helper when that meeting runs
+- **Mike (Architect)** — 4 specialized personas
+  - `ARCHITECT` — base architect for free-form chat
+  - `SPRINT_PLANNING_ARCHITECT` — leads Sprint Planning meetings to decompose work
+  - `SPRINT_EXECUTION_ARCHITECT` — provides architectural guidance during execution
 
-The **canonical persona list and configuration** is always the combination of `system_prompts/personas_config.json` plus the corresponding `system_prompts/*_system_prompt.txt` files. This document describes the pattern rather than enumerating every persona.
+- **Alex (Developer)** — 4 specialized personas
+  - `DEVELOPER` — base developer persona
+  - `SPRINT_EXECUTION_DEVELOPER` — implements stories during Sprint Execution
+  - `SPRINT_REVIEW_ALEX` — joins Sprint Review as debugging/execution helper
+
+- **Jordan (QA)** — 2 specialized personas
+  - `QA` — base QA tester persona
+  - `SPRINT_EXECUTION_QA` — validates implementation during execution
+
+The **canonical persona list and configuration** is always `system_prompts/personas_config.json` plus `system_prompts/*_system_prompt.txt` files. This document describes patterns, not an exhaustive list.
 
 ### 1.2 Selection Logic
 - Only personas **activated in the conversation** (selected in UI) participate in the thread.
@@ -59,13 +69,19 @@ The app operates in two modes:
 
 ### 2.1 Free-form Mode
 - The user can chat with any subset of personas.
-- No meeting orchestration or file writes occur.
+- No meeting orchestration occurs; Scribe may still write conversation logs/notes unless disabled.
 - Context is conversational — ideal for planning, brainstorming, or design discussions.
 
 ### 2.2 Meeting Mode
 - Triggered by phrases such as `start a vision meeting`, `start a backlog meeting`, etc.
 - Specialized personas for that meeting type are loaded.
 - Meeting lifecycle (start → participate → log → close) is orchestrated by the active PM persona.
+
+### 2.3 Meeting State Ownership
+- **Backend** emits `meeting_started` and `meeting_ended` SSE events
+- **Frontend** owns meeting state via `currentMeeting` variable
+- UI enforces switching rules (confirm-to-switch dialog) and disables persona checkboxes during meetings
+- This is a UI-enforced workflow, not server-side session state
 
 ---
 
@@ -109,44 +125,30 @@ These messages reflect the persona handoff sequence (Mike → Alex → Jordan) a
 **Concurrent Messaging**: Users can ask Sarah questions during sprint execution. Sarah's responses appear immediately in the chat alongside execution progress. Execution messages are styled with a purple accent to distinguish them from user messages and Sarah's responses.
 
 This stream is distinct from the background **Progress tab** used for long-running tasks.
-The chat SSE channel flushes messages after each step and remains open until Sprint Execution completes or encounters an error.
-
-Reconnect and error-handling improvements are planned to ensure continuous delivery if the stream drops or stalls.
+The chat SSE channel (`GET /api/sprints/stream`) is global—it stays open after `sprint_complete` events, allowing consecutive sprints without reconnection. A global buffer replays the last ~200 events to late-connecting listeners.
 
 > ⚠ **Note:** Sprint Execution updates Backlog.csv at a per-story (row-scoped) level using `_update_backlog`: it reads the full CSV, validates headers, finds the matching `Story_ID`, updates only that row's execution fields, and rewrites the file. If the schema is corrupted or the story is missing, the update is skipped and logged. Safety for larger failures comes from the sprint-level snapshot of `Backlog.csv` taken before execution starts.
 
 ### 4.1.1 Tech Stack NFR Requirement
 
-**Critical Requirement**: The first story in any sprint MUST be a Tech Stack NFR (NFR-001).
+**Critical Requirement**: SP-001 (first sprint) MUST start with NFR-001 (Tech Stack NFR). Subsequent sprints (SP-002+) do not require NFR-001—they inherit the tech stack from architecture.json.
 
 **Why This Matters**:
-- Sprint orchestrator extracts tech stack from NFR-001 before processing other stories
-- Tech stack determines project structure, test framework, and implementation patterns
-- All other stories depend on tech stack being established
+- Sprint orchestrator extracts tech stack from NFR-001 during SP-001
+- Tech stack (backend framework, database, ports) is locked into architecture.json
+- Subsequent sprints read from architecture.json, ensuring consistency
 
 **Tech Stack NFR Content** (NFR-001):
 - Title: "Local Mac Environment Setup" or similar
 - Acceptance Criteria must specify:
   - Backend framework (Node.js Express, Flask, Django, etc.)
-  - Frontend framework (React, Vue, Angular, etc.)
   - Database (SQLite, PostgreSQL, MySQL, etc.)
   - Testing framework (Jest, pytest, JUnit, etc.)
   - Ports and configuration details
 
-**Example NFR-001 Acceptance Criteria**:
-```
-Run entirely locally on macOS (Ventura+)
-Use SQLite as lightweight, file-based DB
-Node.js v18+ backend with Express
-React frontend on localhost (ports 3000 for frontend, 3001 for backend)
-Include npm scripts: "start" and "stop"
-Tests pass locally (e.g., Jest smoke test after start)
-```
-
 **Enforcement**:
-- Sprint orchestrator validates: `if first_story_id != "NFR-001": raise error`
-- If NFR-001 is missing or not first, sprint execution fails immediately
-- Clear error message: "First story must be NFR-001 (Tech Stack NFR)"
+- SP-001: `if first_story_id != "NFR-001": raise error` with message "SP-001 must start with NFR-001"
+- SP-002+: NFR-001 optional; tech stack loaded from existing architecture.json
 
 ---
 
@@ -323,9 +325,9 @@ await initDb(db);
   - Hidden (noise): `backlog_updated` (still in logs)
 
 - Pause / Resume
-  - On user input during execution, the UI calls `POST /api/sprints/{id}/pause`
-  - After Sarah replies, the UI calls `POST /api/sprints/{id}/resume` and re-opens the SSE
-  - Buffered messages during the pause are delivered on reconnect (within the buffer limit)
+  - On user input during execution, the UI calls `POST /api/sprints/{sprint_id}/pause`
+  - After Sarah replies, the UI calls `POST /api/sprints/{sprint_id}/resume`
+  - SSE stream remains open; buffered messages during pause are delivered immediately on resume
 
 - Completion
   - Story: “✅ Completed US-XXX”
@@ -370,6 +372,6 @@ The application records structured logs for all meetings and execution flows.
 
 ## 8. Summary
 
-All critical process flows, persona activations, and meeting orchestration logic match the implemented system. Minor documentation clarifications (noted above) track where verification is still pending.
+All critical process flows, persona activations, and meeting orchestration logic match the implemented system.
 
-This document remains the authoritative system reference for architecture and behavior alignment.
+This document describes behavioral patterns and orchestration flows. For API endpoint details, see `architecture.md`. For data storage patterns, see `PATTERNS_AND_METHODS.md`.

@@ -77,11 +77,12 @@ cd development
 
 ## Project Layout (High Level)
 
-- `architect/`  Architecture, patterns, governance, and ADR documentation.
-- `development/`  Application implementation (FastAPI app, APIs, services, tests, scripts).
-- `static/appdocs/`  Runtime application data (visions, backlog, sprints, scribe, sessions).
-- `system_prompts/`  Persona configuration (`personas_config.json`) and system prompt files.
-- `docs/`  Process documentation (Vision, Requirements, UI/status behavior, etc.).
+- `architect/` — Architecture, patterns, governance, and design principles documentation.
+- `development/` — Application implementation (FastAPI app, APIs, services, tests, scripts).
+- `execution-sandbox/client-projects/yourapp/` — Generated app output (code, tests, assets built by the AI team).
+- `static/appdocs/` — Runtime application data (visions, backlog, sprints, scribe, sessions).
+- `system_prompts/` — Persona configuration (`personas_config.json`) and system prompt files.
+- `docs/` — Process documentation (Vision, Requirements, UI/status behavior, etc.).
 
 ## Where to Read More
 
@@ -89,8 +90,8 @@ Use `architect/DOCUMENTATION_INDEX.md` as the source of truth for documentation.
 
 - `architect/architecture.md`  Overall system architecture and current implementation/activation status.
 - `architect/PATTERNS_AND_METHODS.md`  Canonical  how we do things for developers (APIs, personas, storage, context patterns).
-- `architect/GOVERNANCE.md`  How Ralph, ChatGPT, and Cascade collaborate on platform changes.
-- `architect/ADRs.md`  Architecture Decision Records (rationale and enforcement for major decisions).
+- `architect/GOVERNANCE.md`  Ralph has final authority on all platform changes.
+- `architect/DESIGN_PRINCIPLES.md` — Core design principles governing platform development.
 - `architect/dataflow-and-schema.md`  Backlog CSV schema, dataflow, and persona instructions.
 - `docs/vision_process.md`  How Vision meetings work and how vision documents are produced.
 - `docs/requirements_process.md`  How Requirements meetings work and how the backlog is managed.
@@ -121,4 +122,3 @@ Full, detailed guidance lives in `architect/PATTERNS_AND_METHODS.md` and the res
 ## License
 
 [Your License Here]
-# Force redeploy

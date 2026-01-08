@@ -4,9 +4,9 @@ I want to develop an app that allows a person—without coding—to guide AI in 
 
 The Project Manager leads the vision and requirements gathering, including real-time UI in the chat window, and ensures clarity, but the whole team can join the conversation when needed. The Architect translates requirements into structured sprints, breaking down work behind the scenes for the Developer, while the Tester confirms results.
 
-Sprints are driven but time and by scope—large enough to give the client something meaningful to test, yet small enough to prevent wasted effort. A sprint can include an inner development loop decomposed by the Architect. At the end of each sprint, the client validates outcomes through acceptance testing, keeping the process aligned.
+Sprints are driven by scope—large enough to give the client something meaningful to test, yet small enough to prevent wasted effort. A sprint can include an inner development loop decomposed by the Architect. At the end of each sprint, the client validates outcomes through acceptance testing, keeping the process aligned.
 
-This system turns natural conversation into tested, deployable software, with AI personas doing all the work..
+This system turns natural conversation into tested, deployable software, with AI personas doing all the work.
 
 Meeting Types -  This simplifies the bots by allowing a persona definition / meeting type. 
 Vision Meeting 
@@ -18,9 +18,7 @@ Backlog Refinement (Grooming) Meeting
  
 Sprint Planning Meeting
 	•	Kickoff for each scope-driven sprint: define work scope, acceptance criteria, and decomposition.
- 
-.
- 
+
 Sprint Review Meeting
-	•	Demonstrate completed work to client/stakeholders; gather feedback and make corrections within the socpe of the completed sprints.
+	•	Demonstrate completed work to client/stakeholders; gather feedback and make corrections within the scope of the completed sprints.
  

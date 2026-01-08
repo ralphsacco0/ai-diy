@@ -1,8 +1,8 @@
 # AI-DIY Architecture (Current Implementation Status)
  Status: Canonical
  Audience: Developers, Architects
- Last Updated: 2025-11-10
- Related: [PATTERNS_AND_METHODS.md](./PATTERNS_AND_METHODS.md) · [GOVERNANCE.md](./GOVERNANCE.md) · [ADRs.md](./ADRs.md)
+ Last Updated: 2026-01-07
+ Related: [PATTERNS_AND_METHODS.md](./PATTERNS_AND_METHODS.md) · [GOVERNANCE.md](./GOVERNANCE.md) · [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md)
 
 ## Overview and Scope
 
@@ -17,7 +17,7 @@ AI-DIY enables non-coders to guide an AI development team through structured mee
 - **Multi-persona architecture** with meeting framework
 - **Enhanced features implemented and dynamically loaded when available** (fail-fast config, security, structured logging)
 - **Unified API response patterns** defined in conventions.py
- Related methodology: see [PATTERNS_AND_METHODS.md](./PATTERNS_AND_METHODS.md) → [Cascade-Style Context Injection](./PATTERNS_AND_METHODS.md#pattern-cascade-style-context-regular-conversations), [Bounded Tool Loop](./PATTERNS_AND_METHODS.md#pattern-bounded-loop-context-lean-and-focused), [Sprint Execution Method](./PATTERNS_AND_METHODS.md#sprint-execution-method-sequential-orchestrator).
+ Related methodology: see [PATTERNS_AND_METHODS.md](./PATTERNS_AND_METHODS.md) → [Cascade-Style Context Injection](./PATTERNS_AND_METHODS.md#pattern-cascade-style-context-regular-conversations), [Investigation + Execution Mode](./PATTERNS_AND_METHODS.md#pattern-sprint-review-alex-investigation--execution), [Sprint Execution Method](./PATTERNS_AND_METHODS.md#sprint-execution-method-sequential-orchestrator).
 
 ---
 
@@ -40,7 +40,7 @@ This table summarizes the main runtime capabilities, where they live, how they a
 
 | Meeting | Persona | Purpose | Output |
 |---------|---------|---------|--------|
-| Vision | VISION_PM | Create vision statement | Vision document (versioned) |
+| Vision | VISION_PM | Create vision statement | Vision document (living doc with backups) |
 | Requirements | REQUIREMENTS_PM | Clarify and prioritize backlog | Backlog CSV (living document) |
 | Sprint Planning | SPRINT_PLANNING_ARCHITECT | Define scope and decomposition | Sprint definition |
 | Sprint Execution | SPRINT_EXECUTION_PM | Build and test code | Working software |
@@ -75,12 +75,14 @@ Sprint Execution provides the following REST API endpoints:
   - Returns immediately with status "executing"
   - Implementation: `development/src/api/sprint.py` (lines 334-427)
 
-- **Stream Progress**: GET `/api/sprints/{sprint_id}/stream`
-  - Server-Sent Events (SSE) endpoint for real-time execution updates
-  - Streams Mike/Alex/Jordan activity messages as they happen
+- **Stream Progress**: GET `/api/sprints/stream`
+  - Server-Sent Events (SSE) endpoint for real-time execution updates (global, not per-sprint)
+  - Streams Mike/Alex/Jordan activity messages from all sprint executions
+  - Events include `sprint_id` in payload for client-side filtering
   - Queue-based listener management with graceful cleanup
-  - Auto-closes stream on sprint completion
-  - Implementation: `development/src/api/sprint.py` (lines 747-800)
+  - Stream stays open after `sprint_complete` (supports consecutive sprints)
+  - Global buffer replays last ~200 events to new listeners
+  - Implementation: `development/src/api/sprint.py`
 
 - **Get Status**: GET `/api/sprints/{sprint_id}/status`
   - Non-streaming status endpoint
@@ -100,12 +102,12 @@ Sprint Execution provides the following REST API endpoints:
   - Fallback shape(s):
     - `{ "type": "team_message", "persona": "mike|alex|jordan", "message": "..." }`
     - `{ "type": "sprint_complete", "sprint_id": "SP-XXX" }` (close signal)
-- SSE Manager (per-sprint fan-out)
-  - Buffers last ~200 messages before first listener connects
-  - Emits to all active listeners
+- SSE Manager (global fan-out)
+  - Single global buffer (~200 messages) replayed to new listeners
+  - Emits to all active listeners; events include `sprint_id` for client filtering
 - API streaming endpoint
-  - GET `/api/sprints/{sprint_id}/stream` yields default SSE "message" events (`data: {json}`)
-  - No named `event:` field is set
+  - GET `/api/sprints/stream` yields default SSE "message" events (`data: {json}`)
+  - No named `event:` field is set; events contain `sprint_id` for filtering
 - Frontend behavior
   - Opens EventSource when Sarah confirms: "Sprint execution started for SP-XXX"
   - Listens on default `message` event, maps events to Mike/Alex/Jordan/system lines
@@ -329,28 +331,27 @@ All persona definitions are loaded from `system_prompts/personas_config.json` pl
 
 ## Data Storage Patterns
 
-### Pattern 1: Versioned Documents (Vision API)
+### Pattern 1: Living Document with Backups (Vision API)
 
-**Design Philosophy**: Independent documents that need version history and approval workflow
+**Design Philosophy**: Single canonical document that evolves over time, with timestamped backups for recovery
 
-- **File Strategy**: One file per document with timestamped IDs
-- **ID Format**: `ProjectName-Vision_YYYYMMDD_HHMMSS`
+- **File Strategy**: Fixed canonical file with backups on each save
+- **ID Format**: `"vision"` (fixed, not generated)
 - **Storage Location**: `static/appdocs/visions/`
-- **File Types**: `{id}.json` (canonical) + `{id}.md` (human-readable)
-- **Example**: `BrightHR-Lite2-Vision_20251010_132116.json`
+- **File Types**: `vision.json` (canonical) + `vision.md` (human-readable) + `backups/vision_YYYYMMDD_HHMMSS.json`
 
 **Rationale**:
-- Multiple visions can coexist (drafts, approved, different projects)
-- Historical tracking of vision evolution over time
-- Approval workflow requires maintaining version history
-- Each vision is an independent, immutable document once created
+- Vision is a living document - one source of truth per project
+- Backups provide rollback capability without cluttering the main directory
+- Approval workflow tracked via `client_approval` flag in the document
+- Simpler than versioning - just overwrite and backup
 
-**Operations**:
-- **save**: Creates new file when ID is absent; overwrites existing file when ID is present (approval safeguard un-approves previous vision)
-- **list**: Returns all vision files with metadata
-- **latest**: Returns most recently approved vision
-- **get**: Retrieves specific vision by ID
-- **delete**: Removes specific vision file
+**Operations** (see `api/vision.py:save_vision()`):
+- **save**: Overwrites `vision.json`, creates timestamped backup in `backups/`
+- **list**: Returns vision metadata
+- **latest**: Returns current vision (always the same file)
+- **get**: Retrieves current vision
+- **delete**: Removes vision file
 
 ### Pattern 2: Living Document (Backlog API)
 
@@ -378,13 +379,12 @@ All persona definitions are loaded from `system_prompts/personas_config.json` pl
 
 ### When to Use Each Pattern
 
-| Use Pattern 1 (Versioned) When... | Use Pattern 2 (Living Document) When... |
-|-----------------------------------|----------------------------------------|
-| Documents need approval workflow | Data is continuously updated |
-| Version history is important | All items viewed together |
-| Multiple documents coexist | Items are rows, not documents |
-| Immutability after creation | Single source of truth needed |
-| Examples: Visions, Contracts, Releases | Examples: Backlogs, Dashboards, Reports |
+| Use Pattern 1 (Living Doc + Backups) When... | Use Pattern 2 (Living Document CSV) When... |
+|----------------------------------------------|---------------------------------------------|
+| Single canonical document per project | Data is tabular (rows and columns) |
+| Need rollback via timestamped backups | All items viewed together in one file |
+| Approval workflow (flag in document) | Items are rows, not separate documents |
+| Examples: Vision, Project Config | Examples: Backlog, Sprint Plans |
 
 ---
 
@@ -528,51 +528,29 @@ All endpoints support standard actions:
 
 ### Environment Configurations
 
-#### Development Deployment
+#### Local Development
 ```bash
 # Set development environment variables
 export LOG_LEVEL=DEBUG
-export DATA_ROOT=static/appdocs
 export PRODUCTION=false
 
-# Run with hot reload
-python src/main_integrated.py
+# Run with uvicorn (used by start.command)
+cd development/src && uvicorn main:app --reload --port 8000
 ```
 
-#### Production Deployment
+#### Railway Production
+The application deploys to Railway with Caddy as reverse proxy. See [Generated App Routing Patterns](./PATTERNS_AND_METHODS.md#generated-app-routing-patterns) for details on how routing works between local and Railway.
+
 ```bash
-# Set production environment variables
-export LOG_LEVEL=INFO
-export DATA_ROOT=/var/lib/ai-diy/data
-export PRODUCTION=true
-export PORT=8000
-export HOST=0.0.0.0
-
-# Run with security middleware
-python src/main_secure.py
+# Railway environment variables (set in Railway dashboard)
+LOG_LEVEL=INFO
+PORT=8000  # Railway sets this automatically
 ```
 
-### Docker Deployment (Recommended for Production)
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY . .
-RUN pip install -r requirements.txt
-EXPOSE 8000
-CMD ["python", "src/main_secure.py"]
-```
-
-### Configuration Validation
-```bash
-# Validate configuration before deployment
-python setup_config.py --validate
-
-# Setup development environment
-python setup_config.py --environment development
-
-# Setup production environment
-python setup_config.py --environment production
-```
+### Entry Point
+- **Single entry point**: `development/src/main.py`
+- **Start script**: `development/start.command` runs `uvicorn main:app`
+- **Dynamic feature loading**: Enhanced modules (security, logging) loaded if available
 
 ---
 
@@ -772,23 +750,26 @@ app.include_router(your_feature_router)
 
 Create `system_prompts/NEW_ROLE_KEY_system_prompt.txt` with the full prompt content (plain text, real newlines).
 
-**2. Key Fields Explained**
+**3. Key Fields Explained**
 - `role_key`: MUST be uppercase, used in code (e.g., "DEVELOPER", "PM")
 - `name`: Person's name (e.g., "Alex", "Sarah")
-- `system_prompt`: COMPLETE instructions for how this persona behaves
+- `system_prompt_file`: Path to .txt file with full prompt (NOT inline `system_prompt`)
 - `enabled`: Set false to temporarily disable without deleting
 - `priority`: Lower number = responds first (1 = highest priority)
 - `tools`: ["http_post"] if persona needs to call APIs, [] otherwise
 
-**3. One Person, Multiple Roles**
-Notice Sarah has 3 personas:
+**4. One Person, Multiple Roles**
+Notice Sarah has 6 personas:
 - `PM`: General project management
-- `VISION_PM`: Vision meeting facilitator  
+- `VISION_PM`: Vision meeting facilitator
 - `REQUIREMENTS_PM`: Requirements meeting facilitator
+- `SPRINT_REVIEW_PM`: Sprint review facilitator
+- `SPRINT_EXECUTION_PM`: Sprint execution facilitator
+- `SPRINT_RETROSPECTIVE_PM`: Retrospective facilitator
 
 Same person, different roles/contexts. This is the pattern for meeting-specific behaviors.
 
-**4. System Prompt Guidelines**
+**5. System Prompt Guidelines**
 - Be EXPLICIT about when to respond vs stay silent
 - Include exact matching patterns if workflow-driven
 - Specify exact API endpoints to call with http_post()
@@ -1055,7 +1036,7 @@ app.include_router(design_review_router)
       "display_name": "Jamie · Designer",
       "role": "UI/UX Designer",
       "role_key": "DESIGNER",
-      "system_prompt": "You are Jamie, the Designer persona...",
+      "system_prompt_file": "system_prompts/DESIGNER_system_prompt.txt",
       "enabled": true,
       "priority": 6,
       "tools": ["http_post"]
@@ -1161,4 +1142,4 @@ Sprint Execution uses a **Sequential Orchestrator** pattern with four implementa
 - **Complete Specifications**: Mike provides 10 architectural categories in NFR-001
 
 See [PATTERNS_AND_METHODS.md](./PATTERNS_AND_METHODS.md#sprint-execution-method-sequential-orchestrator) for implementation details and testing checklist.
-See [ADRs.md](./ADRs.md) for ADR-008 (Sequential Orchestrator MVP), ADR-011 (Robustness Fixes), and ADR-017 (Orchestrator Reliability Fixes).
+See [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md) for the Sequential Orchestrator, Row-Scoped Updates, and Hard Gates principles.
