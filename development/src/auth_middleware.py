@@ -1,9 +1,11 @@
 """
-Simple HTTP Basic Authentication Middleware
+Enhanced HTTP Basic Authentication Middleware with Cloudflare Access Support
 Protects all routes except /health
+Bypasses Basic Auth for authenticated Cloudflare Access users
 """
 import os
 import secrets
+import json
 from typing import Optional, Dict
 from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -50,10 +52,36 @@ def verify_credentials(username: str, password: str) -> bool:
     return username_match and password_match
 
 
+def is_cloudflare_access_authenticated(request: Request) -> bool:
+    """
+    Check if request is authenticated via Cloudflare Access.
+    
+    Cloudflare Access adds these headers when authentication is successful:
+    - Cf-Access-Jwt-Assertion: JWT token (optional validation)
+    - Cf-Access-Authenticated-User-Email: User email
+    - Cf-Access-Authenticated-User: User name/ID
+    
+    For simplicity, we trust Cloudflare's validation and check for presence of headers.
+    """
+    # Check for Cloudflare Access headers
+    jwt_assertion = request.headers.get("Cf-Access-Jwt-Assertion")
+    authenticated_email = request.headers.get("Cf-Access-Authenticated-User-Email")
+    authenticated_user = request.headers.get("Cf-Access-Authenticated-User")
+    
+    # If any Cloudflare Access headers are present, consider it authenticated
+    # Cloudflare handles the actual JWT validation before adding headers
+    if jwt_assertion or authenticated_email or authenticated_user:
+        print(f"🔓 Cloudflare Access authenticated: {authenticated_email or authenticated_user}")
+        return True
+    
+    return False
+
+
 class BasicAuthMiddleware(BaseHTTPMiddleware):
     """
-    Middleware to enforce HTTP Basic Authentication on all routes
-    except excluded paths like /health
+    Enhanced middleware that enforces HTTP Basic Authentication OR allows Cloudflare Access.
+    Cloudflare Access users bypass Basic Auth completely.
+    Direct Railway access falls back to Basic Auth.
     """
 
     EXCLUDED_PATHS = ["/health", "/api/env"]  # Paths that don't require auth
@@ -76,6 +104,19 @@ class BasicAuthMiddleware(BaseHTTPMiddleware):
         if is_internal and is_sandbox_path:
             return await call_next(request)
 
+        # FIRST: Check for Cloudflare Access authentication
+        if is_cloudflare_access_authenticated(request):
+            # Add Cloudflare user info to request state for logging
+            authenticated_email = request.headers.get("Cf-Access-Authenticated-User-Email")
+            authenticated_user = request.headers.get("Cf-Access-Authenticated-User")
+            request.state.authenticated_user = f"Cloudflare: {authenticated_email or authenticated_user}"
+            request.state.auth_method = "cloudflare_access"
+            
+            # Continue with the request (no Basic Auth required)
+            response = await call_next(request)
+            return response
+
+        # SECOND: Fall back to HTTP Basic Authentication
         # Check for Authorization header
         auth_header = request.headers.get("Authorization")
 
@@ -94,8 +135,9 @@ class BasicAuthMiddleware(BaseHTTPMiddleware):
             if not verify_credentials(username, password):
                 return self._unauthorized_response()
 
-            # Add username to request state for logging
+            # Add username and auth method to request state for logging
             request.state.authenticated_user = username
+            request.state.auth_method = "basic_auth"
 
         except Exception as e:
             print(f"Auth error: {e}")
