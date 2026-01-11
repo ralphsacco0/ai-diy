@@ -203,16 +203,47 @@ async def callback(request: Request):
         
         # Simple success response (in production, create session and redirect)
         user_email = user_info.get("email", "unknown")
-        return f"""
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(content=f"""
+        <!DOCTYPE html>
         <html>
+        <head>
+            <title>AI-DIY - Login Successful</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    max-width: 600px;
+                    margin: 100px auto;
+                    padding: 20px;
+                    text-align: center;
+                }}
+                .success {{
+                    color: #28a745;
+                    font-size: 2em;
+                }}
+                .email {{
+                    color: #333;
+                    font-size: 1.2em;
+                    margin: 20px 0;
+                }}
+                .logout {{
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background: #007bff;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 5px;
+                }}
+            </style>
+        </head>
         <body>
-            <h1>✅ Auth0 Login Successful!</h1>
-            <p>Hello {user_email}</p>
+            <h1 class="success">✅ Auth0 Login Successful!</h1>
+            <p class="email">Hello {user_email}</p>
             <p>You are now authenticated with AI-DIY.</p>
-            <p><a href="/logout">Logout</a></p>
+            <p><a href="/logout" class="logout">Logout</a></p>
         </body>
         </html>
-        """
+        """)
         
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Token exchange failed: {e}")
