@@ -790,8 +790,153 @@ The Railway CLI (`railway domain --json`) provides:
 ### **Production Status: READY**
 The provisioning system is **production-ready** and provides a solid foundation for scaling AI-DIY to hundreds of customers while maintaining security and operational efficiency.
 
-**Next Enhancement**: Implement Cloudflare Access validation in main.py to bypass Basic Auth for authenticated Cloudflare users.
+## 11. Auth0 Integration (NEW DIRECTION - 2026-01-10)
+
+### **Strategic Pivot: Cloudflare Access → Auth0**
+
+**Decision**: Replace Cloudflare Access with Auth0 for sustainable scaling
+**Reason**: Cloudflare Access costs $7/user/month vs Auth0 free to 23,000 users
+**Timeline**: Immediate implementation
+
+### **Auth0 Configuration**
+
+#### **Tenant Details:**
+- **Tenant Domain**: `dev-mm8vbcyaa21zp6jr.us.auth0.com`
+- **Application Type**: Regular Web Application
+- **Application Name**: AI-DIY
+
+#### **Application URIs Configuration:**
+```
+1. Application Login URI:
+   • https://ai-diy.ai/login
+
+2. Allowed Callback URLs:
+   • https://ai-diy.ai/callback
+
+3. Allowed Logout URLs:
+   • https://ai-diy.ai
+
+4. Allowed Web Origins:
+   • https://ai-diy.ai
+```
+
+#### **Testing Configuration (Railway):**
+```
+Add parallel entries for Railway URL:
+• https://ai-diy-dev-production.up.railway.app/login
+• https://ai-diy-dev-production.up.railway.app/callback
+• https://ai-diy-dev-production.up.railway.app
+```
+
+### **Implementation Architecture**
+
+#### **Authentication Flow:**
+```
+User → ai-diy.ai/login → Auth0 Universal Login → /callback → Create/lookup user → Redirect to subdomain
+```
+
+#### **App-Side Routes Required:**
+1. **`/login`** - Redirect to Auth0 Universal Login
+2. **`/callback`** - Handle Auth0 callback, create/lookup user, redirect to workspace
+3. **`/logout`** - Clear session, redirect to Auth0 logout
+
+#### **Multi-Tenant Routing:**
+- After successful Auth0 authentication
+- Create/lookup local user + tenant in database
+- Redirect to correct subdomain (e.g., ralph.ai-diy.ai)
+- Subdomain routes to customer's AI-DIY workspace
+
+### **Cost Comparison**
+
+#### **Previous (Cloudflare Access):**
+- 50 users: $315/month
+- 100 users: $665/month
+- 500 users: $3,465/month
+
+#### **New (Auth0):**
+- 50 users: $0/month (free tier)
+- 100 users: $0/month (free tier)
+- 23,000 users: $0/month (free tier)
+- 50,000 users: $198.50/month
+
+### **Technical Implementation**
+
+#### **FastAPI Integration:**
+```python
+# Add Auth0 routes to main.py
+@app.get("/login")
+async def login():
+    # Redirect to Auth0 Universal Login
+    auth_url = f"https://{tenant}.auth0.com/authorize?..."
+    return RedirectResponse(auth_url)
+
+@app.get("/callback")
+async def callback(request: Request):
+    # Handle Auth0 callback
+    code = request.query_params.get("code")
+    # Exchange code for tokens
+    # Create/lookup user and tenant
+    # Redirect to subdomain
+    return RedirectResponse(f"https://{subdomain}.ai-diy.ai")
+
+@app.get("/logout")
+async def logout():
+    # Clear session and redirect to Auth0 logout
+    return RedirectResponse(f"https://{tenant}.auth0.com/v2/logout?...")
+```
+
+#### **Enhanced Auth Middleware:**
+```python
+# Update auth_middleware.py to validate Auth0 JWT
+def validate_auth0_token(request: Request) -> bool:
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+        # Validate JWT with Auth0 public key
+        return validate_jwt_with_auth0(token)
+    return False
+```
+
+### **Migration Status**
+
+#### **Completed:**
+- ✅ Auth0 tenant created and configured
+- ✅ Application URIs set up
+- ✅ Test user created for validation
+- ❌ Cloudflare Access disabled (cost optimization)
+
+#### **In Progress:**
+- 🔄 FastAPI route implementation (/login, /callback, /logout)
+- 🔄 Auth0 JWT validation in middleware
+- 🔄 Multi-tenant user/tenant database schema
+- 🔄 Subdomain routing logic
+
+#### **Next Steps:**
+1. Implement Auth0 routes in FastAPI
+2. Update auth middleware for Auth0 JWT validation
+3. Create user/tenant management system
+4. Test end-to-end authentication flow
+5. Deploy and validate production flow
+
+### **Benefits of New Architecture**
+
+#### **Cost Savings:**
+- **90%+ cost reduction** at scale
+- **Free tier covers to 23,000 users**
+- **Predictable scaling costs**
+
+#### **Enhanced Features:**
+- **Social logins** (Google, GitHub, etc.)
+- **Enterprise SSO** ready
+- **Professional user experience**
+- **Advanced security features**
+
+#### **Technical Advantages:**
+- **Standard OAuth2/OIDC** implementation
+- **JWT-based sessions** (more secure)
+- **Multi-tenant support** built-in
+- **Extensive documentation** and community support
 
 ---
 
-*This appendix serves as the complete practical implementation guide for the Cloudflare + Railway provisioning component of the AI-DIY multi-tenant architecture.*
+*This section documents the strategic pivot from Cloudflare Access to Auth0 for sustainable multi-tenant SaaS scaling.*

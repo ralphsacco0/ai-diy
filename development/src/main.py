@@ -19,9 +19,12 @@ from datetime import datetime
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+import requests
+import secrets
+import base64
 
 # Track which enhanced features are available
 FEATURES = {
@@ -115,6 +118,109 @@ app = FastAPI(
     description="AI-First Virtual Scrum Team with Enhanced Features",
     version="1.0.0"
 )
+
+# Auth0 Configuration
+AUTH0_DOMAIN = "dev-mm8vbcyaa21zp6jr.us.auth0.com"
+AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID", "")
+AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET", "")
+CALLBACK_URL = "https://ralph.ai-diy.ai/callback"
+LOGOUT_URL = "https://ralph.ai-diy.ai"
+LOGIN_URL = "https://ralph.ai-diy.ai/login"
+
+# Simple session storage (for demo - use Redis in production)
+sessions = {}
+
+# Auth0 Routes
+@app.get("/login")
+async def login():
+    """Redirect to Auth0 Universal Login"""
+    if not AUTH0_CLIENT_ID:
+        raise HTTPException(status_code=500, detail="Auth0 not configured")
+    
+    # Generate state parameter for security
+    state = secrets.token_urlsafe(16)
+    sessions[state] = {"created_at": datetime.now()}
+    
+    auth_url = (
+        f"https://{AUTH0_DOMAIN}/authorize?"
+        f"response_type=code&"
+        f"client_id={AUTH0_CLIENT_ID}&"
+        f"redirect_uri={CALLBACK_URL}&"
+        f"scope=openid%20profile%20email&"
+        f"state={state}"
+    )
+    
+    return RedirectResponse(auth_url)
+
+@app.get("/callback")
+async def callback(request: Request):
+    """Handle Auth0 callback"""
+    code = request.query_params.get("code")
+    state = request.query_params.get("state")
+    error = request.query_params.get("error")
+    
+    if error:
+        raise HTTPException(status_code=400, detail=f"Auth0 error: {error}")
+    
+    if not code or not state:
+        raise HTTPException(status_code=400, detail="Missing code or state")
+    
+    # Validate state
+    if state not in sessions:
+        raise HTTPException(status_code=400, detail="Invalid state")
+    
+    # Exchange code for tokens
+    token_url = f"https://{AUTH0_DOMAIN}/oauth/token"
+    token_payload = {
+        "grant_type": "authorization_code",
+        "client_id": AUTH0_CLIENT_ID,
+        "client_secret": AUTH0_CLIENT_SECRET,
+        "code": code,
+        "redirect_uri": CALLBACK_URL
+    }
+    
+    try:
+        token_response = requests.post(token_url, json=token_payload)
+        token_response.raise_for_status()
+        tokens = token_response.json()
+        
+        # Get user info
+        access_token = tokens.get("access_token")
+        userinfo_url = f"https://{AUTH0_DOMAIN}/userinfo"
+        headers = {"Authorization": f"Bearer {access_token}"}
+        
+        userinfo_response = requests.get(userinfo_url, headers=headers)
+        userinfo_response.raise_for_status()
+        user_info = userinfo_response.json()
+        
+        # Clean up state
+        del sessions[state]
+        
+        # Simple success response (in production, create session and redirect)
+        user_email = user_info.get("email", "unknown")
+        return f"""
+        <html>
+        <body>
+            <h1>✅ Auth0 Login Successful!</h1>
+            <p>Hello {user_email}</p>
+            <p>You are now authenticated with AI-DIY.</p>
+            <p><a href="/logout">Logout</a></p>
+        </body>
+        </html>
+        """
+        
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Token exchange failed: {e}")
+
+@app.get("/logout")
+async def logout():
+    """Logout and redirect to Auth0"""
+    logout_url = (
+        f"https://{AUTH0_DOMAIN}/v2/logout?"
+        f"client_id={AUTH0_CLIENT_ID}&"
+        f"returnTo={LOGOUT_URL}"
+    )
+    return RedirectResponse(logout_url)
 
 # Add HTTP Basic Authentication (always enabled in production)
 from auth_middleware import BasicAuthMiddleware
