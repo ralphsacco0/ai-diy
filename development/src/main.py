@@ -231,6 +231,25 @@ if app_config.is_production and os.environ.get("ENABLE_BASIC_AUTH", "true") != "
     app.add_middleware(BasicAuthMiddleware)
     logger.info("🔒 HTTP Basic Auth enabled")
 
+# Auth0 validation middleware for main app
+@app.middleware("http")
+async def auth0_middleware(request: Request, call_next):
+    # Skip Auth0 validation for Auth0 routes and public endpoints
+    if request.url.path in ["/login", "/callback", "/logout", "/test", "/health"]:
+        return await call_next(request)
+    
+    # For main app, check if user has valid Auth0 session
+    # TODO: Implement proper session validation
+    # For now, redirect to login if no Auth0 session
+    if request.url.path == "/":
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            # No Auth0 token, redirect to login
+            from fastapi.responses import RedirectResponse
+            return RedirectResponse("/login")
+    
+    return await call_next(request)
+
 # Add CORS middleware
 if not app_config.is_production:
     app.add_middleware(
