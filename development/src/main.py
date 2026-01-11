@@ -203,14 +203,17 @@ async def callback(request: Request):
         
         # Create session and redirect to main app
         user_email = user_info.get("email", "unknown")
+        session_id = secrets.token_urlsafe(32)
+        sessions[session_id] = {
+            "user_email": user_email,
+            "created_at": datetime.now(),
+            "access_token": access_token
+        }
         
-        # TODO: Create proper session/cookie here
-        # For now, just redirect to main app with user info
         from fastapi.responses import RedirectResponse
-        return RedirectResponse(
-            url=f"/?auth=success&email={user_email}",
-            status_code=302
-        )
+        response = RedirectResponse("/", status_code=302)
+        response.set_cookie(key="session_id", value=session_id, httponly=True)
+        return response
         
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Token exchange failed: {e}")
@@ -225,12 +228,6 @@ async def logout():
     )
     return RedirectResponse(logout_url)
 
-# Add HTTP Basic Authentication (configurable)
-from auth_middleware import BasicAuthMiddleware
-if app_config.is_production and os.environ.get("ENABLE_BASIC_AUTH", "true") != "false":
-    app.add_middleware(BasicAuthMiddleware)
-    logger.info("🔒 HTTP Basic Auth enabled")
-
 # Auth0 validation middleware for main app
 @app.middleware("http")
 async def auth0_middleware(request: Request, call_next):
@@ -238,19 +235,14 @@ async def auth0_middleware(request: Request, call_next):
     if request.url.path in ["/login", "/callback", "/logout", "/test", "/health"]:
         return await call_next(request)
     
-    # For main app, check if user has valid Auth0 session
-    # TODO: Implement proper session validation with cookies/JWT
-    # For now, let's enable Basic Auth as fallback for security
+    # For main app, check for Auth0 session cookie
     if request.url.path == "/":
-        # Temporarily enable Basic Auth for security until we implement proper sessions
-        auth_header = request.headers.get("Authorization")
-        if not auth_header or not auth_header.startswith("Basic "):
-            from fastapi.responses import Response
-            return Response(
-                content="Unauthorized - Please login",
-                status_code=401,
-                headers={"WWW-Authenticate": 'Basic realm="AI-DIY Access"'}
-            )
+        # Check if user has active session (simplified)
+        session_id = request.cookies.get("session_id")
+        if not session_id or session_id not in sessions:
+            # No valid session, redirect to login
+            from fastapi.responses import RedirectResponse
+            return RedirectResponse("/login")
     
     return await call_next(request)
 
