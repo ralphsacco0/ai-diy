@@ -123,12 +123,17 @@ app = FastAPI(
 AUTH0_DOMAIN = "dev-mm8vbcyaa21zp6jr.us.auth0.com"
 AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID", "")
 AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET", "")
-CALLBACK_URL = "https://ralph.ai-diy.ai/callback"
-LOGOUT_URL = "https://ralph.ai-diy.ai"
-LOGIN_URL = "https://ralph.ai-diy.ai/login"
+CALLBACK_URL = "https://ai-diy-dev-production.up.railway.app/callback"
+LOGOUT_URL = "https://ai-diy-dev-production.up.railway.app"
+LOGIN_URL = "https://ai-diy-dev-production.up.railway.app/login"
 
 # Simple session storage (for demo - use Redis in production)
 sessions = {}
+
+# Test route to verify app is working
+@app.get("/test")
+async def test():
+    return {"message": "AI-DIY app is working!", "timestamp": datetime.now()}
 
 # Auth0 Routes
 @app.get("/login")
