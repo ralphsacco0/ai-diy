@@ -225,9 +225,9 @@ async def logout():
     )
     return RedirectResponse(logout_url)
 
-# Add HTTP Basic Authentication (always enabled in production)
+# Add HTTP Basic Authentication (configurable)
 from auth_middleware import BasicAuthMiddleware
-if app_config.is_production or os.environ.get("ENABLE_BASIC_AUTH") == "true":
+if app_config.is_production and os.environ.get("ENABLE_BASIC_AUTH", "true") != "false":
     app.add_middleware(BasicAuthMiddleware)
     logger.info("🔒 HTTP Basic Auth enabled")
 
