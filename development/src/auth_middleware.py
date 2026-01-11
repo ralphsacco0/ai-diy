@@ -84,7 +84,7 @@ class BasicAuthMiddleware(BaseHTTPMiddleware):
     Direct Railway access falls back to Basic Auth.
     """
 
-    EXCLUDED_PATHS = ["/health", "/api/env"]  # Paths that don't require auth
+    EXCLUDED_PATHS = ["/health", "/api/env", "/login", "/callback", "/logout"]  # Paths that don't require auth
 
     # Paths that internal/localhost requests can access without auth
     # This allows Sprint Review Alex to read/write sandbox files
