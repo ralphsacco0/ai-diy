@@ -239,14 +239,18 @@ async def auth0_middleware(request: Request, call_next):
         return await call_next(request)
     
     # For main app, check if user has valid Auth0 session
-    # TODO: Implement proper session validation
-    # For now, redirect to login if no Auth0 session
+    # TODO: Implement proper session validation with cookies/JWT
+    # For now, let's enable Basic Auth as fallback for security
     if request.url.path == "/":
+        # Temporarily enable Basic Auth for security until we implement proper sessions
         auth_header = request.headers.get("Authorization")
-        if not auth_header or not auth_header.startswith("Bearer "):
-            # No Auth0 token, redirect to login
-            from fastapi.responses import RedirectResponse
-            return RedirectResponse("/login")
+        if not auth_header or not auth_header.startswith("Basic "):
+            from fastapi.responses import Response
+            return Response(
+                content="Unauthorized - Please login",
+                status_code=401,
+                headers={"WWW-Authenticate": 'Basic realm="AI-DIY Access"'}
+            )
     
     return await call_next(request)
 
