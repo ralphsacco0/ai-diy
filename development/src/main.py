@@ -201,49 +201,16 @@ async def callback(request: Request):
         # Clean up state
         del sessions[state]
         
-        # Simple success response (in production, create session and redirect)
+        # Create session and redirect to main app
         user_email = user_info.get("email", "unknown")
-        from fastapi.responses import HTMLResponse
-        return HTMLResponse(content=f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>AI-DIY - Login Successful</title>
-            <style>
-                body {{
-                    font-family: Arial, sans-serif;
-                    max-width: 600px;
-                    margin: 100px auto;
-                    padding: 20px;
-                    text-align: center;
-                }}
-                .success {{
-                    color: #28a745;
-                    font-size: 2em;
-                }}
-                .email {{
-                    color: #333;
-                    font-size: 1.2em;
-                    margin: 20px 0;
-                }}
-                .logout {{
-                    display: inline-block;
-                    padding: 10px 20px;
-                    background: #007bff;
-                    color: white;
-                    text-decoration: none;
-                    border-radius: 5px;
-                }}
-            </style>
-        </head>
-        <body>
-            <h1 class="success">✅ Auth0 Login Successful!</h1>
-            <p class="email">Hello {user_email}</p>
-            <p>You are now authenticated with AI-DIY.</p>
-            <p><a href="/logout" class="logout">Logout</a></p>
-        </body>
-        </html>
-        """)
+        
+        # TODO: Create proper session/cookie here
+        # For now, just redirect to main app with user info
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse(
+            url=f"/?auth=success&email={user_email}",
+            status_code=302
+        )
         
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Token exchange failed: {e}")
