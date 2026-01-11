@@ -231,18 +231,17 @@ async def logout():
 # Auth0 validation middleware for main app
 @app.middleware("http")
 async def auth0_middleware(request: Request, call_next):
-    # Skip Auth0 validation for Auth0 routes and public endpoints
-    if request.url.path in ["/login", "/callback", "/logout", "/test", "/health"]:
+    # Skip Auth0 validation for Auth0 routes and public endpoints only
+    public_paths = ["/login", "/callback", "/logout", "/test", "/health"]
+    if request.url.path in public_paths or request.url.path.startswith("/api/backlog/wireframe/"):
         return await call_next(request)
     
-    # For main app, check for Auth0 session cookie
-    if request.url.path == "/":
-        # Check if user has active session (simplified)
-        session_id = request.cookies.get("session_id")
-        if not session_id or session_id not in sessions:
-            # No valid session, redirect to login
-            from fastapi.responses import RedirectResponse
-            return RedirectResponse("/login")
+    # For all other routes, check for Auth0 session
+    session_id = request.cookies.get("session_id")
+    if not session_id or session_id not in sessions:
+        # No valid session, redirect to login
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse("/login")
     
     return await call_next(request)
 
